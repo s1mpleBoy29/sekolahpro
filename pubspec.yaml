@@ -1,0 +1,45 @@
+name: guardian_app
+description: "A new Flutter project."
+version: 1.0.0+1
+environment:
+  sdk: '>=3.3.0 <4.0.0'
+dependencies:
+  flutter:
+    sdk: flutter
+  cupertino_icons: ^1.0.6
+  lucide_icons: ^0.257.0
+  shared_preferences: ^2.2.3
+  package_info_plus: ^8.3.0
+  logger: ^2.6.0
+  lottie: ^3.2.0
+  flutter_svg: ^2.0.9
+  flutter_svg_provider: ^1.0.7
+  cached_network_image: ^3.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  assets:
+    - assets/images/
+  fonts:
+    - family: Urbanist
+      fonts:
+        - asset: assets/fonts/UrbanistRomanBold.ttf
+          weight: 700
+        - asset: assets/fonts/UrbanistRomanRegular.ttf
+          weight: 400
+        - asset: assets/fonts/UrbanistSemiBold.ttf
+          weight: 600
+    - family: Lato
+      fonts:
+        - asset: assets/fonts/LatoRegular.ttf
+          weight: 400
+        - asset: assets/fonts/LatoBold.ttf
+          weight: 700
+        - asset: assets/fonts/LatoSemiBold.ttf
+          weight: 600
+
