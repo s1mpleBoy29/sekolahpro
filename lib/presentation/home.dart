@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
+import 'package:guardian_app/widgets/agenda_card.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
 import 'package:guardian_app/widgets/custom_elevated_button.dart';
 import 'package:guardian_app/widgets/custom_fab.dart';
 import 'package:guardian_app/widgets/topbar.dart';
+import 'package:guardian_app/widgets/ad_card.dart';
 import 'package:lucide_icons/lucide_icons.dart'; // Pastikan sudah install: lucide_icons
 
 class HomeScreen extends StatefulWidget {
@@ -40,7 +42,10 @@ class HomePageScreen extends State<HomeScreen> {
             //   },
             // ),
             const SizedBox(height: 16),
-            _buildAdCard(),
+            const AdCard(
+              text:
+                  "In the lessons we learn new words and for vocabularities continues and article...",
+            ),
             const SizedBox(height: 24),
             _buildSectionTitle("Tunggakan Hari Ini"),
             _buildDueCard(isOverdue: true),
@@ -50,7 +55,12 @@ class HomePageScreen extends State<HomeScreen> {
             _buildDueCard(isOverdue: false),
             const SizedBox(height: 24),
             _buildSectionTitle("Agenda Hari Ini", action: "Lihat Agenda"),
-            _buildAgendaCard(),
+            const AgendaCard(
+                tanggal: "07 Juli 2025",
+                dari: "Wali Kelas 5A",
+                untuk: "Candra Wijaya",
+                detail:
+                    "Titik kumpul di lapangan utama, bawa topi dan minuman sendiri. Dimohon untuk siswa-siswi..."),
           ],
         ),
       ),
@@ -93,31 +103,6 @@ class HomePageScreen extends State<HomeScreen> {
           ],
         )
       ],
-    );
-  }
-
-  Widget _buildAdCard() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: Row(
-        children: [
-          const Icon(Icons.ads_click),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              "In the lessons we learn new words and for vocabularities continues and article...",
-              style: TextStyle(
-                fontSize: 14,
-                color: theme.colorScheme.outline,
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
@@ -218,55 +203,6 @@ class HomePageScreen extends State<HomeScreen> {
           //   ),
           //   child: const Text("Bayar"),
           // )
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAgendaCard() {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(top: 8, bottom: 16),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: theme.colorScheme.outlineVariant,
-        ),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "07 Juli 2025",
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 20,
-              color: theme.colorScheme.onPrimaryContainer,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "Dari : Wali Kelas 5A",
-            style: TextStyle(
-              color: theme.colorScheme.secondary,
-              fontSize: 14,
-            ),
-          ),
-          Text(
-            "Untuk : Candra Wijaya",
-            style: TextStyle(
-              color: theme.colorScheme.secondary,
-              fontSize: 14,
-            ),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            "Titik kumpul di lapangan utama, bawa topi dan minuman sendiri. Dimohon untuk siswa-siswi...",
-            style: TextStyle(
-              color: theme.colorScheme.onPrimaryContainer,
-              fontSize: 16,
-            ),
-          )
         ],
       ),
     );
