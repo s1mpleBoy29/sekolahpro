@@ -42,7 +42,7 @@ class LoginPageScreen extends State<LoginScreen> {
   void onTapMasuk(BuildContext context) async {
     Navigator.pushNamed(
       context,
-      AppRoutes.homeScreen,
+      AppRoutes.pilihanakScreen,
     );
   }
 
