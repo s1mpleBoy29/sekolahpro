@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
-import 'package:guardian_app/widgets/agenda_card.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
 import 'package:guardian_app/widgets/custom_elevated_button.dart';
 import 'package:guardian_app/widgets/custom_fab.dart';
 import 'package:guardian_app/widgets/topbar.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
+import 'package:guardian_app/widgets/agenda_card.dart';
+import 'package:guardian_app/widgets/due_card.dart';
 import 'package:lucide_icons/lucide_icons.dart'; // Pastikan sudah install: lucide_icons
 
 class HomeScreen extends StatefulWidget {
@@ -48,11 +49,28 @@ class HomePageScreen extends State<HomeScreen> {
             ),
             const SizedBox(height: 24),
             _buildSectionTitle("Tunggakan Hari Ini"),
-            _buildDueCard(isOverdue: true),
+            DueCard(
+              isOverdue: true,
+              harga: "Rp 300.000",
+              deskripsi:
+                  "Uang Sekolah Chandra Bulan Juli\nTahun Ajaran 2025 / 2026",
+              onPayPressed: () {
+                // Aksi ketika tombol bayar ditekan
+              },
+            ),
             const SizedBox(height: 24),
             _buildSectionTitle("Jadwal Pembayaran Selanjutnya",
                 action: "Lihat Jadwal"),
-            _buildDueCard(isOverdue: false),
+            DueCard(
+              isOverdue: false,
+              dueDate: "10 Agustus 2025",
+              harga: "Rp 300.000",
+              deskripsi:
+                  "Uang Sekolah Chandra Bulan Agustus\nTahun Ajaran 2025 / 2026",
+              onPayPressed: () {
+                // Aksi ketika tombol bayar ditekan
+              },
+            ),
             const SizedBox(height: 24),
             _buildSectionTitle("Agenda Hari Ini", action: "Lihat Agenda"),
             const AgendaCard(
@@ -127,84 +145,6 @@ class HomePageScreen extends State<HomeScreen> {
             ),
           ),
       ],
-    );
-  }
-
-  Widget _buildDueCard({required bool isOverdue}) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(top: 8),
-      decoration: BoxDecoration(
-        border: Border.all(
-          color: theme.colorScheme.outlineVariant,
-        ),
-        borderRadius: BorderRadius.circular(4),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (isOverdue)
-                  Text(
-                    "Melewati batas waktu pembayaran",
-                    style: TextStyle(
-                      color: theme.colorScheme.error,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )
-                else
-                  Text(
-                    "Bayar sebelum 10 Agustus 2025",
-                    style: TextStyle(
-                      color: theme.colorScheme.secondary,
-                      fontSize: 14,
-                    ),
-                  ),
-                const SizedBox(height: 4),
-                Text(
-                  "Rp 300.000",
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onPrimaryContainer,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "Uang Sekolah Chandra Bulan ${isOverdue ? 'Juli' : 'Agustus'}\nTahun Ajaran 2025 / 2026",
-                  style: TextStyle(
-                    color: theme.colorScheme.secondary,
-                    fontSize: 14,
-                  ),
-                )
-              ],
-            ),
-          ),
-          // const SizedBox(width: 12),
-          CustomElevatedButton(
-            width: 80,
-            height: 32,
-            text: "Bayar",
-            buttonTextStyle: TextStyle(
-              fontSize: 14,
-              color: theme.colorScheme.onPrimary,
-            ),
-            onPressed: () => {},
-          ),
-          // ElevatedButton(
-          //   onPressed: () {},
-          //   style: ElevatedButton.styleFrom(
-          //     backgroundColor: theme.colorScheme.primary,
-          //     foregroundColor: Colors.white,
-          //     padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          //   ),
-          //   child: const Text("Bayar"),
-          // )
-        ],
-      ),
     );
   }
 
