@@ -21,7 +21,7 @@ class DueCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.only(bottom: 12.0),
+      padding: const EdgeInsets.all(12.0),
       margin: const EdgeInsets.only(top: 8),
       decoration: BoxDecoration(
         border: Border.all(color: theme.colorScheme.outlineVariant),
