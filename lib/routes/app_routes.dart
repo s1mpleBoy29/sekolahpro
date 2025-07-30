@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/presentation/agenda.dart';
 
-import '../presentation/home.dart';
+import '../presentation/home/home.dart';
 import '../presentation/login.dart';
 
 class AppRoutes {
