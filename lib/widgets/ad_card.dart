@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
 
 class AdCard extends StatelessWidget {
-  final String text;
-  const AdCard({super.key, required this.text});
+  final String teks;
+  const AdCard({super.key, required this.teks});
 
   @override
   Widget build(BuildContext context) {
@@ -19,7 +19,7 @@ class AdCard extends StatelessWidget {
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              text,
+              teks,
               style: TextStyle(
                 fontSize: 14,
                 color: theme.colorScheme.outline,

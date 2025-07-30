@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
 import 'package:guardian_app/widgets/custom_fab.dart';
-// import 'package:guardian_app/widgets/topbar.dart';
+import 'package:guardian_app/widgets/topbar.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
 import 'package:guardian_app/widgets/agenda_card.dart';
 import 'package:guardian_app/widgets/due_card.dart';
@@ -48,7 +48,7 @@ class HomePageScreen extends State<HomeScreen> {
               user: "Bapak Santoso",
             ),
             const AdCard(
-              text:
+              teks:
                   "In the lessons we new words and for vocabularities continues and article...",
             ),
             const SizedBox(height: 24),
