@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
+import 'package:guardian_app/core/utils/datetime_ui.dart';
+import 'package:guardian_app/core/utils/number_format.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
 import 'package:guardian_app/widgets/custom_fab.dart';
 import 'package:guardian_app/widgets/topbar.dart';
@@ -17,6 +19,56 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomePageScreen extends State<HomeScreen> {
+  List<dynamic> payment = [];
+  List<dynamic> agenda = [];
+
+  void setDummyData() {
+    payment = [
+      {
+        'due_date': '2025-08-10',
+        'description':
+            'Uang Sekolah Chandra Bulan Agustus\nTahun Ajaran 2025 / 2026',
+        'amount': 300000,
+        'is_overdue': true,
+      },
+      {
+        'due_date': '2025-07-07',
+        'description':
+            'Uang Sekolah Chandra Bulan Juli\nTahun Ajaran 2025 / 2026',
+        'amount': 500000,
+        'is_overdue': false,
+      },
+    ];
+
+    agenda = [
+      {
+        'date': '2025-07-07',
+        'child': 'Candra Wijaya',
+        'from': 'Wali Kelas 5A',
+        'description':
+            'Titik kumpul di lapangan utama, bawa topi dan minuman sendiri. Dimohon untuk siswa-siswi...'
+      },
+      {
+        'date': '2025-07-08',
+        'child': 'Candra Wijaya',
+        'from': 'Wali Kelas 5A',
+        'description':
+            'Titik kumpul di lapangan utama, bawa topi dan minuman sendiri. Dimohon untuk siswa-siswi...'
+      },
+    ];
+  }
+
+  @override
+  void initState() {
+    setDummyData();
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,25 +117,67 @@ class HomePageScreen extends State<HomeScreen> {
             const SizedBox(height: 24),
             const SectionTitle(
                 title: "Jadwal Pembayaran Selanjutnya", action: "Lihat Jadwal"),
-            DueCard(
-              isOverdue: false,
-              dueDate: "10 Agustus 2025",
-              harga: "Rp 300.000",
-              deskripsi:
-                  "Uang Sekolah Chandra Bulan Agustus\nTahun Ajaran 2025 / 2026",
-              onPayPressed: () {
-                // Aksi ketika tombol bayar ditekan
-              },
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(
+                0.0,
+                4.0,
+                0.0,
+                4.0,
+              ),
+              child: Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: payment.length,
+                    itemBuilder: (context, idx) {
+                      dynamic paymentItem = payment[idx];
+                      return DueCard(
+                        isOverdue: paymentItem['is_overdue'],
+                        dueDate: dateTimeFormat(
+                          'dateui',
+                          paymentItem['due_date'],
+                        ),
+                        harga: numberFormat('idr_fixed', paymentItem['amount']),
+                        deskripsi: paymentItem['description'],
+                        onPayPressed: () {
+                          // Aksi ketika tombol bayar ditekan
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
             const SizedBox(height: 24),
             const SectionTitle(
                 title: "Agenda Hari Ini", action: "Lihat Agenda"),
-            const AgendaCard(
-                tanggal: "07 Juli 2025",
-                dari: "Wali Kelas 5A",
-                untuk: "Candra Wijaya",
-                detail:
-                    "Titik kumpul di lapangan utama, bawa topi dan minuman sendiri. Dimohon untuk siswa-siswi..."),
+            Padding(
+              padding: const EdgeInsetsDirectional.fromSTEB(
+                0.0,
+                4.0,
+                0.0,
+                4.0,
+              ),
+              child: Column(
+                children: [
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: agenda.length,
+                    itemBuilder: (context, idx) {
+                      dynamic agendaItem = agenda[idx];
+                      return AgendaCard(
+                        tanggal: agendaItem['date'],
+                        dari: agendaItem['from'],
+                        untuk: agendaItem['child'],
+                        detail: agendaItem['description'],
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ),
           ],
         ),
       ),

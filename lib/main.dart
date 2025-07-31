@@ -132,7 +132,7 @@ class _MyAppState extends State<_MyApp> with WidgetsBindingObserver {
           // Membangun aplikasi dengan initialRoute berdasarkan hasil
           return MaterialApp(
             theme: theme,
-            title: 'Nakoa',
+            title: 'Guardian App',
             debugShowCheckedModeBanner: false,
             initialRoute: snapshot.data!,
             navigatorKey: navigatorKey,
