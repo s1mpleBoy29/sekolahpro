@@ -78,7 +78,9 @@ class HomePageScreen extends State<HomeScreen> {
         theme: theme,
       ),
       floatingActionButton: CustomFAB(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: SafeArea(

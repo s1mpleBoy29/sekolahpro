@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
 
-class BayarDua extends StatefulWidget {
+class BayarDuaScreen extends StatefulWidget {
   @override
   _BayarDuaState createState() => _BayarDuaState();
 }
 
-class _BayarDuaState extends State<BayarDua> {
+class _BayarDuaState extends State<BayarDuaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(

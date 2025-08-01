@@ -22,8 +22,8 @@ class AppRoutes {
     homeScreen: (context) => HomeScreen(),
     agendaScreen: (context) => AgendaScreen(),
     pilihAnakScreen: (context) => PilihAnakScreen(),
-    bayarSatuScreen: (context) => BayarSatu(),
-    bayarDuaScreen: (context) => BayarDua(),
-    bayarTigaScreen: (context) => BayarTiga(),
+    bayarSatuScreen: (context) => BayarSatuScreen(),
+    bayarDuaScreen: (context) => BayarDuaScreen(),
+    bayarTigaScreen: (context) => BayarTigaScreen(),
   };
 }

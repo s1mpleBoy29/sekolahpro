@@ -7,6 +7,7 @@ import 'package:guardian_app/widgets/secondary_topbar.dart';
 import 'package:guardian_app/widgets/secondary_topbar/sekolah.dart';
 import 'package:guardian_app/widgets/topbar.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import 'package:guardian_app/routes/app_routes.dart';
 
 class AgendaScreen extends StatefulWidget {
   const AgendaScreen({super.key});
@@ -29,7 +30,9 @@ class AgendaPageScreen extends State<AgendaScreen> {
         theme: theme,
       ),
       floatingActionButton: CustomFAB(
-        onPressed: () {},
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
+        },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: Container(
