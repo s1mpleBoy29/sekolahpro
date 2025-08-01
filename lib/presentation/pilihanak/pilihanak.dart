@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardian_app/presentation/pilihanak/searchbar.dart';
 import 'package:guardian_app/presentation/pilihanak/studentcard.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
-import 'package:guardian_app/presentation/home.dart';
+import 'package:guardian_app/presentation/home/home.dart';
 import 'dart:ui';
 
 class PilihAnakScreen extends StatefulWidget {
@@ -103,7 +103,8 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
   Widget build(BuildContext context) {
     // Estimasi tinggi AdCard untuk padding bawah
     // Anda mungkin perlu menyesuaikannya agar pas dengan tinggi AdCard yang sebenarnya
-    final double adCardEstimatedHeight = 120.0; // Tinggi AdCard + padding bottom
+    final double adCardEstimatedHeight =
+        120.0; // Tinggi AdCard + padding bottom
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -126,7 +127,10 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
               children: [
                 // Judul "Pilih Anak" (Fixed)
                 Padding(
-                  padding: const EdgeInsets.only(top: 60.0, left: 20.0, right: 20.0), // Padding disesuaikan
+                  padding: const EdgeInsets.only(
+                      top: 60.0,
+                      left: 20.0,
+                      right: 20.0), // Padding disesuaikan
                   child: const Text(
                     'Pilih Anak',
                     style: TextStyle(
@@ -140,7 +144,8 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
 
                 // Search Bar (Fixed)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0), // Padding horizontal
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0), // Padding horizontal
                   child: CustomSearchBar(
                     controller: _searchController,
                     hintText: 'Cari nama, kelas, dll',
@@ -158,9 +163,11 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
                 const SizedBox(height: 16.0), // Spasi setelah search bar
 
                 // Daftar StudentCard (Hanya ini yang akan discroll)
-                Expanded( // Expanded agar ListView.builder mengisi sisa ruang yang tersedia
+                Expanded(
+                  // Expanded agar ListView.builder mengisi sisa ruang yang tersedia
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0), // Padding horizontal untuk daftar
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0), // Padding horizontal untuk daftar
                     child: _filteredChildren.isEmpty
                         ? const Center(
                             child: Text('Tidak ada anak ditemukan.'),
@@ -173,12 +180,14 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
                             itemBuilder: (context, index) {
                               final childData = _filteredChildren[index];
                               return Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
                                 child: StudentCard(
                                   studentName: childData['name']!,
                                   schoolName: childData['school']!,
                                   className: childData['class']!,
-                                  avatarImagePath: 'assets/images/profileicon.jpg',
+                                  avatarImagePath:
+                                      'assets/images/profileicon.jpg',
                                   onSelectPressed: () {
                                     _onSelectChild(childData['name']!);
                                   },
@@ -190,7 +199,9 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
                 ),
 
                 // Tambahkan padding di bagian bawah kolom utama agar AdCard tidak menutupi item terakhir
-                SizedBox(height: adCardEstimatedHeight), // Pastikan ada ruang untuk AdCard
+                SizedBox(
+                    height:
+                        adCardEstimatedHeight), // Pastikan ada ruang untuk AdCard
               ],
             ),
           ),
@@ -203,7 +214,8 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
             child: Padding(
               padding: const EdgeInsets.all(20.0), // Padding di sekitar AdCard
               child: AdCard(
-                text: "Ads\nIn the lessons we learn new words and for vocabularities continues and article...",
+                teks:
+                    "Ads\nIn the lessons we learn new words and for vocabularities continues and article...",
               ),
             ),
           ),
