@@ -2,7 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
 
 class InstructionCard extends StatelessWidget {
-  const InstructionCard({super.key});
+  final String number;
+  final String teksInstruksi;
+  const InstructionCard(
+      {super.key, required this.number, required this.teksInstruksi});
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +20,7 @@ class InstructionCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '1',
+            number,
             style: TextStyle(
               fontSize: 72,
               fontWeight: FontWeight.bold,
@@ -27,7 +30,7 @@ class InstructionCard extends StatelessWidget {
           const SizedBox(width: 16.0),
           Expanded(
             child: Text(
-              'Pembayaran kewajiban siswa dapat dilakukan melalui Transfer Bank ke salah satu rekening berikut',
+              teksInstruksi,
               style: TextStyle(
                 fontSize: 16,
                 color: theme.colorScheme.onSurface,

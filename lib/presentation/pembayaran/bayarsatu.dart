@@ -33,7 +33,11 @@ class _BayarSatuState extends State<BayarSatuScreen> {
                   SizedBox(
                     height: 12.0,
                   ),
-                  InstructionCard(),
+                  InstructionCard(
+                    number: '1',
+                    teksInstruksi:
+                        'Pembayaran kewajiban siswa dapat dilakukan melalui Transfer Bank ke salah satu rekening berikut',
+                  ),
                 ],
               ),
             ),
