@@ -39,6 +39,13 @@ String numberFormat(
               .format(numberFixed);
       break;
 
+    case 'rp_fixed':
+      int numberFixed = param.floor();
+      result =
+          NumberFormat.currency(locale: 'id', symbol: 'Rp ', decimalDigits: 0)
+              .format(numberFixed);
+      break;
+
     case 'number_simple':
       result = simpleFormat(param);
       break;
