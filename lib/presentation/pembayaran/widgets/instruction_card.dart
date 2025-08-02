@@ -11,7 +11,8 @@ class InstructionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return Container(
-      padding: const EdgeInsets.all(12.0),
+      padding:
+          const EdgeInsets.only(bottom: 4.0, left: 16.0, right: 16.0, top: 4.0),
       decoration: BoxDecoration(
         color: theme.colorScheme.primaryContainer,
         borderRadius: BorderRadius.circular(4.0),
