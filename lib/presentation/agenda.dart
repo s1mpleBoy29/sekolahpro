@@ -50,11 +50,16 @@ class AgendaPageScreen extends State<AgendaScreen> {
               subtitleFontFamily: 'Lato',
               filterArea: filterArea,
             ),
+            // Updated SecondaryTopbar with simple layout
             SecondaryTopbar(
+              backgroundColor: Color(0xFF7D5C86), // Purple background like in the image
               lineColor: appTheme.gray300,
-              backgroundColor: Colors.white,
-              onActionTap: (onAction) {
-                // Handle action tap
+              title: 'Agenda',
+              titleColor: Colors.white,
+              slot: [], // Empty slot since we're using the simple layout
+              onActionTap: (selectedValue) {
+                // Handle filter action
+                print('Filter tapped: $selectedValue');
               },
               onFilterChanged: (onFilter, selectedValue) {
                 if (onFilter == "area") {
@@ -63,29 +68,6 @@ class AgendaPageScreen extends State<AgendaScreen> {
                   });
                 }
               },
-              slot: [
-                Container(
-                  width: 140,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.secondary,
-                  ),
-                  child: Text(
-                    'Agenda',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      color: theme.colorScheme.onPrimary,
-                      fontWeight: FontWeight.w600,
-                      fontSize: 16,
-                    ),
-                  ),
-                ),
-                SlotSekolah(
-                  filterOutlet: filterArea,
-                  onFilterChanged: (onFilter, selectedValue) {},
-                ),
-              ],
             ),
             Expanded(
               child: RefreshIndicator(
@@ -113,49 +95,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
           ],
         ),
       ),
-      // body: SafeArea(
-      //   child: ListView(
-      //     padding: const EdgeInsets.all(16),
-      //     children: [
-      //       // TopBar(
-      //       //   mode: TopBarMode.titleWithDropdown,
-      //       //   title: "SMPN 13 Malang",
-      //       //   notificationCount: 3,
-      //       //   onNotificationTap: () {
-      //       //     // navigasi ke halaman notifikasi
-      //       //   },
-      //       //   onTitleTap: () {
-      //       //     // buka dropdown atau navigasi
-      //       //   },
-      //       // )
-      //     ],
-      //   ),
-      // ),
     );
-
-    // Scaffold(
-    //   body: Column(
-    //     children: [
-    //       TopBar(
-    //         mode: TopBarMode.titleOnly,
-    //         title: "Agenda",
-    //         notificationCount: 1,
-    //       ),
-    //       _buildTabBar(context),
-    //       _buildFilterBar(context),
-    //       _buildAdsCard(),
-    //       Expanded(child: _buildAgendaList()),
-    //     ],
-    //   ),
-    //   bottomNavigationBar: BottomNavBar(
-    //     context: context,
-    //     theme: theme,
-    //   ),
-    //   floatingActionButton: CustomFAB(
-    //     onPressed: () {},
-    //   ),
-    //   floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    // );
   }
 
   Widget _buildTabBar(BuildContext context) {
@@ -167,7 +107,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 12),
               color: const Color(0xFFFFFFFF),
-              alignment: Alignment.center,
+              alignment: Alignment.center,  
               child: const Text(
                 'Agenda',
                 style:
@@ -227,7 +167,8 @@ class AgendaPageScreen extends State<AgendaScreen> {
 
   Widget _buildAdCard() {
     return Container(
-      padding: const EdgeInsets.all(12),
+      margin: const EdgeInsets.all(16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(8),
@@ -235,15 +176,41 @@ class AgendaPageScreen extends State<AgendaScreen> {
       ),
       child: Row(
         children: [
-          const Icon(Icons.ads_click),
-          const SizedBox(width: 8),
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              color: Colors.black,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: const Icon(
+              Icons.ads_click,
+              color: Colors.white,
+              size: 20,
+            ),
+          ),
+          const SizedBox(width: 12),
           Expanded(
-            child: Text(
-              "In the lessons we learn new words and for vocabularities continues and article...",
-              style: TextStyle(
-                fontSize: 14,
-                color: theme.colorScheme.outline,
-              ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Ads",
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  "In the lessons we learn new words and for vocabularities continues and articl...",
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: theme.colorScheme.outline,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -278,12 +245,13 @@ class AgendaPageScreen extends State<AgendaScreen> {
 
     return ListView.builder(
       itemCount: agendaList.length,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       itemBuilder: (context, index) {
         final item = agendaList[index];
         return Card(
           margin: const EdgeInsets.only(bottom: 16),
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          elevation: 2,
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Column(
@@ -294,10 +262,10 @@ class AgendaPageScreen extends State<AgendaScreen> {
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
-                    color: theme.colorScheme.onPrimaryContainer,
+                    color: theme.colorScheme.onSurface,
                   ),
                 ),
-                const SizedBox(height: 4),
+                const SizedBox(height: 8),
                 Text(
                   'Dari: ${item['from']}',
                   style: TextStyle(
@@ -318,6 +286,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
                   style: TextStyle(
                     color: theme.colorScheme.onSurface,
                     fontSize: 16,
+                    height: 1.4,
                   ),
                 ),
               ],

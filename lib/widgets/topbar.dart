@@ -20,6 +20,10 @@ class StickyTopBar extends StatelessWidget {
   final List<String> filterDate;
   final String filterArea;
 
+  // PROPERTI BARU UNTUK NOTIFIKASI
+  final int? notificationCount;
+  final VoidCallback? onNotificationTap;
+
   StickyTopBar({
     this.backgroundColor = Colors.blue,
     this.activeColor = Colors.blue,
@@ -35,6 +39,9 @@ class StickyTopBar extends StatelessWidget {
     this.withBackButton = false,
     this.filterDate = const ['Today', 'This Week', 'This Month'],
     this.filterArea = '',
+    // INISIALISASI PROPERTI BARU
+    this.notificationCount,
+    this.onNotificationTap,
   });
 
   void openModalAreaScreen(BuildContext context) {
@@ -66,45 +73,42 @@ class StickyTopBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        color: backgroundColor, // Set background color
+        color: backgroundColor,
         border: Border(
           bottom: BorderSide(
-            color: lineColor, // Set the bottom border color
-            width: 1.0, // Set the bottom border width
+            color: lineColor,
+            width: 1.0,
           ),
         ),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Container(
-            child: Row(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            // Container Kiri untuk Tombol Kembali dan Judul
+            Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                if (withBackButton ?? true)
+                if (withBackButton ?? false) // Mengubah ?? true menjadi ?? false
                   InkWell(
                     onTap: () {
-                      // Navigator.pop(context);
+                      Navigator.pop(context); // Menambahkan aksi pop
                     },
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(16.0, 8.0, 0.0, 8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          SvgPicture.asset(
-                            'assets/images/arrow_back.svg',
-                            width: 24,
-                            height: 24,
-                          ),
-                        ],
+                      padding: const EdgeInsets.fromLTRB(0.0, 8.0, 0.0, 8.0),
+                      child: SvgPicture.asset(
+                        'assets/images/arrow_back.svg',
+                        width: 24,
+                        height: 24,
                       ),
                     ),
                   ),
                 InkWell(
                   onTap: onTapFilterArea(context),
                   child: Padding(
-                    padding: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+                    padding: EdgeInsets.fromLTRB(withBackButton ?? false ? 8.0 : 0.0, 8.0, 16.0, 8.0),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
@@ -117,16 +121,54 @@ class StickyTopBar extends StatelessWidget {
                             fontFamily: titleFontFamily,
                           ),
                         ),
-                        SizedBox(width: 2),
-                        Icon(Icons.arrow_drop_down, color: Color(0xFF7D5C86)),
+                        const SizedBox(width: 2),
+                        Icon(Icons.arrow_drop_down, color: const Color(0xFF7D5C86)),
                       ],
                     ),
                   ),
                 ),
               ],
             ),
-          ),
-        ],
+            
+            // WIDGET BARU: Ikon Lonceng Notifikasi
+            InkWell(
+              onTap: onNotificationTap,
+              child: Padding(
+                padding: const EdgeInsets.fromLTRB(16.0, 8.0, 0.0, 8.0),
+                child: Stack(
+                  alignment: Alignment.topRight,
+                  children: [
+                    const Icon(
+                      Icons.notifications_none,
+                      size: 28,
+                      color: Color(0xFF7D5C86), // Ganti dengan warna yang sesuai
+                    ),
+                    if (notificationCount != null && notificationCount! > 0)
+                      Container(
+                        padding: const EdgeInsets.all(2),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(6),
+                        ),
+                        constraints: const BoxConstraints(
+                          minWidth: 14,
+                          minHeight: 14,
+                        ),
+                        child: Text(
+                          '$notificationCount',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 8,
+                          ),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
