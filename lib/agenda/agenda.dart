@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_app/agenda/filterpopup.dart';
 import 'package:guardian_app/theme/app_decoration.dart';
 import 'package:guardian_app/theme/theme_helper.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
@@ -8,6 +9,9 @@ import 'package:guardian_app/widgets/secondary_topbar/sekolah.dart';
 import 'package:guardian_app/widgets/topbar.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:guardian_app/routes/app_routes.dart';
+
+// Mengimpor AgendaCard
+import 'package:guardian_app/widgets/agenda_card.dart';
 
 class AgendaScreen extends StatefulWidget {
   const AgendaScreen({super.key});
@@ -20,7 +24,25 @@ class AgendaPageScreen extends State<AgendaScreen> {
   late String filterArea = 'smpn_13_malang';
 
   Future<void> onRefresh() async {}
+void _showFilterPopup() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true, // WAJIB true agar tinggi bisa diatur
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(1), // Mengatur warna menjadi hitam dengan opasitas 50%
+      builder: (BuildContext context) {
+        // Menggunakan FractionallySizedBox untuk mengatur tinggi pop-up
+        return FractionallySizedBox(
+          heightFactor: 0.94, 
+          child: FilterPopup(),
+        );
+      },
+    );
+  }
 
+void _navigateToAnakScreen() {
+    Navigator.pushNamed(context, AppRoutes.pilihAnakScreen); // Ganti dengan rute yang sesuai
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -48,7 +70,9 @@ class AgendaPageScreen extends State<AgendaScreen> {
               titleFontFamily: 'Urbanist',
               subtitleFontSize: 12.0,
               subtitleFontFamily: 'Lato',
-              filterArea: filterArea,
+              titleText: 'Candra Wijaya', // Ini adalah judul
+              subtitleText: 'SDN 13 Malang | Kelas 5', // Ini adalah subtitle
+              onTitleTap: _navigateToAnakScreen, 
             ),
             // Updated SecondaryTopbar with simple layout
             SecondaryTopbar(
@@ -59,7 +83,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
               slot: [], // Empty slot since we're using the simple layout
               onActionTap: (selectedValue) {
                 // Handle filter action
-                print('Filter tapped: $selectedValue');
+              _showFilterPopup();
               },
               onFilterChanged: (onFilter, selectedValue) {
                 if (onFilter == "area") {
@@ -241,6 +265,13 @@ class AgendaPageScreen extends State<AgendaScreen> {
         "content":
             "Bawa alat tulis lengkap, termasuk pensil, penghapus, penggaris, dan kalkulator sederhana.",
       },
+            {
+        "date": "04 Juli 2025",
+        "from": "Guru Seni BUdaya 5A",
+        "to": "Tugas Seni Budaya",
+        "content":
+            "Tugas menggambar sebuah pemendangan yang ada di rumah masing masing.",
+      },
     ];
 
     return ListView.builder(
@@ -248,50 +279,18 @@ class AgendaPageScreen extends State<AgendaScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemBuilder: (context, index) {
         final item = agendaList[index];
-        return Card(
-          margin: const EdgeInsets.only(bottom: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-          elevation: 2,
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  item['date']!,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Dari: ${item['from']}',
-                  style: TextStyle(
-                    color: theme.colorScheme.outline,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  'Untuk: ${item['to']}',
-                  style: TextStyle(
-                    color: theme.colorScheme.outline,
-                    fontSize: 14,
-                  ),
-                ),
-                const SizedBox(height: 12),
-                Text(
-                  item['content']!,
-                  style: TextStyle(
-                    color: theme.colorScheme.onSurface,
-                    fontSize: 16,
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          ),
+        return AgendaCard(
+          tanggal: item['date']!,
+          dari: item['from']!,
+          untuk: item['to']!,
+          detail: item['content']!,
+          onTap: () {
+            // Logika navigasi sekarang berada di sini
+            Navigator.pushNamed(
+              context,
+              AppRoutes.DetailAgendaScreen,
+            );
+          },
         );
       },
     );

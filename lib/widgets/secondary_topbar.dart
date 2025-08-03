@@ -48,10 +48,10 @@ class SecondaryTopbar extends StatelessWidget {
         ),
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
+            alignment: Alignment.center,
             children: [
-              // Title text on the left
+              // Title text centered
               Text(
                 title,
                 style: TextStyle(
@@ -62,17 +62,20 @@ class SecondaryTopbar extends StatelessWidget {
               ),
               
               // Filter icon on the right
-              InkWell(
-                onTap: () {
-                  onTapActionMenu('filter');
-                },
-                borderRadius: BorderRadius.circular(8),
-                child: Padding(
-                  padding: const EdgeInsets.all(4.0),
-                  child: Icon(
-                    LucideIcons.filter,
-                    color: titleColor,
-                    size: 24,
+              Align(
+                alignment: Alignment.centerRight,
+                child: InkWell(
+                  onTap: () {
+                    onTapActionMenu('filter');
+                  },
+                  borderRadius: BorderRadius.circular(8),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Icon(
+                      LucideIcons.filter,
+                      color: titleColor,
+                      size: 24,
+                    ),
                   ),
                 ),
               ),

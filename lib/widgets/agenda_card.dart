@@ -12,6 +12,8 @@ class AgendaCard extends StatelessWidget {
   final String dari;
   final String untuk;
   final String detail;
+  // Menambahkan parameter onTap
+  final VoidCallback? onTap;
 
   const AgendaCard({
     super.key,
@@ -19,20 +21,15 @@ class AgendaCard extends StatelessWidget {
     required this.dari,
     required this.untuk,
     required this.detail,
+    this.onTap, // Parameter onTap bersifat opsional
   });
 
   @override
   Widget build(BuildContext context) {
     // Bungkus container dengan GestureDetector untuk membuatnya bisa diklik
     return GestureDetector(
-      onTap: () {
-        // Logika navigasi saat kartu diklik
-        // Menggunakan pushNamed untuk beralih ke halaman DetailAgenda
-        Navigator.pushNamed(
-          context,
-          AppRoutes.DetailAgendaScreen,
-        );
-      },
+      // Menggunakan callback onTap dari parameter
+      onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(12),
         margin: const EdgeInsets.only(top: 8, bottom: 16),

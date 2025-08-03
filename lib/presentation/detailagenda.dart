@@ -5,20 +5,31 @@ class DetailAgenda extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Untuk sementara, data diisi dengan teks statis.
-    // Ini menghilangkan kebutuhan untuk menerima parameter saat inisialisasi.
-    const String tanggal = 'Selasa, 12 Agustus 2024';
-    const String dari = 'Guru Wali Kelas';
-    const String untuk = 'Wali Murid Kelas 7A';
-    const String detail = 
-      'Rapat koordinasi persiapan Ujian Tengah Semester (UTS) '
-      'akan diadakan di ruang serbaguna sekolah. Mohon kehadiran '
-      'seluruh wali murid untuk membahas jadwal, materi, dan '
-      'persiapan teknis lainnya.';
+    // Data statis untuk sementara, sesuai dengan gambar desain
+    const String tanggal = '07 Juli 2025';
+    const String dari = 'Wali Kelas 5A';
+    const String untuk = 'Candra Wijaya';
+    const String detail =
+        'Bawa alat tulis lengkap, termasuk pensil, penghapus, penggaris, dan kalkulator sederhana. Mohon diperhatikan agar tidak ada kekurangan persiapan.\n\n'
+        'Ujian Matematika akan dilaksanakan pada hari Senin, 07 Juli 2025, pukul 08.00 - 10.00 di Ruang 5A.';
 
     return Scaffold(
+      backgroundColor: Colors.white, // Menambahkan baris ini untuk memastikan latar belakang putih
       appBar: AppBar(
-        title: const Text("Detail Agenda"),
+        title: const Text(
+          "Detail Agenda",
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+        centerTitle: false,
+        elevation: 1, // Memberikan sedikit bayangan
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -27,48 +38,62 @@ class DetailAgenda extends StatelessWidget {
           children: [
             Text(
               tanggal,
-              style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+              style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black, // Menggunakan warna hitam
+                  ),
             ),
             const SizedBox(height: 24),
-            
-            Text(
-              "Dari :",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
+            // Menggunakan RichText untuk menggabungkan "Dari:" dan nama dalam satu baris
+            RichText(
+              text: TextSpan(
+                style: Theme.of(context).textTheme.bodyLarge,
+                children: [
+                  TextSpan(
+                    text: 'Dari: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey, // Warna abu-abu untuk "Dari"
+                    ),
+                  ),
+                  TextSpan(
+                    text: dari,
+                    style: TextStyle(
+                      color: Colors.black, // Warna hitam untuk nama
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              dari,
-              style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 16),
-
-            Text(
-              "Untuk :",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
+            // Menggunakan RichText untuk menggabungkan "Untuk:" dan nama dalam satu baris
+            RichText(
+              text: TextSpan(
+                style: Theme.of(context).textTheme.bodyLarge,
+                children: [
+                  TextSpan(
+                    text: 'Untuk: ',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey, // Warna abu-abu untuk "Untuk"
+                    ),
+                  ),
+                  TextSpan(
+                    text: untuk,
+                    style: TextStyle(
+                      color: Colors.black, // Warna hitam untuk nama
+                    ),
+                  ),
+                ],
               ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              untuk,
-              style: Theme.of(context).textTheme.bodyLarge,
             ),
             const SizedBox(height: 16),
-
-            Text(
-              "Detail Agenda :",
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const SizedBox(height: 4),
             Text(
               detail,
-              style: Theme.of(context).textTheme.bodyLarge,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                    color: Colors.black, // Warna hitam untuk detail
+                    height: 1.5,
+                  ),
             ),
           ],
         ),
