@@ -5,6 +5,8 @@ import 'package:guardian_app/presentation/pembayaran/widgets/bottom_bar.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/payment_steps.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/due_card_small.dart';
+import 'package:guardian_app/presentation/pembayaran/widgets/search_card.dart';
+import 'package:guardian_app/presentation/pembayaran/widgets/dropdown_card.dart';
 
 class BayarSatuScreen extends StatefulWidget {
   const BayarSatuScreen({super.key});
@@ -87,6 +89,8 @@ class _BayarSatuState extends State<BayarSatuScreen> {
                     number: '1',
                     teksInstruksi: 'Konfirmasi kewajiban yang harus dibayar.',
                   ),
+                  const SearchCard(),
+                  const DropdownCard(),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
