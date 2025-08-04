@@ -15,7 +15,9 @@ class BayarSatuScreen extends StatefulWidget {
 }
 
 class _BayarSatuState extends State<BayarSatuScreen> {
-  final List<Map<String, dynamic>> _dueItems = [
+  final TextEditingController _searchController = TextEditingController();
+
+  final List<Map<String, dynamic>> _allDueItems = [
     {
       "id": 1,
       "isOverdue": true,
@@ -40,23 +42,54 @@ class _BayarSatuState extends State<BayarSatuScreen> {
     }
   ];
 
-  final Set<int> _selectedCardIndices = {}; // Default no selection
+  List<Map<String, dynamic>> _filteredDueItems = [];
+  final Set<int> _selectedItemIds = {};
 
-  void _toggleCardSelection(int index) {
+  @override
+  void initState() {
+    super.initState();
+    _filteredDueItems = _allDueItems;
+    // Listener input user
+    _searchController.addListener(_filterDueItems);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_filterDueItems);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  // Filter untuk cari tagihan
+  void _filterDueItems() {
+    final query = _searchController.text.toLowerCase();
     setState(() {
-      if (_selectedCardIndices.contains(index)) {
-        _selectedCardIndices.remove(index);
+      _filteredDueItems = _allDueItems.where((item) {
+        final description = item['deskripsi'].toString().toLowerCase();
+        return description.contains(query);
+      }).toList();
+    });
+  }
+
+  // Toggle seleksi untuk due card
+  void _toggleCardSelection(int itemId) {
+    setState(() {
+      if (_selectedItemIds.contains(itemId)) {
+        _selectedItemIds.remove(itemId);
       } else {
-        _selectedCardIndices.add(index);
+        _selectedItemIds.add(itemId);
       }
     });
   }
 
-  // Calculates the total amount of selected items.
+  // Menghitung total dari item yang dipilih
   int _calculateTotal() {
     int total = 0;
-    for (int index in _selectedCardIndices) {
-      total += _dueItems[index]['amount'] as int;
+    // Pengulangan untuk kepastian perhitungan
+    for (var item in _allDueItems) {
+      if (_selectedItemIds.contains(item['id'])) {
+        total += item['amount'] as int;
+      }
     }
     return total;
   }
@@ -89,20 +122,22 @@ class _BayarSatuState extends State<BayarSatuScreen> {
                     number: '1',
                     teksInstruksi: 'Konfirmasi kewajiban yang harus dibayar.',
                   ),
-                  const SearchCard(),
+                  // Controller untuk pencarian tagihan
                   const DropdownCard(),
+                  SearchCard(controller: _searchController),
                   ListView.builder(
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
-                    itemCount: _dueItems.length,
+                    itemCount: _filteredDueItems.length,
                     itemBuilder: (context, index) {
-                      final item = _dueItems[index];
+                      final item = _filteredDueItems[index];
+                      final itemId = item['id'] as int;
                       return DueCard(
                         isOverdue: item['isOverdue'],
                         harga: numberFormat('rp_fixed', item['amount']),
                         deskripsi: item['deskripsi'],
-                        isSelected: _selectedCardIndices.contains(index),
-                        onTap: () => _toggleCardSelection(index),
+                        isSelected: _selectedItemIds.contains(itemId),
+                        onTap: () => _toggleCardSelection(itemId),
                       );
                     },
                   ),
