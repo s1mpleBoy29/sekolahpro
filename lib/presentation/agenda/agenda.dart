@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guardian_app/agenda/filterpopup.dart';
+import 'package:guardian_app/presentation/agenda/filterpopup.dart';
 import 'package:guardian_app/theme/app_decoration.dart';
 import 'package:guardian_app/theme/theme_helper.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
@@ -24,25 +24,28 @@ class AgendaPageScreen extends State<AgendaScreen> {
   late String filterArea = 'smpn_13_malang';
 
   Future<void> onRefresh() async {}
-void _showFilterPopup() {
+  void _showFilterPopup() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // WAJIB true agar tinggi bisa diatur
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(1), // Mengatur warna menjadi hitam dengan opasitas 50%
+      barrierColor: Colors.black
+          .withOpacity(1), // Mengatur warna menjadi hitam dengan opasitas 50%
       builder: (BuildContext context) {
         // Menggunakan FractionallySizedBox untuk mengatur tinggi pop-up
         return FractionallySizedBox(
-          heightFactor: 0.94, 
+          heightFactor: 0.94,
           child: FilterPopup(),
         );
       },
     );
   }
 
-void _navigateToAnakScreen() {
-    Navigator.pushNamed(context, AppRoutes.pilihAnakScreen); // Ganti dengan rute yang sesuai
+  void _navigateToAnakScreen() {
+    Navigator.pushNamed(
+        context, AppRoutes.pilihAnakScreen); // Ganti dengan rute yang sesuai
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -57,66 +60,73 @@ void _navigateToAnakScreen() {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: Container(
-        width: double.maxFinite,
-        decoration: AppDecoration.fillGray,
-        child: Column(
-          children: [
-            StickyTopBar(
-              backgroundColor: theme.colorScheme.onPrimary,
-              lineColor: appTheme.gray300,
-              textColor: appTheme.gray600,
-              titleFontSize: 22.0,
-              titleFontFamily: 'Urbanist',
-              subtitleFontSize: 12.0,
-              subtitleFontFamily: 'Lato',
-              titleText: 'Candra Wijaya', // Ini adalah judul
-              subtitleText: 'SDN 13 Malang | Kelas 5', // Ini adalah subtitle
-              onTitleTap: _navigateToAnakScreen, 
-            ),
-            // Updated SecondaryTopbar with simple layout
-            SecondaryTopbar(
-              backgroundColor: Color(0xFF7D5C86), // Purple background like in the image
-              lineColor: appTheme.gray300,
-              title: 'Agenda',
-              titleColor: Colors.white,
-              slot: [], // Empty slot since we're using the simple layout
-              onActionTap: (selectedValue) {
-                // Handle filter action
-              _showFilterPopup();
-              },
-              onFilterChanged: (onFilter, selectedValue) {
-                if (onFilter == "area") {
-                  setState(() {
-                    filterArea = selectedValue;
-                  });
-                }
-              },
-            ),
-            Expanded(
-              child: RefreshIndicator(
-                onRefresh: onRefresh,
-                child: SingleChildScrollView(
-                  physics: AlwaysScrollableScrollPhysics(),
-                  child: Padding(
-                    padding: EdgeInsets.only(bottom: 5.0),
-                    child: Column(
-                      children: [
-                        _buildAdCard(),
-                        const SizedBox(height: 16),
-                        ConstrainedBox(
-                          constraints: BoxConstraints(
-                            maxHeight: MediaQuery.of(context).size.height * 0.6,
+      body: SafeArea(
+        child: Container(
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
+          ),
+          child: Column(
+            children: [
+              StickyTopBar(
+                backgroundColor: theme.colorScheme.onPrimary,
+                lineColor: appTheme.gray300,
+                textColor: appTheme.gray600,
+                titleFontSize: 22.0,
+                titleFontFamily: 'Urbanist',
+                subtitleFontSize: 12.0,
+                subtitleFontFamily: 'Lato',
+                titleText: 'Candra Wijaya', // Ini adalah judul
+                subtitleText: 'SDN 13 Malang | Kelas 5', // Ini adalah subtitle
+                onTitleTap: _navigateToAnakScreen,
+              ),
+              // Updated SecondaryTopbar with simple layout
+              SecondaryTopbar(
+                backgroundColor: theme.colorScheme
+                    .secondary, // Purple background like in the image
+                lineColor: appTheme.gray300,
+                title: 'Agenda',
+                titleColor: Colors.white,
+                slot: [], // Empty slot since we're using the simple layout
+                onActionTap: (selectedValue) {
+                  // Handle filter action
+                  _showFilterPopup();
+                },
+                onFilterChanged: (onFilter, selectedValue) {
+                  if (onFilter == "area") {
+                    setState(() {
+                      filterArea = selectedValue;
+                    });
+                  }
+                },
+              ),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: onRefresh,
+                  child: SingleChildScrollView(
+                    primary: true,
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Padding(
+                      padding: EdgeInsets.only(bottom: 5.0),
+                      child: Column(
+                        children: [
+                          _buildAdCard(),
+                          const SizedBox(height: 16),
+                          ConstrainedBox(
+                            constraints: BoxConstraints(
+                              maxHeight:
+                                  MediaQuery.of(context).size.height * 0.6,
+                            ),
+                            child: _buildAgendaList(),
                           ),
-                          child: _buildAgendaList(),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -131,7 +141,7 @@ void _navigateToAnakScreen() {
             child: Container(
               padding: const EdgeInsets.symmetric(vertical: 12),
               color: const Color(0xFFFFFFFF),
-              alignment: Alignment.center,  
+              alignment: Alignment.center,
               child: const Text(
                 'Agenda',
                 style:
@@ -265,7 +275,7 @@ void _navigateToAnakScreen() {
         "content":
             "Bawa alat tulis lengkap, termasuk pensil, penghapus, penggaris, dan kalkulator sederhana.",
       },
-            {
+      {
         "date": "04 Juli 2025",
         "from": "Guru Seni BUdaya 5A",
         "to": "Tugas Seni Budaya",
@@ -275,6 +285,7 @@ void _navigateToAnakScreen() {
     ];
 
     return ListView.builder(
+      primary: false,
       itemCount: agendaList.length,
       padding: const EdgeInsets.symmetric(horizontal: 16),
       itemBuilder: (context, index) {
