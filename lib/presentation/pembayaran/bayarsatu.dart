@@ -173,7 +173,11 @@ class _BayarSatuState extends State<BayarSatuScreen> {
         totalAmount: totalAmount,
         onContinuePressed: () {
           if (totalAmount > 0) {
-            Navigator.pushNamed(context, AppRoutes.bayarDuaScreen);
+            final selectedItems = _allDueItems
+                .where((item) => _selectedItemIds.contains(item['id']))
+                .toList();
+            Navigator.pushNamed(context, AppRoutes.bayarDuaScreen,
+                arguments: selectedItems);
           }
         },
       ),

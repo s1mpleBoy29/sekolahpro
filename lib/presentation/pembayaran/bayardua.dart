@@ -4,12 +4,14 @@ import 'package:guardian_app/core/app_export.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/payment_steps.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/rekening_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.dart';
+import 'package:guardian_app/presentation/pembayaran/widgets/rincian_tagihan.dart';
 
+// This can now be a StatefulWidget to manage the selected bank index.
 class BayarDuaScreen extends StatefulWidget {
   const BayarDuaScreen({super.key});
 
   @override
-  _BayarDuaScreenState createState() => _BayarDuaScreenState();
+  State<BayarDuaScreen> createState() => _BayarDuaScreenState();
 }
 
 class _BayarDuaScreenState extends State<BayarDuaScreen> {
@@ -33,7 +35,6 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
 
   int _selectedIndex = 0;
 
-  // Function to copy text to the clipboard and show a snackbar
   void _copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text)).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -44,6 +45,10 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // Retrieve the arguments passed from the previous screen.
+    final selectedItems = ModalRoute.of(context)!.settings.arguments
+        as List<Map<String, dynamic>>;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -62,12 +67,13 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const PaymentSteps(stepsekarang: 1),
+              const SizedBox(height: 12),
               const InstructionCard(
                 number: '2',
                 teksInstruksi:
-                    'Pembayaran kewajiban siswa dapat dilakukan melalui Transfer Bank ke salah satu rekening berikut.',
+                    'Lakukan pembayaran sesuai total tagihan ke salah satu rekening di bawah ini.',
               ),
-              const SizedBox(height: 12),
+              const SizedBox(height: 24),
               const Padding(
                 padding: EdgeInsets.only(bottom: 8.0),
                 child: Text(
@@ -101,6 +107,8 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
                   );
                 },
               ),
+              const SizedBox(height: 24),
+              RincianTagihan(selectedItems: selectedItems),
             ],
           ),
         ),
