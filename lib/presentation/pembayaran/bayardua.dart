@@ -5,6 +5,7 @@ import 'package:guardian_app/presentation/pembayaran/widgets/payment_steps.dart'
 import 'package:guardian_app/presentation/pembayaran/widgets/rekening_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/rincian_tagihan.dart';
+import 'package:guardian_app/presentation/pembayaran/widgets/bottom_bar.dart';
 
 // This can now be a StatefulWidget to manage the selected bank index.
 class BayarDuaScreen extends StatefulWidget {
@@ -113,6 +114,15 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
           ),
         ),
       ),
+      // Navigasi ke layar berikutnya
+      // Hanya aktif jika ada tagihan yang dipilih
+      bottomNavigationBar: BottomBar(
+          isNeeded: false,
+          totalAmount: 1,
+          onContinuePressed: () {
+            Navigator.pushNamed(context, AppRoutes.bayarDuaScreen,
+                arguments: selectedItems);
+          }),
     );
   }
 }

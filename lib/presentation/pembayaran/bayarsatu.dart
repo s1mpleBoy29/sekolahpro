@@ -170,6 +170,7 @@ class _BayarSatuState extends State<BayarSatuScreen> {
       // Navigasi ke layar berikutnya
       // Hanya aktif jika ada tagihan yang dipilih
       bottomNavigationBar: BottomBar(
+        isNeeded: true,
         totalAmount: totalAmount,
         onContinuePressed: () {
           if (totalAmount > 0) {
