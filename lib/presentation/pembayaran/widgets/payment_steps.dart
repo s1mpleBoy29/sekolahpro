@@ -16,7 +16,7 @@ class PaymentSteps extends StatelessWidget {
     final Color inactiveColor = theme.outlineVariant; // A light grey
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 32.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 28.0, vertical: 10.0),
       child: Row(
         children: [
           // Tagihan

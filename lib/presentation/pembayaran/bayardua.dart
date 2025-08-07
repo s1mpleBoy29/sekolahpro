@@ -7,7 +7,6 @@ import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.da
 import 'package:guardian_app/presentation/pembayaran/widgets/rincian_tagihan.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/bottom_bar.dart';
 
-// This can now be a StatefulWidget to manage the selected bank index.
 class BayarDuaScreen extends StatefulWidget {
   const BayarDuaScreen({super.key});
 
@@ -36,10 +35,15 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
 
   int _selectedIndex = 0;
 
+  //Memakai SnackBar, bisa juga Toast (Toast belum diinstall depndensi-nya)
   void _copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text)).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Nomor rekening disalin!")),
+        SnackBar(
+          content: const Text("Nomor rekening disalin!"),
+          backgroundColor: theme.colorScheme.primary,
+          duration: const Duration(seconds: 1),
+        ),
       );
     });
   }
@@ -74,17 +78,15 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
                 teksInstruksi:
                     'Lakukan pembayaran sesuai total tagihan ke salah satu rekening di bawah ini.',
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 18),
               const Padding(
                 padding: EdgeInsets.only(bottom: 8.0),
-                child: Text(
-                  "Pilih Rekening Tujuan",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black,
-                  ),
-                ),
+                child: Text("Pilih Rekening Tujuan",
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                    )),
               ),
               ListView.builder(
                 shrinkWrap: true,
@@ -115,12 +117,12 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
         ),
       ),
       // Navigasi ke layar berikutnya
-      // Hanya aktif jika ada tagihan yang dipilih
       bottomNavigationBar: BottomBar(
           isNeeded: false,
-          totalAmount: 1,
+          totalAmount:
+              1, // TotalAmount tidak digunakan di sini, nilai 1 hanya example
           onContinuePressed: () {
-            Navigator.pushNamed(context, AppRoutes.bayarDuaScreen,
+            Navigator.pushNamed(context, AppRoutes.bayarTigaScreen,
                 arguments: selectedItems);
           }),
     );

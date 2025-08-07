@@ -40,7 +40,6 @@ class RincianTagihan extends StatelessWidget {
           ),
         ),
         Container(
-          padding: const EdgeInsets.all(16.0),
           decoration: BoxDecoration(
             color: theme.colorScheme.onPrimary,
             border: Border.all(color: theme.colorScheme.onPrimary),
@@ -65,6 +64,7 @@ class RincianTagihan extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12,
                             color: theme.colorScheme.onPrimaryContainer,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -74,6 +74,7 @@ class RincianTagihan extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 12,
                           color: theme.colorScheme.onSurface,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ],

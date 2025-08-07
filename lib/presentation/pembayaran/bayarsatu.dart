@@ -179,6 +179,15 @@ class _BayarSatuState extends State<BayarSatuScreen> {
                 .toList();
             Navigator.pushNamed(context, AppRoutes.bayarDuaScreen,
                 arguments: selectedItems);
+          } else {
+            //Memakai SnackBar, bisa juga Toast (Toast belum diinstall depndensi-nya)
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: const Text("Tidak ada tagihan yang dipilih"),
+                backgroundColor: theme.colorScheme.primary,
+                duration: const Duration(seconds: 1),
+              ),
+            );
           }
         },
       ),
