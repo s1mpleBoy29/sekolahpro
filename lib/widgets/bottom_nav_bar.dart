@@ -47,12 +47,14 @@ class BottomNavBar extends StatelessWidget {
                 Navigator.pushNamed(context, AppRoutes.agendaScreen);
               },
             ),
-            const SizedBox(width: 48), // For FAB
+            const SizedBox(width: 48),
             _bottomNavItem(
               icon: LucideIcons.barChart2,
               label: 'Keuangan',
               selected: false,
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.keuanganScreen);
+              },
             ),
             _bottomNavItem(
               icon: Icons.account_circle,

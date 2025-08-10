@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/presentation/agenda/agenda.dart';
+import 'package:guardian_app/presentation/keuangan/keuangan.dart';
 import 'package:guardian_app/presentation/notifikasi/notifikasi.dart';
 
 import '../presentation/home/home.dart';
@@ -9,7 +10,6 @@ import '../presentation/pembayaran/bayarsatu.dart';
 import '../presentation/pembayaran/bayardua.dart';
 import '../presentation/pembayaran/bayartiga.dart';
 import '../presentation/detailagenda.dart';
-//other imports
 
 class AppRoutes {
   static const String loginScreen = '/login_screen';
@@ -21,6 +21,8 @@ class AppRoutes {
   static const String bayarTigaScreen = '/bayar_tiga_screen';
   static const String DetailAgendaScreen = '/detail_agenda_screen';
   static const String NotifikasiScreen = '/notifikasi_screen';
+  static const String keuanganScreen = '/keuangan_screen';
+
   static Map<String, WidgetBuilder> routes = {
     loginScreen: (context) => LoginScreen(),
     homeScreen: (context) => HomeScreen(),
@@ -31,5 +33,6 @@ class AppRoutes {
     bayarSatuScreen: (context) => BayarSatuScreen(),
     bayarDuaScreen: (context) => BayarDuaScreen(),
     bayarTigaScreen: (context) => BayarTigaScreen(),
+    keuanganScreen: (context) => KeuanganScreen()
   };
 }
