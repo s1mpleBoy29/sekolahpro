@@ -140,7 +140,7 @@ class FinanceScreenContent extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            _buildPaymentSchedule(),
+            _buildPaymentSchedule(context), // Tambahkan parameter context
           ],
         ),
       ),
@@ -181,7 +181,7 @@ class FinanceScreenContent extends StatelessWidget {
     );
   }
   
-  Widget _buildPaymentSchedule() {
+  Widget _buildPaymentSchedule(BuildContext context) { // Tambahkan parameter context
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -190,32 +190,45 @@ class FinanceScreenContent extends StatelessWidget {
           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         const SizedBox(height: 10),
-        // Mengganti ScheduleCard dengan PaymentScheduleCard
-        const PaymentScheduleCard(
-          dueDate: '10 Agustus 2025',
-          amount: 'Rp 300.000',
-          description: 'Uang Sekolah Candra Bulan Agustus Tahun Ajaran 2025 / 2026',
-          status: 'Belum Lunas',
-          statusColor: Colors.grey,
-          isOverdue: false,
+        // Wrap PaymentScheduleCard dengan GestureDetector untuk menambahkan onTap
+        GestureDetector(
+          onTap: () => _navigateToPaymentDetail(context),
+          child: const PaymentScheduleCard(
+            dueDate: '10 Agustus 2025',
+            amount: 'Rp 300.000',
+            description: 'Uang Sekolah Candra Bulan Agustus Tahun Ajaran 2025 / 2026',
+            status: 'Belum Lunas',
+            statusColor: Colors.grey,
+            isOverdue: false,
+          ),
         ),
-        const PaymentScheduleCard(
-          dueDate: '30 Juli 2025',
-          amount: 'Rp 1.200.000',
-          description: 'Uang Seragam Candra Tahun Ajaran 2025 / 2026',
-          status: 'Lunas',
-          statusColor: Colors.green,
-          isOverdue: false,
+        GestureDetector(
+          onTap: () => _navigateToPaymentDetail(context),
+          child: const PaymentScheduleCard(
+            dueDate: '30 Juli 2025',
+            amount: 'Rp 1.200.000',
+            description: 'Uang Seragam Candra Tahun Ajaran 2025 / 2026',
+            status: 'Lunas',
+            statusColor: Colors.green,
+            isOverdue: false,
+          ),
         ),
-        // Mengganti OverdueCard dengan PaymentScheduleCard
-        const PaymentScheduleCard(
-          amount: 'Rp 300.000',
-          description: 'Uang Sekolah Candra Bulan Juli Tahun Ajaran 2025 / 2026',
-          status: 'Belum Lunas',
-          statusColor: Colors.grey,
-          isOverdue: true,
+        GestureDetector(
+          onTap: () => _navigateToPaymentDetail(context),
+          child: const PaymentScheduleCard(
+            amount: 'Rp 300.000',
+            description: 'Uang Sekolah Candra Bulan Juli Tahun Ajaran 2025 / 2026',
+            status: 'Belum Lunas',
+            statusColor: Colors.grey,
+            isOverdue: true,
+          ),
         ),
       ],
     );
+  }
+
+  // Method untuk navigasi ke halaman detail pembayaran
+  void _navigateToPaymentDetail(BuildContext context) {
+    Navigator.pushNamed(context, AppRoutes.paymentDetailPage); // Ganti dengan rute yang sesuai
   }
 }
