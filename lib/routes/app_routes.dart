@@ -13,6 +13,7 @@ import '../presentation/pembayaran/bayarsatu.dart';
 import '../presentation/pembayaran/bayardua.dart';
 import '../presentation/pembayaran/bayartiga.dart';
 import '../presentation/detailagenda.dart';
+import '../presentation/keuangan/riwayat_pembayaran.dart';
 
 class AppRoutes {
   static const String loginScreen = '/login_screen';
@@ -26,6 +27,7 @@ class AppRoutes {
   static const String NotifikasiScreen = '/notifikasi_screen';
   static const String keuanganScreen = '/keuangan_screen';
   static const String paymentDetailPage = '/detail_pembayaran';
+  static const String riwayatPembayaran = '/riwayat_pembayaran';
   static const String akunScreen = '/akun_screen';
   static const String editProfieScreen = '/edit_profile_screen';
 
@@ -41,6 +43,7 @@ class AppRoutes {
     bayarTigaScreen: (context) => const BayarTigaScreen(),
     keuanganScreen: (context) => const KeuanganScreen(),
     paymentDetailPage: (context) => const PaymentDetailPage(),
+    riwayatPembayaran: (context) => RiwayatPembayaran(),
     akunScreen: (context) => const AkunScreen(),
     editProfieScreen: (context) => const EditProfileScreen(),
   };
