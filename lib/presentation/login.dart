@@ -200,7 +200,7 @@ class LoginPageScreen extends State<LoginScreen> {
               width: 0,
             ),
           ),
-          fillColor: theme.colorScheme.secondaryContainer,
+          fillColor: theme.colorScheme.surface,
           textStyle: TextStyle(
             color: theme.colorScheme.onPrimaryContainer,
           ),
@@ -249,7 +249,7 @@ class LoginPageScreen extends State<LoginScreen> {
               width: 0,
             ),
           ),
-          fillColor: theme.colorScheme.secondaryContainer,
+          fillColor: theme.colorScheme.surface,
           textStyle: TextStyle(
             color: theme.colorScheme.onPrimaryContainer,
           ),

@@ -1,5 +1,5 @@
 name: guardian_app
-description: "A new Flutter project."
+description: "App Guardian SekolahPro: A application for managing and monitoring student"
 version: 1.0.0+1
 environment:
   sdk: '>=3.3.0 <4.0.0'
@@ -16,6 +16,7 @@ dependencies:
   flutter_svg_provider: ^1.0.7
   cached_network_image: ^3.4.1
   intl: ^0.20.2
+  intl_phone_field: ^3.2.0
 
 dev_dependencies:
   flutter_test:

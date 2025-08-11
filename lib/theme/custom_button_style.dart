@@ -32,6 +32,13 @@ class CustomButtonStyles {
         ),
       );
 
+  static ButtonStyle get disabledButton => ElevatedButton.styleFrom(
+        backgroundColor: theme.colorScheme.outlineVariant,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.h),
+        ),
+      );
+
   // Outline button style
   static ButtonStyle get outlineOrangeTL5 => OutlinedButton.styleFrom(
         backgroundColor: Colors.transparent,
