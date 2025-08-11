@@ -229,6 +229,6 @@ class FinanceScreenContent extends StatelessWidget {
 
   // Method untuk navigasi ke halaman detail pembayaran
   void _navigateToPaymentDetail(BuildContext context) {
-    Navigator.pushNamed(context, AppRoutes.paymentDetailPage); // Ganti dengan rute yang sesuai
+    Navigator.pushNamed(context, AppRoutes.paymentDetailPage); // Ganti dengan rute sesuai
   }
 }
