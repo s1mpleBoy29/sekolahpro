@@ -48,16 +48,18 @@ class PaymentDetailPage extends StatelessWidget {
                           const SizedBox(height: 16),
                           _buildDetailItem('Nominal', 'Rp 1.200.000'),
                           const SizedBox(height: 16),
-                          _buildDetailItem('Kategori', 'PPDB (Penerimaan Peserta Didik Baru)'),
+                          _buildDetailItem('Kategori',
+                              'PPDB (Penerimaan Peserta Didik Baru)'),
                           const SizedBox(height: 16),
-                          _buildDetailItem('Batas Waktu Pembayaran', '30 Juli 2025'),
+                          _buildDetailItem(
+                              'Batas Waktu Pembayaran', '30 Juli 2025'),
                         ],
                       ),
                     ),
                   ),
-                  
+
                   const SizedBox(height: 24),
-                  
+
                   // Riwayat Pembayaran Section
                   const Text(
                     'Riwayat Pembayaran',
@@ -67,9 +69,9 @@ class PaymentDetailPage extends StatelessWidget {
                       color: Colors.black87,
                     ),
                   ),
-                  
+
                   const SizedBox(height: 12),
-                  
+
                   // Payment History Items
                   _buildPaymentHistoryItem(
                     date: '1 Juli 2025',
@@ -78,9 +80,9 @@ class PaymentDetailPage extends StatelessWidget {
                     buttonText: 'Detail',
                     buttonColor: Colors.grey[600]!,
                   ),
-                  
+
                   const SizedBox(height: 8),
-                  
+
                   _buildPaymentHistoryItem(
                     date: '30 Juni 2025',
                     amount: 'Rp 1.000.000',
@@ -92,7 +94,7 @@ class PaymentDetailPage extends StatelessWidget {
               ),
             ),
           ),
-          
+
           // Bottom Button
           Container(
             width: double.infinity,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_app/routes/app_routes.dart';
 
 class TotalPaymentCard extends StatelessWidget {
   const TotalPaymentCard({Key? key}) : super(key: key);
@@ -48,14 +49,17 @@ class TotalPaymentCard extends StatelessWidget {
           Flexible(
             flex: 1,
             child: ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.riwayatPembayaran);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6A4C93),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5),
                 ),
                 elevation: 0,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 minimumSize: const Size(0, 36), // Set minimum height
               ),
               child: const Text(
