@@ -11,6 +11,7 @@ import '../presentation/pembayaran/bayarsatu.dart';
 import '../presentation/pembayaran/bayardua.dart';
 import '../presentation/pembayaran/bayartiga.dart';
 import '../presentation/detailagenda.dart';
+import '../presentation/keuangan/riwayat_pembayaran.dart';
 
 class AppRoutes {
   static const String loginScreen = '/login_screen';
@@ -23,7 +24,8 @@ class AppRoutes {
   static const String DetailAgendaScreen = '/detail_agenda_screen';
   static const String NotifikasiScreen = '/notifikasi_screen';
   static const String keuanganScreen = '/keuangan_screen';
-    static const String paymentDetailPage = '/detail_pembayaran';
+  static const String paymentDetailPage = '/detail_pembayaran';
+  static const String riwayatPembayaran = '/riwayat_pembayaran';
   static Map<String, WidgetBuilder> routes = {
     loginScreen: (context) => LoginScreen(),
     homeScreen: (context) => HomeScreen(),
@@ -35,6 +37,7 @@ class AppRoutes {
     bayarDuaScreen: (context) => BayarDuaScreen(),
     bayarTigaScreen: (context) => BayarTigaScreen(),
     keuanganScreen: (context) => KeuanganScreen(),
-    paymentDetailPage: (context) => PaymentDetailPage()
+    paymentDetailPage: (context) => PaymentDetailPage(),
+    riwayatPembayaran: (context) => RiwayatPembayaran()
   };
 }
