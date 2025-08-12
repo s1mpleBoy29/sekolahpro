@@ -5,7 +5,7 @@ import 'package:guardian_app/presentation/pembayaran/widgets/bottom_bar.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/payment_steps.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/due_card_small.dart';
-import 'package:guardian_app/presentation/pembayaran/widgets/search_card.dart';
+import 'package:guardian_app/widgets/search_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/dropdown_card.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 

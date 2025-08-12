@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
-import 'package:guardian_app/presentation/keuangan/widgets/transaction_history_card.dart'; // Make sure to import your card
+import 'package:guardian_app/presentation/keuangan/widgets/transaction_history_card.dart';
+import 'package:guardian_app/widgets/search_card.dart';
 
-class RiwayatPembayaran extends StatelessWidget {
-  final List<Map<String, dynamic>> _transactionHistory = [
+class RiwayatPembayaran extends StatefulWidget {
+  const RiwayatPembayaran({super.key});
+
+  @override
+  State<RiwayatPembayaran> createState() => _RiwayatPembayaranState();
+}
+
+class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
+  final TextEditingController _searchController = TextEditingController();
+
+  final List<Map<String, dynamic>> _allTransactions = [
     {
       "date": "1 Juli 2025",
       "amount": "Rp 200.000",
@@ -31,7 +41,35 @@ class RiwayatPembayaran extends StatelessWidget {
     }
   ];
 
-  RiwayatPembayaran({super.key});
+  List<Map<String, dynamic>> _filteredTransactions = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _filteredTransactions = _allTransactions;
+    _searchController.addListener(_filterTransactions);
+  }
+
+  @override
+  void dispose() {
+    _searchController.removeListener(_filterTransactions);
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _filterTransactions() {
+    final query = _searchController.text.toLowerCase();
+    setState(() {
+      _filteredTransactions = _allTransactions.where((transaction) {
+        final description = transaction['description'].toString().toLowerCase();
+        final date = transaction['date'].toString().toLowerCase();
+        final amount = transaction['amount'].toString().toLowerCase();
+        return description.contains(query) ||
+            date.contains(query) ||
+            amount.contains(query);
+      }).toList();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -47,32 +85,38 @@ class RiwayatPembayaran extends StatelessWidget {
         ),
       ),
       body: SafeArea(
-        // Added SafeArea
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 16.0),
-            child: ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: _transactionHistory.length,
-              itemBuilder: (context, index) {
-                final item = _transactionHistory[index];
-                return TransactionHistoryCard(
-                  date: item['date'],
-                  amount: item['amount'],
-                  description: item['description'],
-                  buttonText: item['buttonText'],
-                  buttonColor: item['buttonColor'],
-                  isRejected: item['isRejected'],
-                  rejectionMessage: item['rejectionMessage'],
-                  onPressed: () {
-                    // Handle button press
-                    print(
-                        '${item['buttonText']} pressed for item ${index + 1}');
-                  },
-                );
-              },
-            ),
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
+          child: Column(
+            children: [
+              SearchCard(controller: _searchController),
+              const SizedBox(height: 8.0),
+              Expanded(
+                child: _filteredTransactions.isEmpty
+                    ? const Center(
+                        child: Text("Tidak ada riwayat ditemukan."),
+                      )
+                    : ListView.builder(
+                        itemCount: _filteredTransactions.length,
+                        itemBuilder: (context, index) {
+                          final item = _filteredTransactions[index];
+                          return TransactionHistoryCard(
+                            date: item['date'],
+                            amount: item['amount'],
+                            description: item['description'],
+                            buttonText: item['buttonText'],
+                            buttonColor: item['buttonColor'],
+                            isRejected: item['isRejected'],
+                            rejectionMessage: item['rejectionMessage'],
+                            onPressed: () {
+                              print(
+                                  '${item['buttonText']} pressed for item ${index + 1}');
+                            },
+                          );
+                        },
+                      ),
+              ),
+            ],
           ),
         ),
       ),

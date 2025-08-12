@@ -9,7 +9,7 @@ class SearchCard extends StatelessWidget {
   const SearchCard({
     super.key,
     required this.controller,
-    this.hintText = 'Cari Tagihan..',
+    this.hintText = 'Cari . . . . .',
     this.onChanged,
   });
 
