@@ -74,6 +74,7 @@ class HomePageScreen extends State<HomeScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavBar(
+        selected: AppRoutes.homeScreen,
         context: context,
         theme: theme,
       ),

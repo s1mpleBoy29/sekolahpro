@@ -51,6 +51,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
     return Scaffold(
       backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavBar(
+        selected: AppRoutes.agendaScreen,
         context: context,
         theme: theme,
       ),

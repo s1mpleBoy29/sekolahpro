@@ -32,6 +32,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
         ),
       ),
       bottomNavigationBar: BottomNavBar(
+        selected: AppRoutes.keuanganScreen,
         context: context,
         theme: theme,
       ),
