@@ -100,6 +100,17 @@ class _BayarSatuState extends State<BayarSatuScreen> {
     return total;
   }
 
+  void _navigateToAnakScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PilihAnakScreen(
+          postSelectionAction: PostSelectionAction.goBack,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final int totalAmount = _calculateTotal();
@@ -134,10 +145,7 @@ class _BayarSatuState extends State<BayarSatuScreen> {
                       child: DropdownCard(
                         studentName: _currentStudentName,
                         onTap: () {
-                          Navigator.of(context).push<String>(
-                            MaterialPageRoute(
-                                builder: (context) => const PilihAnakScreen()),
-                          );
+                          _navigateToAnakScreen();
                         },
                       ),
                     ),

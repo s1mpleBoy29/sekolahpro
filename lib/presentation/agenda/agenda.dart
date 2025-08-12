@@ -9,6 +9,7 @@ import 'package:guardian_app/widgets/secondary_topbar/sekolah.dart';
 import 'package:guardian_app/widgets/topbar.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import 'package:guardian_app/routes/app_routes.dart';
+import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 
 // Mengimpor AgendaCard
 import 'package:guardian_app/widgets/agenda_card.dart';
@@ -42,8 +43,14 @@ class AgendaPageScreen extends State<AgendaScreen> {
   }
 
   void _navigateToAnakScreen() {
-    Navigator.pushNamed(
-        context, AppRoutes.pilihAnakScreen); // Ganti dengan rute yang sesuai
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PilihAnakScreen(
+          postSelectionAction: PostSelectionAction.goBack,
+        ),
+      ),
+    );
   }
 
   @override
