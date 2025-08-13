@@ -6,7 +6,7 @@ import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.da
 import 'package:guardian_app/presentation/pembayaran/widgets/payment_steps.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/due_card_small.dart';
 import 'package:guardian_app/widgets/search_card.dart';
-import 'package:guardian_app/presentation/pembayaran/widgets/dropdown_card.dart';
+import 'package:guardian_app/widgets/dropdown_card.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 
 class BayarSatuScreen extends StatefulWidget {
@@ -143,7 +143,7 @@ class _BayarSatuState extends State<BayarSatuScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: DropdownCard(
-                        studentName: _currentStudentName,
+                        message: _currentStudentName,
                         onTap: () {
                           _navigateToAnakScreen();
                         },

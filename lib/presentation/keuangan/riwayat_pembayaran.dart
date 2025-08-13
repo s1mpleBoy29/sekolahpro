@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/transaction_history_card.dart';
 import 'package:guardian_app/widgets/search_card.dart';
+import 'package:guardian_app/widgets/dropdown_card.dart';
 
 class RiwayatPembayaran extends StatefulWidget {
   const RiwayatPembayaran({super.key});
@@ -42,6 +43,7 @@ class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
   ];
 
   List<Map<String, dynamic>> _filteredTransactions = [];
+  String _currentDate = '1 Juli 2025';
 
   @override
   void initState() {
@@ -89,6 +91,15 @@ class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
           padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 0),
           child: Column(
             children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: DropdownCard(
+                  message: _currentDate,
+                  onTap: () {
+                    print('Lanjut ke filter tanggal');
+                  }, //Ke filter tanggal
+                ),
+              ),
               SearchCard(controller: _searchController),
               const SizedBox(height: 8.0),
               Expanded(
