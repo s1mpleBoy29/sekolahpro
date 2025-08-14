@@ -5,8 +5,8 @@ import 'package:guardian_app/presentation/pembayaran/widgets/bottom_bar.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/payment_steps.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/due_card_small.dart';
-import 'package:guardian_app/presentation/pembayaran/widgets/search_card.dart';
-import 'package:guardian_app/presentation/pembayaran/widgets/dropdown_card.dart';
+import 'package:guardian_app/widgets/search_card.dart';
+import 'package:guardian_app/widgets/dropdown_card.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 
 class BayarSatuScreen extends StatefulWidget {
@@ -100,6 +100,17 @@ class _BayarSatuState extends State<BayarSatuScreen> {
     return total;
   }
 
+  void _navigateToAnakScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PilihAnakScreen(
+          postSelectionAction: PostSelectionAction.goBack,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final int totalAmount = _calculateTotal();
@@ -132,12 +143,9 @@ class _BayarSatuState extends State<BayarSatuScreen> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: DropdownCard(
-                        studentName: _currentStudentName,
+                        message: _currentStudentName,
                         onTap: () {
-                          Navigator.of(context).push<String>(
-                            MaterialPageRoute(
-                                builder: (context) => const PilihAnakScreen()),
-                          );
+                          _navigateToAnakScreen();
                         },
                       ),
                     ),

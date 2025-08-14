@@ -10,10 +10,13 @@ class BottomNavBar extends StatelessWidget {
     super.key,
     required this.context,
     required this.theme,
+    required String selected,
   });
 
   @override
   Widget build(BuildContext context) {
+    ModalRoute? route = ModalRoute.of(context);
+    String? currentRoute = route?.settings.name;
     return Container(
       decoration: BoxDecoration(
         border: Border(
@@ -34,7 +37,7 @@ class BottomNavBar extends StatelessWidget {
             _bottomNavItem(
               icon: LucideIcons.home,
               label: 'Beranda',
-              selected: true,
+              selected: currentRoute == AppRoutes.homeScreen,
               onTap: () {
                 Navigator.pushNamed(context, AppRoutes.homeScreen);
               },
@@ -42,7 +45,7 @@ class BottomNavBar extends StatelessWidget {
             _bottomNavItem(
               icon: LucideIcons.calendar,
               label: 'Agenda',
-              selected: false,
+              selected: currentRoute == AppRoutes.agendaScreen,
               onTap: () {
                 Navigator.pushNamed(context, AppRoutes.agendaScreen);
               },
@@ -51,7 +54,7 @@ class BottomNavBar extends StatelessWidget {
             _bottomNavItem(
               icon: LucideIcons.barChart2,
               label: 'Keuangan',
-              selected: false,
+              selected: currentRoute == AppRoutes.keuanganScreen,
               onTap: () {
                 Navigator.pushNamed(context, AppRoutes.keuanganScreen);
               },
@@ -59,9 +62,11 @@ class BottomNavBar extends StatelessWidget {
             _bottomNavItem(
               icon: Icons.account_circle,
               label: 'Akun',
-              selected: false,
+              selected: currentRoute == AppRoutes.akunScreen,
               isAvatar: true,
-              onTap: () {},
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.akunScreen);
+              },
             ),
           ],
         ),

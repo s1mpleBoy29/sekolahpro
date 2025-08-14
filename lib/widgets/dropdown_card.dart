@@ -2,18 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
 
 class DropdownCard extends StatelessWidget {
-  final String studentName;
+  final String message;
   final VoidCallback onTap;
 
   const DropdownCard({
     super.key,
-    required this.studentName,
+    required this.message,
     required this.onTap,
   });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
+      highlightColor: Colors.transparent,
+      splashColor: Colors.transparent,
       onTap: onTap,
       borderRadius: BorderRadius.circular(4.0),
       child: Container(
@@ -27,7 +29,7 @@ class DropdownCard extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(
-              studentName,
+              message,
               style: TextStyle(
                 fontSize: 14,
                 color: theme.colorScheme.onSurface,

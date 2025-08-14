@@ -3,6 +3,7 @@ import 'package:guardian_app/widgets/custom_elevated_button.dart';
 import 'package:guardian_app/widgets/custom_outlined_button.dart';
 import 'package:guardian_app/widgets/custom_text_form_field.dart';
 import 'package:guardian_app/widgets/loading.dart';
+import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 
 import 'package:guardian_app/core/app_export.dart';
 
@@ -39,10 +40,14 @@ class LoginPageScreen extends State<LoginScreen> {
     });
   }
 
-  void onTapMasuk(BuildContext context) async {
-    Navigator.pushNamed(
+  void onTapMasuk(BuildContext context) {
+    Navigator.pushReplacement(
       context,
-      AppRoutes.pilihAnakScreen,
+      MaterialPageRoute(
+        builder: (context) => const PilihAnakScreen(
+          postSelectionAction: PostSelectionAction.navigateToHome,
+        ),
+      ),
     );
   }
 
@@ -200,7 +205,7 @@ class LoginPageScreen extends State<LoginScreen> {
               width: 0,
             ),
           ),
-          fillColor: theme.colorScheme.secondaryContainer,
+          fillColor: theme.colorScheme.surface,
           textStyle: TextStyle(
             color: theme.colorScheme.onPrimaryContainer,
           ),
@@ -249,7 +254,7 @@ class LoginPageScreen extends State<LoginScreen> {
               width: 0,
             ),
           ),
-          fillColor: theme.colorScheme.secondaryContainer,
+          fillColor: theme.colorScheme.surface,
           textStyle: TextStyle(
             color: theme.colorScheme.onPrimaryContainer,
           ),

@@ -5,8 +5,18 @@ import 'package:guardian_app/widgets/ad_card.dart';
 import 'package:guardian_app/presentation/home/home.dart';
 import 'dart:ui';
 
+enum PostSelectionAction {
+  goBack,
+  navigateToHome,
+}
+
 class PilihAnakScreen extends StatefulWidget {
-  const PilihAnakScreen({super.key});
+  final PostSelectionAction postSelectionAction;
+
+  const PilihAnakScreen({
+    super.key,
+    this.postSelectionAction = PostSelectionAction.goBack,
+  });
 
   @override
   PilihAnakPageScreen createState() => PilihAnakPageScreen();
@@ -89,14 +99,29 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
     });
   }
 
-  void _onSelectChild(String childName) {
-    print('Anak yang dipilih: $childName');
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const HomeScreen(),
-      ),
-    );
+  void _onSelectChild(Map<String, String> childData) {
+    print('Anak yang dipilih: ${childData['name']}');
+
+    switch (widget.postSelectionAction) {
+      case PostSelectionAction.navigateToHome:
+        // Untuk case login.
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const HomeScreen(),
+          ),
+        );
+        break;
+
+      case PostSelectionAction.goBack:
+        // Default
+        Future.delayed(Duration.zero, () {
+          if (mounted) {
+            Navigator.pop(context, childData);
+          }
+        });
+        break;
+    }
   }
 
   @override
@@ -189,7 +214,7 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
                                   avatarImagePath:
                                       'assets/images/profileicon.jpg',
                                   onSelectPressed: () {
-                                    _onSelectChild(childData['name']!);
+                                    _onSelectChild(childData);
                                   },
                                 ),
                               );

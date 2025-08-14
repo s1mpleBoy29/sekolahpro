@@ -155,7 +155,7 @@ class ColorSchemes {
     primary: Color(0xFF765085),
     primaryContainer: Color(0XFFF7D8FF),
     secondary: Color(0XFF69596D),
-    secondaryContainer: Color(0XFFF1DCF4),
+    secondaryContainer: Color(0XFF504255),
     // Error colors
     onError: Color(0XFFBA1A1A),
 
@@ -164,6 +164,7 @@ class ColorSchemes {
     // On colors(text colors)
     onPrimary: Color(0XFFFFFFFF),
     onPrimaryContainer: Color(0XFF1E1A1F),
+    onSecondary: Color(0XFFFFFFFF),
 
     outline: Color(0XFF7D747E),
     outlineVariant: Color(0XFFCEC3CD),

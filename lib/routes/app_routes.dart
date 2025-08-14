@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/presentation/agenda/agenda.dart';
+import 'package:guardian_app/presentation/akun/akun.dart';
+import 'package:guardian_app/presentation/akun/edit_profile.dart';
 import 'package:guardian_app/presentation/detailpembayaran.dart';
 import 'package:guardian_app/presentation/keuangan/keuangan.dart';
 import 'package:guardian_app/presentation/notifikasi/notifikasi.dart';
@@ -11,6 +13,7 @@ import '../presentation/pembayaran/bayarsatu.dart';
 import '../presentation/pembayaran/bayardua.dart';
 import '../presentation/pembayaran/bayartiga.dart';
 import '../presentation/detailagenda.dart';
+import '../presentation/keuangan/riwayat_pembayaran.dart';
 
 class AppRoutes {
   static const String loginScreen = '/login_screen';
@@ -23,18 +26,25 @@ class AppRoutes {
   static const String DetailAgendaScreen = '/detail_agenda_screen';
   static const String NotifikasiScreen = '/notifikasi_screen';
   static const String keuanganScreen = '/keuangan_screen';
-    static const String paymentDetailPage = '/detail_pembayaran';
+  static const String paymentDetailPage = '/detail_pembayaran';
+  static const String riwayatPembayaran = '/riwayat_pembayaran';
+  static const String akunScreen = '/akun_screen';
+  static const String editProfieScreen = '/edit_profile_screen';
+
   static Map<String, WidgetBuilder> routes = {
-    loginScreen: (context) => LoginScreen(),
-    homeScreen: (context) => HomeScreen(),
-    agendaScreen: (context) => AgendaScreen(),
-    DetailAgendaScreen: (context) => DetailAgenda(),
-    NotifikasiScreen: (context) => NotificationPage(),
-    pilihAnakScreen: (context) => PilihAnakScreen(),
-    bayarSatuScreen: (context) => BayarSatuScreen(),
-    bayarDuaScreen: (context) => BayarDuaScreen(),
-    bayarTigaScreen: (context) => BayarTigaScreen(),
-    keuanganScreen: (context) => KeuanganScreen(),
-    paymentDetailPage: (context) => PaymentDetailPage()
+    loginScreen: (context) => const LoginScreen(),
+    homeScreen: (context) => const HomeScreen(),
+    agendaScreen: (context) => const AgendaScreen(),
+    DetailAgendaScreen: (context) => const DetailAgenda(),
+    NotifikasiScreen: (context) => const NotificationPage(),
+    pilihAnakScreen: (context) => const PilihAnakScreen(),
+    bayarSatuScreen: (context) => const BayarSatuScreen(),
+    bayarDuaScreen: (context) => const BayarDuaScreen(),
+    bayarTigaScreen: (context) => const BayarTigaScreen(),
+    keuanganScreen: (context) => const KeuanganScreen(),
+    paymentDetailPage: (context) => const PaymentDetailPage(),
+    riwayatPembayaran: (context) => RiwayatPembayaran(),
+    akunScreen: (context) => const AkunScreen(),
+    editProfieScreen: (context) => const EditProfileScreen(),
   };
 }
