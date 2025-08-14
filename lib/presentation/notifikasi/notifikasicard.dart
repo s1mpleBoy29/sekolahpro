@@ -56,7 +56,7 @@ class NotificationCard extends StatelessWidget {
           Text(
             deskripsi,
             style: CustomTextStyles.titleMediumLato.copyWith(
-              fontWeight: FontWeight.w400, // Weight sama dengan judul
+              fontWeight: FontWeight.w400, // Weight yang sama dengan judul
               color: Colors.black87,
               fontSize: 14.fSize,
             ),
