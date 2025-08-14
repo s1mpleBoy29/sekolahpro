@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guardian_app/presentation/notifikasi/notifikasicard.dart';
+import 'package:guardian_app/widgets/notifikasicard.dart';
 
 class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});

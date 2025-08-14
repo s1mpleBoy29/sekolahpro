@@ -162,7 +162,7 @@ class AkunPageScreen extends State<AkunScreen> {
               if (label == 'Profil Akun') {
                 Navigator.pushNamed(context, AppRoutes.editProfieScreen);
               } else if (label == 'Ubah Password') {
-                // Navigator.pushNamed(context, AppRoutes.ubahPasswordScreen);
+                Navigator.pushNamed(context, AppRoutes.ubahPasswordScreen);
               } else if (label == 'Data Anak') {
                 // Navigator.pushNamed(context, AppRoutes.pilihAnakScreen);
               } else if (label == 'Sekolah Tertaut') {

@@ -4,9 +4,14 @@ import 'package:guardian_app/presentation/keuangan/widgets/summarycard.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/totalpayment.dart';
 import 'package:guardian_app/routes/app_routes.dart';
 import 'package:guardian_app/theme/theme_helper.dart';
+import 'package:guardian_app/theme/app_decoration.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
 import 'package:guardian_app/widgets/custom_fab.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
+import 'package:guardian_app/widgets/topbar.dart';
+import 'package:guardian_app/widgets/secondary_topbar.dart';
+import 'package:guardian_app/widgets/filterpopup.dart';
+import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
@@ -16,21 +21,40 @@ class KeuanganScreen extends StatefulWidget {
 }
 
 class KeuanganPageScreen extends State<KeuanganScreen> {
+  late String filterArea = 'smpn_13_malang';
+
+  Future<void> onRefresh() async {}
+
+  void _showFilterPopup() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      barrierColor: Colors.black.withOpacity(1),
+      builder: (BuildContext context) {
+        return FractionallySizedBox(
+          heightFactor: 0.94,
+          child: FilterPopup(),
+        );
+      },
+    );
+  }
+
+  void _navigateToAnakScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PilihAnakScreen(
+          postSelectionAction: PostSelectionAction.goBack,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFF0F2F5),
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildHeader(),
-            _buildFinanceHeader(),
-            const Expanded(
-              child: FinanceScreenContent(),
-            ),
-          ],
-        ),
-      ),
+      backgroundColor: Colors.white,
       bottomNavigationBar: BottomNavBar(
         selected: AppRoutes.keuanganScreen,
         context: context,
@@ -42,108 +66,77 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-    );
-  }
-
-  Widget _buildHeader() {
-    return Container(
-      color: const Color(0xFF4B2C5C),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      child: const Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: const [
-              Text(
-                'Candra Wijaya',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 18,
-                ),
-              ),
-              SizedBox(height: 2),
-              Text(
-                'SDN 13 Malang | Kelas 5',
-                style: TextStyle(
-                  color: Colors.white70,
-                  fontSize: 12,
-                ),
-              ),
-            ],
+      body: SafeArea(
+        child: Container(
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surface,
           ),
-          Stack(
-            children: const [
-              Icon(Icons.notifications, color: Colors.white, size: 28),
-              Positioned(
-                right: 0,
-                top: 0,
-                child: CircleAvatar(
-                  radius: 8,
-                  backgroundColor: Colors.red,
-                  child: Text(
-                    '3',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.bold,
+          child: Column(
+            children: [
+              StickyTopBar(
+                backgroundColor: theme.colorScheme.onPrimary,
+                lineColor: appTheme.gray300,
+                textColor: appTheme.gray600,
+                titleFontSize: 22.0,
+                titleFontFamily: 'Urbanist',
+                subtitleFontSize: 12.0,
+                subtitleFontFamily: 'Lato',
+                titleText: 'Candra Wijaya',
+                subtitleText: 'SDN 13 Malang | Kelas 5',
+                onTitleTap: _navigateToAnakScreen,
+              ),
+              // SecondaryTopbar untuk Keuangan
+              SecondaryTopbar(
+                backgroundColor: theme.colorScheme.secondary,
+                lineColor: appTheme.gray300,
+                title: 'Keuangan',
+                titleColor: Colors.white,
+                slot: [],
+                onActionTap: (selectedValue) {
+                  _showFilterPopup();
+                },
+                onFilterChanged: (onFilter, selectedValue) {
+                  if (onFilter == "area") {
+                    setState(() {
+                      filterArea = selectedValue;
+                    });
+                  }
+                },
+              ),
+              Expanded(
+                child: RefreshIndicator(
+                  onRefresh: onRefresh,
+                  child: SingleChildScrollView(
+                    primary: true,
+                    physics: AlwaysScrollableScrollPhysics(),
+                    child: Container(
+                      color: const Color(0xFFF0F2F5),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _buildPaymentSummary(),
+                            // Mengganti _buildAdSection() dengan AdCard
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              child: const AdCard(
+                                teks:
+                                    'In the lessns we leran new words and r for vacalaburities continues and article',
+                              ),
+                            ),
+                            const SizedBox(height: 20),
+                            _buildPaymentSchedule(context),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
                 ),
               ),
             ],
           ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildFinanceHeader() {
-    return Container(
-      color: const Color(0xFF6A4C93),
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: const [
-          Text(
-            'Keuangan',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Icon(Icons.filter_list, color: Colors.white, size: 24),
-        ],
-      ),
-    );
-  }
-}
-
-class FinanceScreenContent extends StatelessWidget {
-  const FinanceScreenContent({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildPaymentSummary(),
-            // Mengganti _buildAdSection() dengan AdCard
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 20),
-              child: const AdCard(
-                teks:
-                    'In the lessns we leran new words and r for vacalaburities continues and article',
-              ),
-            ),
-            const SizedBox(height: 20),
-            _buildPaymentSchedule(context), // Tambahkan parameter context
-          ],
         ),
       ),
     );
@@ -185,7 +178,6 @@ class FinanceScreenContent extends StatelessWidget {
   }
 
   Widget _buildPaymentSchedule(BuildContext context) {
-    // Tambahkan parameter context
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

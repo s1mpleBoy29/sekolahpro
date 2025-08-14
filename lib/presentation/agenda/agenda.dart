@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:guardian_app/presentation/agenda/filterpopup.dart';
+import 'package:guardian_app/widgets/filterpopup.dart';
 import 'package:guardian_app/theme/app_decoration.dart';
 import 'package:guardian_app/theme/theme_helper.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
