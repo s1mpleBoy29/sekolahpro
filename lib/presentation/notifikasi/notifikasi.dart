@@ -9,7 +9,7 @@ class NotificationPage extends StatefulWidget {
 }
 
 class NotificationPageState extends State<NotificationPage> {
-  // Data statis untuk notifikasi
+  // Data statis notif
   final List<Map<String, String>> notifications = [
     {
       'tanggal': '10 Juli 2025 08.30',
