@@ -36,7 +36,7 @@ class NotificationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Teks untuk tanggal - menggunakan style yang lebih kecil dan abu-abu
+          // Teks untuk tanggal - menggunakan style yang lebih kecil dan abu
           Text(
             tanggal,
             style: CustomTextStyles.titleMediumGrey, // Style untuk tanggal

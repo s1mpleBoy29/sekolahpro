@@ -26,7 +26,7 @@ class NotificationPageState extends State<NotificationPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Memastikan latar belakang putih
+      backgroundColor: Colors.white, 
       appBar: AppBar(
         title: const Text(
           "Notifikasi",
