@@ -32,7 +32,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
       backgroundColor: Colors.transparent,
       barrierColor: Colors.black.withOpacity(1),
       builder: (BuildContext context) {
-        return FractionallySizedBox(
+        return const FractionallySizedBox(
           heightFactor: 0.94,
           child: FilterPopup(),
         );
@@ -54,7 +54,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       bottomNavigationBar: BottomNavBar(
         selected: AppRoutes.keuanganScreen,
         context: context,
@@ -70,7 +70,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
         child: Container(
           width: double.maxFinite,
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            color: theme.colorScheme.surfaceContainer,
           ),
           child: Column(
             children: [
@@ -109,7 +109,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                   onRefresh: onRefresh,
                   child: SingleChildScrollView(
                     primary: true,
-                    physics: AlwaysScrollableScrollPhysics(),
+                    physics: const AlwaysScrollableScrollPhysics(),
                     child: Container(
                       color: const Color(0xFFF0F2F5),
                       child: Padding(
@@ -119,9 +119,9 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                           children: [
                             _buildPaymentSummary(),
                             // Mengganti _buildAdSection() dengan AdCard
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: const AdCard(
+                            const Padding(
+                              padding: EdgeInsets.symmetric(vertical: 20),
+                              child: AdCard(
                                 teks:
                                     'In the lessns we leran new words and r for vacalaburities continues and article',
                               ),
@@ -146,27 +146,30 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Ringkasan Pembayaran',
           style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurface,
+          ),
         ),
         const SizedBox(height: 10),
         Row(
-          children: const [
+          children: [
             Expanded(
               child: SummaryCard(
                 label: 'Total Kewajiban',
                 value: 'Rp 1.800.000',
-                valueColor: Colors.black,
+                valueColor: theme.colorScheme.onSurface,
               ),
             ),
-            SizedBox(width: 10),
+            const SizedBox(width: 10),
             Expanded(
               child: SummaryCard(
                 label: 'Total Tunggakan',
                 value: 'Rp 300.000',
-                valueColor: Colors.red,
+                valueColor: theme.colorScheme.onError,
               ),
             ),
           ],
@@ -181,44 +184,49 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text(
+        Text(
           'Jadwal Pembayaran',
           style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: theme.colorScheme.onSurface,
+          ),
         ),
         const SizedBox(height: 10),
         // Wrap PaymentScheduleCard dengan GestureDetector untuk menambahkan onTap
         GestureDetector(
           onTap: () => _navigateToPaymentDetail(context),
-          child: const PaymentScheduleCard(
+          child: PaymentScheduleCard(
             dueDate: '10 Agustus 2025',
             amount: 'Rp 300.000',
             description:
                 'Uang Sekolah Candra Bulan Agustus Tahun Ajaran 2025 / 2026',
             status: 'Belum Lunas',
-            statusColor: Colors.grey,
+            statusColor: theme.colorScheme.outline,
             isOverdue: false,
           ),
         ),
+        const SizedBox(height: 10),
         GestureDetector(
           onTap: () => _navigateToPaymentDetail(context),
-          child: const PaymentScheduleCard(
+          child: PaymentScheduleCard(
             dueDate: '30 Juli 2025',
             amount: 'Rp 1.200.000',
             description: 'Uang Seragam Candra Tahun Ajaran 2025 / 2026',
             status: 'Lunas',
-            statusColor: Colors.green,
+            statusColor: appTheme.green600,
             isOverdue: false,
           ),
         ),
+        const SizedBox(height: 10),
         GestureDetector(
           onTap: () => _navigateToPaymentDetail(context),
-          child: const PaymentScheduleCard(
+          child: PaymentScheduleCard(
             amount: 'Rp 300.000',
             description:
                 'Uang Sekolah Candra Bulan Juli Tahun Ajaran 2025 / 2026',
             status: 'Belum Lunas',
-            statusColor: Colors.grey,
+            statusColor: theme.colorScheme.outline,
             isOverdue: true,
           ),
         ),

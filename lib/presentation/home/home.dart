@@ -72,7 +72,7 @@ class HomePageScreen extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       bottomNavigationBar: BottomNavBar(
         selected: AppRoutes.homeScreen,
         context: context,
@@ -85,103 +85,102 @@ class HomePageScreen extends State<HomeScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(16),
-          children: [
-            // TopBar(
-            //   mode: TopBarMode.greeting,
-            //   greeting: "Selamat Pagi,",
-            //   userName: "Bapak Santoso",
-            //   notificationCount: 3,
-            //   onNotificationTap: () {
-            //     // Navigasi ke halaman notifikasi
-            //   },
-            // ),
-            const SizedBox(height: 16),
-            const Header(
-              waktu: "Selamat Pagi",
-              user: "Bapak Santoso",
-            ),
-            const AdCard(
-              teks:
-                  "In the lessons we new words and for vocabularities continues and article...",
-            ),
-            const SizedBox(height: 24),
-            const SectionTitle(title: "Tunggakan Hari Ini"),
-            DueCard(
-              isOverdue: true,
-              harga: "Rp 300.000",
-              deskripsi:
-                  "Uang Sekolah Chandra Bulan Juli\nTahun Ajaran 2025 / 2026",
-              onPayPressed: () {
-                // Aksi ketika tombol bayar ditekan
-              },
-            ),
-            const SizedBox(height: 24),
-            const SectionTitle(
-                title: "Jadwal Pembayaran Selanjutnya", action: "Lihat Jadwal"),
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(
-                0.0,
-                4.0,
-                0.0,
-                4.0,
+        child: Container(
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainer,
+          ),
+          child: ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              const SizedBox(height: 16),
+              const Header(
+                waktu: "Selamat Pagi",
+                user: "Bapak Santoso",
               ),
-              child: Column(
-                children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: payment.length,
-                    itemBuilder: (context, idx) {
-                      dynamic paymentItem = payment[idx];
-                      return DueCard(
-                        isOverdue: paymentItem['is_overdue'],
-                        dueDate: dateTimeFormat(
-                          'dateui',
-                          paymentItem['due_date'],
-                        ),
-                        harga: numberFormat('idr_fixed', paymentItem['amount']),
-                        deskripsi: paymentItem['description'],
-                        onPayPressed: () {
-                          // Aksi ketika tombol bayar ditekan
-                        },
-                      );
-                    },
-                  ),
-                ],
+              const AdCard(
+                teks:
+                    "In the lessons we new words and for vocabularities continues and article...",
               ),
-            ),
-            const SizedBox(height: 24),
-            const SectionTitle(
-                title: "Agenda Hari Ini", action: "Lihat Agenda"),
-            Padding(
-              padding: const EdgeInsetsDirectional.fromSTEB(
-                0.0,
-                4.0,
-                0.0,
-                4.0,
+              const SizedBox(height: 24),
+              const SectionTitle(title: "Tunggakan Hari Ini"),
+              DueCard(
+                isOverdue: true,
+                harga: "Rp 300.000",
+                deskripsi:
+                    "Uang Sekolah Chandra Bulan Juli\nTahun Ajaran 2025 / 2026",
+                onPayPressed: () {
+                  // Aksi ketika tombol bayar ditekan
+                },
               ),
-              child: Column(
-                children: [
-                  ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: agenda.length,
-                    itemBuilder: (context, idx) {
-                      dynamic agendaItem = agenda[idx];
-                      return AgendaCard(
-                        tanggal: agendaItem['date'],
-                        dari: agendaItem['from'],
-                        untuk: agendaItem['child'],
-                        detail: agendaItem['description'],
-                      );
-                    },
-                  ),
-                ],
+              const SizedBox(height: 24),
+              const SectionTitle(
+                  title: "Jadwal Pembayaran Selanjutnya",
+                  action: "Lihat Jadwal"),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  0.0,
+                  4.0,
+                  0.0,
+                  4.0,
+                ),
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: payment.length,
+                      itemBuilder: (context, idx) {
+                        dynamic paymentItem = payment[idx];
+                        return DueCard(
+                          isOverdue: paymentItem['is_overdue'],
+                          dueDate: dateTimeFormat(
+                            'dateui',
+                            paymentItem['due_date'],
+                          ),
+                          harga:
+                              numberFormat('idr_fixed', paymentItem['amount']),
+                          deskripsi: paymentItem['description'],
+                          onPayPressed: () {
+                            // Aksi ketika tombol bayar ditekan
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
+              const SizedBox(height: 24),
+              const SectionTitle(
+                  title: "Agenda Hari Ini", action: "Lihat Agenda"),
+              Padding(
+                padding: const EdgeInsetsDirectional.fromSTEB(
+                  0.0,
+                  4.0,
+                  0.0,
+                  4.0,
+                ),
+                child: Column(
+                  children: [
+                    ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: agenda.length,
+                      itemBuilder: (context, idx) {
+                        dynamic agendaItem = agenda[idx];
+                        return AgendaCard(
+                          tanggal: agendaItem['date'],
+                          dari: agendaItem['from'],
+                          untuk: agendaItem['child'],
+                          detail: agendaItem['description'],
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

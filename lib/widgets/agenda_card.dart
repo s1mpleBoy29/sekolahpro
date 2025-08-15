@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
 
-// Import kelas AppRoutes untuk menggunakan rute bernama
-import 'package:guardian_app/routes/app_routes.dart';
-// Import halaman DetailAgenda
-import 'package:guardian_app/presentation/detailagenda.dart';
-
-
 class AgendaCard extends StatelessWidget {
   final String tanggal;
   final String dari;
@@ -38,6 +32,7 @@ class AgendaCard extends StatelessWidget {
             color: theme.colorScheme.outlineVariant,
           ),
           borderRadius: BorderRadius.circular(4),
+          color: theme.colorScheme.surface,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

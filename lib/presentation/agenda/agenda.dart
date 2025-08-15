@@ -56,7 +56,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surface,
       bottomNavigationBar: BottomNavBar(
         selected: AppRoutes.agendaScreen,
         context: context,
@@ -72,7 +72,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
         child: Container(
           width: double.maxFinite,
           decoration: BoxDecoration(
-            color: theme.colorScheme.surface,
+            color: theme.colorScheme.surfaceContainer,
           ),
           child: Column(
             children: [

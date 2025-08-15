@@ -11,27 +11,33 @@ class EditProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
+      backgroundColor: theme.colorScheme.surfaceContainer,
       appBar: AppBar(
-        backgroundColor: theme.colorScheme.secondaryContainer,
-        title: Text(
+        backgroundColor: theme.colorScheme.surface,
+        title: const Text(
           "Profil Saya",
           style: TextStyle(
             fontWeight: FontWeight.bold,
-            color: theme.colorScheme.onSecondary,
+            fontSize: 18,
+          ),
+        ),
+        shape: Border(
+          bottom: BorderSide(
+            color: theme.colorScheme.outlineVariant,
+            width: 0.5,
           ),
         ),
         leading: IconButton(
           icon: Icon(
-            Icons.arrow_back_ios,
-            color: theme.colorScheme.onSecondary,
+            Icons.arrow_back,
+            color: theme.colorScheme.onPrimaryContainer,
           ),
           onPressed: () {
             Navigator.pushNamed(context, AppRoutes.akunScreen);
           },
         ),
         centerTitle: false,
-        elevation: 1, // Memberikan sedikit bayangan
+        elevation: 0, // Memberikan sedikit bayangan
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
@@ -89,8 +95,9 @@ class EditProfileScreen extends StatelessWidget {
               onPressed: () {},
               height: 48,
               buttonStyle: CustomButtonStyles.primaryButton,
-              buttonTextStyle: TextStyle(
-                color: theme.colorScheme.onPrimary,
+              buttonTextStyle:
+                  CustomTextStyles.labelLargeLatoOnPrimary.copyWith(
+                fontSize: 12.fSize,
               ),
             ),
           ],
@@ -111,7 +118,7 @@ Widget _inputNIK(BuildContext context) {
     borderDecoration: OutlineInputBorder(
       borderRadius: BorderRadius.circular(5),
       borderSide: BorderSide(
-        color: theme.colorScheme.outline,
+        color: appTheme.gray300,
         width: 0,
       ),
     ),
@@ -120,6 +127,7 @@ Widget _inputNIK(BuildContext context) {
       color: theme.colorScheme.onPrimaryContainer,
     ),
     hintText: "Masukin nik anda",
+    // hintStyle: CustomTextStyles.bodySmallGray,
     textInputAction: TextInputAction.done,
     validator: (value) {
       if (value == null || value.isEmpty) {
@@ -149,7 +157,7 @@ Widget _inputName(BuildContext context) {
     borderDecoration: OutlineInputBorder(
       borderRadius: BorderRadius.circular(5),
       borderSide: BorderSide(
-        color: theme.colorScheme.outline,
+        color: appTheme.gray300,
         width: 0,
       ),
     ),
@@ -178,33 +186,39 @@ Widget _inputName(BuildContext context) {
 
 TextEditingController phoneController = TextEditingController();
 Widget _inputPhone(BuildContext context) {
-  return IntlPhoneField(
-    controller: phoneController,
-    initialCountryCode: 'ID',
-    disableLengthCheck: true,
-    keyboardType: TextInputType.phone,
-    inputFormatters: [
-      FilteringTextInputFormatter.digitsOnly,
-    ],
-    style: TextStyle(
-      color: theme.colorScheme.onPrimaryContainer,
+  return Container(
+    padding: const EdgeInsets.all(1),
+    decoration: BoxDecoration(
+      color: appTheme.gray300,
+      borderRadius: BorderRadius.circular(5),
     ),
-    decoration: InputDecoration(
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(5),
-        borderSide: BorderSide(
-          color: theme.colorScheme.outline,
-          width: 0,
-        ),
+    child: IntlPhoneField(
+      controller: phoneController,
+      initialCountryCode: 'ID',
+      disableLengthCheck: true,
+      keyboardType: TextInputType.phone,
+      inputFormatters: [
+        FilteringTextInputFormatter.digitsOnly,
+      ],
+      style: TextStyle(
+        color: theme.colorScheme.onPrimaryContainer,
       ),
+      decoration: InputDecoration(
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(5),
+          borderSide: BorderSide.none,
+        ),
+        filled: true,
+        fillColor: theme.colorScheme.surface,
+      ),
+      dropdownTextStyle: TextStyle(
+        color: theme.colorScheme.onPrimaryContainer,
+        fontSize: 16,
+      ),
+      onChanged: (phone) {
+        // +6281234567890
+      },
     ),
-    dropdownTextStyle: TextStyle(
-      color: theme.colorScheme.onPrimaryContainer,
-      fontSize: 16,
-    ),
-    onChanged: (phone) {
-      print(phone.completeNumber); // +6281234567890
-    },
   );
 }
 
@@ -218,7 +232,7 @@ Widget _inputEmail(BuildContext context) {
     borderDecoration: OutlineInputBorder(
       borderRadius: BorderRadius.circular(5),
       borderSide: BorderSide(
-        color: theme.colorScheme.outline,
+        color: appTheme.gray300,
         width: 0,
       ),
     ),

@@ -43,36 +43,42 @@ class AkunPageScreen extends State<AkunScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: SafeArea(
-        child: Column(
-          children: [
-            _buildProfile(),
-            Expanded(
-              child: ListView(
-                children: [
-                  for (var section in menuList) ...[
-                    _buildSectionTitle(section['title']),
-                    const Divider(height: 1),
-                    for (var item in section['items']) _buildMenuItem(item),
-                  ],
-                  const SizedBox(height: 20),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: CustomElevatedButton(
-                      text: " Log Out",
-                      buttonStyle: CustomButtonStyles.errorButton,
-                      leftIcon: Icon(
-                        Icons.logout,
-                        color: theme.colorScheme.surface,
+        child: Container(
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+            color: theme.colorScheme.surfaceContainer,
+          ),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    _buildProfile(),
+                    for (var section in menuList) ...[
+                      _buildSectionTitle(section['title']),
+                      // const Divider(height: 1),
+                      for (var item in section['items']) _buildMenuItem(item),
+                    ],
+                    const SizedBox(height: 40),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      child: CustomElevatedButton(
+                        text: " Log Out",
+                        buttonStyle: CustomButtonStyles.errorButton,
+                        leftIcon: Icon(
+                          Icons.logout,
+                          color: theme.colorScheme.surface,
+                        ),
+                        onPressed: () {},
+                        height: 48,
                       ),
-                      onPressed: () {},
-                      height: 48,
                     ),
-                  ),
-                  const SizedBox(height: 40),
-                ],
+                    const SizedBox(height: 40),
+                  ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -117,7 +123,7 @@ class AkunPageScreen extends State<AkunScreen> {
 
   Widget _buildSectionTitle(String title) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 2),
       child: Row(
         children: [
           Icon(
@@ -146,39 +152,45 @@ class AkunPageScreen extends State<AkunScreen> {
     return Column(
       children: [
         Padding(
-          padding: const EdgeInsets.fromLTRB(30, 0, 0, 0),
-          child: ListTile(
-            title: Text(
-              label,
-              style: TextStyle(
+          padding: const EdgeInsets.fromLTRB(12, 6, 12, 6),
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.colorScheme.surface,
+              borderRadius: BorderRadius.circular(5),
+            ),
+            child: ListTile(
+              title: Text(
+                label,
+                style: TextStyle(
+                  color: theme.colorScheme.primary,
+                ),
+              ),
+              trailing: Icon(
+                Icons.chevron_right,
                 color: theme.colorScheme.primary,
               ),
+              onTap: () {
+                if (label == 'Profil Akun') {
+                  Navigator.pushNamed(context, AppRoutes.editProfieScreen);
+                } else if (label == 'Ubah Password') {
+                  Navigator.pushNamed(context, AppRoutes.ubahPasswordScreen);
+                } else if (label == 'Data Anak') {
+                  // Navigator.pushNamed(context, AppRoutes.pilihAnakScreen);
+                } else if (label == 'Sekolah Tertaut') {
+                  // Navigator.pushNamed(context, AppRoutes.sekolahTertautScreen);
+                } else if (label == 'Tentang Kami') {
+                  // Navigator.pushNamed(context, AppRoutes.tentangKamiScreen);
+                } else if (label == 'FAQ') {
+                  // Navigator.pushNamed(context, AppRoutes.faqScreen);
+                } else if (label == 'Kontak') {
+                  // Navigator.pushNamed(context, AppRoutes.kontakScreen);
+                }
+                // Handle navigation
+              },
             ),
-            trailing: Icon(
-              Icons.chevron_right,
-              color: theme.colorScheme.primary,
-            ),
-            onTap: () {
-              if (label == 'Profil Akun') {
-                Navigator.pushNamed(context, AppRoutes.editProfieScreen);
-              } else if (label == 'Ubah Password') {
-                Navigator.pushNamed(context, AppRoutes.ubahPasswordScreen);
-              } else if (label == 'Data Anak') {
-                // Navigator.pushNamed(context, AppRoutes.pilihAnakScreen);
-              } else if (label == 'Sekolah Tertaut') {
-                // Navigator.pushNamed(context, AppRoutes.sekolahTertautScreen);
-              } else if (label == 'Tentang Kami') {
-                // Navigator.pushNamed(context, AppRoutes.tentangKamiScreen);
-              } else if (label == 'FAQ') {
-                // Navigator.pushNamed(context, AppRoutes.faqScreen);
-              } else if (label == 'Kontak') {
-                // Navigator.pushNamed(context, AppRoutes.kontakScreen);
-              }
-              // Handle navigation
-            },
           ),
+          // const Divider(height: 1),)
         ),
-        const Divider(height: 1),
       ],
     );
   }

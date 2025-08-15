@@ -26,6 +26,7 @@ class DueCard extends StatelessWidget {
       decoration: BoxDecoration(
         border: Border.all(color: theme.colorScheme.outlineVariant),
         borderRadius: BorderRadius.circular(4),
+        color: theme.colorScheme.surface,
       ),
       child: Row(
         children: [

@@ -10,7 +10,7 @@ class BottomNavBar extends StatelessWidget {
     super.key,
     required this.context,
     required this.theme,
-    required String selected,
+    String? selected,
   });
 
   @override

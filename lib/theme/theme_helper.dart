@@ -160,6 +160,7 @@ class ColorSchemes {
     onError: Color(0XFFBA1A1A),
 
     surface: Color(0XFFFFFFFF),
+    surfaceContainer: Color(0xFFF0F2F5),
 
     // On colors(text colors)
     onPrimary: Color(0XFFFFFFFF),
