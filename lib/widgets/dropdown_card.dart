@@ -32,7 +32,7 @@ class DropdownCard extends StatelessWidget {
               message,
               style: TextStyle(
                 fontSize: 14,
-                color: theme.colorScheme.onSurface,
+                color: theme.colorScheme.primary,
               ),
             ),
             Icon(
