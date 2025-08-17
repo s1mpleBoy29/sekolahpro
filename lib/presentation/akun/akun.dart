@@ -166,7 +166,7 @@ class AkunPageScreen extends State<AkunScreen> {
               } else if (label == 'Data Anak') {
                 Navigator.pushNamed(context, AppRoutes.dataAnakScreen);
               } else if (label == 'Sekolah Tertaut') {
-                // Navigator.pushNamed(context, AppRoutes.sekolahTertautScreen);
+                 Navigator.pushNamed(context, AppRoutes.infoSekolahScreen);
               } else if (label == 'Tentang Kami') {
                 // Navigator.pushNamed(context, AppRoutes.tentangKamiScreen);
               } else if (label == 'FAQ') {
