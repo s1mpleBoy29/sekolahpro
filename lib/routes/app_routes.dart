@@ -3,6 +3,7 @@ import 'package:guardian_app/presentation/agenda/agenda.dart';
 import 'package:guardian_app/presentation/akun/akun.dart';
 import 'package:guardian_app/presentation/akun/edit_profile.dart';
 import 'package:guardian_app/presentation/detailpembayaran.dart';
+import 'package:guardian_app/presentation/info_sekolah/info_sekolah.dart';
 import 'package:guardian_app/presentation/keuangan/keuangan.dart';
 import 'package:guardian_app/presentation/notifikasi.dart';
 import 'package:guardian_app/presentation/ubah_password.dart';
@@ -15,6 +16,7 @@ import '../presentation/pembayaran/bayardua.dart';
 import '../presentation/pembayaran/bayartiga.dart';
 import '../presentation/detailagenda.dart';
 import '../presentation/keuangan/riwayat_pembayaran.dart';
+import '../presentation/akun/data_anak.dart';
 
 class AppRoutes {
   static const String loginScreen = '/login_screen';
@@ -32,6 +34,8 @@ class AppRoutes {
   static const String akunScreen = '/akun_screen';
   static const String editProfieScreen = '/edit_profile_screen';
   static const String ubahPasswordScreen = '/ubah_password_screen';
+  static const String dataAnakScreen = '/data_anak_screen';
+  static const String infoSekolahScreen = '/info_sekolah_screen';
   static Map<String, WidgetBuilder> routes = {
     loginScreen: (context) => const LoginScreen(),
     homeScreen: (context) => const HomeScreen(),
@@ -48,5 +52,7 @@ class AppRoutes {
     akunScreen: (context) => const AkunScreen(),
     editProfieScreen: (context) => const EditProfileScreen(),
     ubahPasswordScreen: (context) => const UbahPasswordScreen(),
+    dataAnakScreen: (context) => const DataAnak(),
+    infoSekolahScreen: (context) => const InfoSekolahScreen(),
   };
 }
