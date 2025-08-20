@@ -236,6 +236,13 @@ class _DateFilterState extends State<DateFilter> {
           ],
         ),
         const SizedBox(height: 16),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT']
+              .map((day) => Text(day,
+                  style: const TextStyle(color: Colors.grey, fontSize: 12)))
+              .toList(),
+        ),
       ],
     );
   }
