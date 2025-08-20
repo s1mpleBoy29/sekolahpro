@@ -101,9 +101,58 @@ class _DateFilterState extends State<DateFilter> {
                       },
                     ),
                   ),
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: _buildDateDropdown(
+                      label: 'End Date',
+                      date: _endDate,
+                      onTap: () async {
+                        final DateTime? picked = await showDatePicker(
+                          context: context,
+                          initialDate: _endDate ?? _startDate ?? DateTime.now(),
+                          firstDate: _startDate ?? DateTime(2000),
+                          lastDate: DateTime(2101),
+                        );
+                        if (picked != null && picked != _endDate) {
+                          setState(() {
+                            _endDate = picked;
+                          });
+                        }
+                      },
+                    ),
+                  ),
                 ],
               ),
+              const SizedBox(height: 24),
             ],
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              child: _buildCalendarView(),
+            ),
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            width: double.infinity,
+            height: 50,
+            child: ElevatedButton(
+              // The apply button triggers the onApply callback with the selected dates.
+              onPressed: () => widget.onApply(_startDate, _endDate),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF7D5C86),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: const Text(
+                'Terapkan',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
         ],
       ),
@@ -153,6 +202,41 @@ class _DateFilterState extends State<DateFilter> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCalendarView() {
+    final daysInMonth =
+        DateUtils.getDaysInMonth(_displayedMonth.year, _displayedMonth.month);
+    final firstDayOfMonth =
+        DateTime(_displayedMonth.year, _displayedMonth.month, 1);
+    // Offset untuk hari pertama pada bulan ini
+    final startingWeekday =
+        firstDayOfMonth.weekday == 7 ? 0 : firstDayOfMonth.weekday;
+
+    return Column(
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              DateFormat('MMMM yyyy').format(_displayedMonth),
+              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            ),
+            Row(
+              children: [
+                IconButton(
+                    onPressed: _previousMonth,
+                    icon: const Icon(Icons.chevron_left)),
+                IconButton(
+                    onPressed: _nextMonth,
+                    icon: const Icon(Icons.chevron_right)),
+              ],
+            )
+          ],
+        ),
+        const SizedBox(height: 16),
+      ],
     );
   }
 }
