@@ -243,6 +243,54 @@ class _DateFilterState extends State<DateFilter> {
                   style: const TextStyle(color: Colors.grey, fontSize: 12)))
               .toList(),
         ),
+        const SizedBox(height: 8),
+        GridView.builder(
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 7,
+          ),
+          itemCount: daysInMonth + startingWeekday,
+          itemBuilder: (context, index) {
+            if (index < startingWeekday) {
+              return Container();
+            }
+            final dayNumber = index - startingWeekday + 1;
+            final currentDate = DateTime(
+                _displayedMonth.year, _displayedMonth.month, dayNumber);
+
+            // Determinasi untuk currentDate == selected
+            bool isSelected = (_startDate != null &&
+                    DateUtils.isSameDay(currentDate, _startDate)) ||
+                (_endDate != null &&
+                    DateUtils.isSameDay(currentDate, _endDate));
+
+            return InkWell(
+              onTap: () {},
+              customBorder: const CircleBorder(),
+              child: Container(
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: isSelected
+                      ? const Color(0xFF7D5C86).withOpacity(0.2)
+                      : Colors.transparent,
+                  shape: BoxShape.circle,
+                  border: isSelected
+                      ? Border.all(color: const Color(0xFF7D5C86))
+                      : null,
+                ),
+                child: Text(
+                  dayNumber.toString(),
+                  style: TextStyle(
+                    color: isSelected ? const Color(0xFF7D5C86) : Colors.black,
+                    fontWeight:
+                        isSelected ? FontWeight.bold : FontWeight.normal,
+                  ),
+                ),
+              ),
+            );
+          },
+        ),
       ],
     );
   }
