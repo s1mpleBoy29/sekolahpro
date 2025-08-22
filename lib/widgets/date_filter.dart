@@ -53,9 +53,8 @@ class _DateFilterState extends State<DateFilter> {
 
   void _onDateTapped(DateTime date) {
     setState(() {
-      // Logic for selecting a date range.
       if (_startDate == null || (_startDate != null && _endDate != null)) {
-        // // Tap pertama untuk start
+        // Tap pertama untuk start
         _startDate = date;
         _endDate = null;
       } else {
@@ -156,12 +155,16 @@ class _DateFilterState extends State<DateFilter> {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              onPressed: () => widget.onApply(_startDate, _endDate),
+              onPressed: () {
+                widget.onApply(_startDate, _endDate);
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF7D5C86),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(8),
                 ),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
               ),
               child: const Text(
                 'Terapkan',
@@ -169,6 +172,7 @@ class _DateFilterState extends State<DateFilter> {
                   color: Colors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.bold,
+                  letterSpacing: 0.5,
                 ),
               ),
             ),
