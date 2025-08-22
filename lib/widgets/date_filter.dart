@@ -51,6 +51,26 @@ class _DateFilterState extends State<DateFilter> {
     });
   }
 
+  void _onDateTapped(DateTime date) {
+    setState(() {
+      // Logic for selecting a date range.
+      if (_startDate == null || (_startDate != null && _endDate != null)) {
+        // // Tap pertama untuk start
+        _startDate = date;
+        _endDate = null;
+      } else {
+        // Tap kedua untuk end
+        if (date.isAfter(_startDate!)) {
+          _endDate = date;
+        } else {
+          // Bila Start dan End sama
+          _endDate = _startDate;
+          _startDate = date;
+        }
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -136,7 +156,6 @@ class _DateFilterState extends State<DateFilter> {
             width: double.infinity,
             height: 50,
             child: ElevatedButton(
-              // The apply button triggers the onApply callback with the selected dates.
               onPressed: () => widget.onApply(_startDate, _endDate),
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF7D5C86),
@@ -188,7 +207,7 @@ class _DateFilterState extends State<DateFilter> {
               children: [
                 Text(
                   date != null
-                      ? DateFormat('d MMM yyyy').format(date)
+                      ? DateFormat('d-M-yyyy').format(date)
                       : 'Pilih Tanggal',
                   style: TextStyle(
                     fontSize: 14,
@@ -219,10 +238,11 @@ class _DateFilterState extends State<DateFilter> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-              DateFormat('MMMM yyyy').format(_displayedMonth),
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
+            Text(DateFormat('MMMM yyyy').format(_displayedMonth),
+                style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.normal,
+                    color: theme.colorScheme.onSurface)),
             Row(
               children: [
                 IconButton(
@@ -260,31 +280,44 @@ class _DateFilterState extends State<DateFilter> {
                 _displayedMonth.year, _displayedMonth.month, dayNumber);
 
             // Determinasi untuk currentDate == selected
-            bool isSelected = (_startDate != null &&
-                    DateUtils.isSameDay(currentDate, _startDate)) ||
-                (_endDate != null &&
-                    DateUtils.isSameDay(currentDate, _endDate));
+            bool isStartDate = _startDate != null &&
+                DateUtils.isSameDay(currentDate, _startDate);
+            bool isEndDate =
+                _endDate != null && DateUtils.isSameDay(currentDate, _endDate);
+            bool isInRange = _startDate != null &&
+                _endDate != null &&
+                currentDate.isAfter(_startDate!) &&
+                currentDate.isBefore(_endDate!);
+
+            ThemeData themes = Theme.of(context);
+
+            Color bgColor = Colors.transparent;
+            Color textColor = themes.colorScheme.onSurface;
+
+            if (isStartDate || isEndDate) {
+              bgColor = themes.colorScheme.primary;
+              textColor = Colors.white;
+            } else if (isInRange) {
+              bgColor = themes.colorScheme.secondary.withOpacity(0.2);
+            }
 
             return InkWell(
-              onTap: () {},
+              // This is changed
+              onTap: () => _onDateTapped(currentDate),
               customBorder: const CircleBorder(),
               child: Container(
                 alignment: Alignment.center,
                 decoration: BoxDecoration(
-                  color: isSelected
-                      ? const Color(0xFF7D5C86).withOpacity(0.2)
-                      : Colors.transparent,
+                  color: bgColor,
                   shape: BoxShape.circle,
-                  border: isSelected
-                      ? Border.all(color: const Color(0xFF7D5C86))
-                      : null,
                 ),
                 child: Text(
                   dayNumber.toString(),
                   style: TextStyle(
-                    color: isSelected ? const Color(0xFF7D5C86) : Colors.black,
-                    fontWeight:
-                        isSelected ? FontWeight.bold : FontWeight.normal,
+                    color: textColor,
+                    fontWeight: (isStartDate || isEndDate)
+                        ? FontWeight.bold
+                        : FontWeight.normal,
                   ),
                 ),
               ),
