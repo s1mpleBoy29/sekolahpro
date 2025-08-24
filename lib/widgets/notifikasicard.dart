@@ -14,13 +14,17 @@ class NotificationCard extends StatelessWidget {
     required this.tanggal,
     required this.judul,
     required this.deskripsi,
-    this.isRead = false,
+    required this.isRead,
   });
 
   @override
   Widget build(BuildContext context) {
-    final Color backgroundColor = isRead ? const Color(0xFFE0E0E0) : const Color(0xFFF7EBF7);
-    final Color borderColor = isRead ? const Color(0xFFC0C0C0) : const Color(0xFFE5BEE5);
+    // Tentukan warna berdasarkan status isRead
+    final Color backgroundColor = isRead ? Colors.white : const Color(0xFFF7EBF7);
+    final Color borderColor = isRead ? Colors.grey[300]! : const Color(0xFFE5BEE5);
+    final Color titleColor = isRead ? Colors.black : Colors.black;
+    final Color descriptionColor = isRead ? Colors.black87 : Colors.black87;
+    final Color dateColor = isRead ? Colors.grey : Colors.grey;
 
     return Container(
       padding: const EdgeInsets.all(12),
@@ -36,28 +40,28 @@ class NotificationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Teks untuk tanggal - menggunakan style yang lebih kecil dan abu
+          // Teks untuk tanggal
           Text(
             tanggal,
-            style: CustomTextStyles.titleMediumGrey, // Style untuk tanggal
+            style: CustomTextStyles.titleMediumGrey.copyWith(color: dateColor),
           ),
           const SizedBox(height: 8),
-          // Teks untuk judul notifikasi - menggunakan style yang lebih ringan
+          // Teks untuk judul notifikasi
           Text(
             judul,
             style: CustomTextStyles.titleMediumLato.copyWith(
-              fontWeight: FontWeight.w400, // Lebih ringan dari w600
+              fontWeight: FontWeight.w400, // Gunakan fontWeight yang sudah ditentukan
               fontSize: 16.fSize,
-              color: Colors.black,
+              color: titleColor,
             ),
           ),
           const SizedBox(height: 4),
-          // Teks untuk deskripsi notifikasi - menggunakan body style yang ringan
+          // Teks untuk deskripsi notifikasi
           Text(
             deskripsi,
             style: CustomTextStyles.titleMediumLato.copyWith(
-              fontWeight: FontWeight.w400, // Weight yang sama dengan judul
-              color: Colors.black87,
+              fontWeight: FontWeight.w400,
+              color: descriptionColor,
               fontSize: 14.fSize,
             ),
           ),

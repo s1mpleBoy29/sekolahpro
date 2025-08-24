@@ -13,6 +13,50 @@ import 'package:guardian_app/widgets/secondary_topbar.dart';
 import 'package:guardian_app/widgets/filterpopup.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 
+// Data dummy untuk Jadwal Pembayaran
+final List<Map<String, dynamic>> _allPayments = [
+  {
+    "description": 'Uang Sekolah Candra Bulan Agustus Tahun Ajaran 2025 / 2026',
+    "amount": 'Rp 300.000',
+    "status": 'Belum Lunas',
+    "statusColor": Colors.grey,
+    "isOverdue": false,
+    "dueDate": DateTime.parse("2025-08-10"),
+  },
+  {
+    "description": 'Uang Seragam Candra Tahun Ajaran 2025 / 2026',
+    "amount": 'Rp 1.200.000',
+    "status": 'Lunas',
+    "statusColor": Colors.green,
+    "isOverdue": false,
+    "dueDate": DateTime.parse("2025-07-30"),
+  },
+  {
+    "description": 'Uang Sekolah Candra Bulan Juli Tahun Ajaran 2025 / 2026',
+    "amount": 'Rp 300.000',
+    "status": 'Belum Lunas',
+    "statusColor": Colors.red,
+    "isOverdue": true,
+    "dueDate": DateTime.parse("2025-07-01"),
+  },
+  {
+    "description": 'Uang Pembangunan Gedung Baru',
+    "amount": 'Rp 500.000',
+    "status": 'Lunas',
+    "statusColor": Colors.green,
+    "isOverdue": false,
+    "dueDate": DateTime.parse("2025-06-15"),
+  },
+  {
+    "description": 'Uang Kegiatan Ekstrakurikuler',
+    "amount": 'Rp 150.000',
+    "status": 'Belum Lunas',
+    "statusColor": Colors.grey,
+    "isOverdue": false,
+    "dueDate": DateTime.parse("2025-09-01"),
+  },
+];
+
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
 
@@ -22,19 +66,48 @@ class KeuanganScreen extends StatefulWidget {
 
 class KeuanganPageScreen extends State<KeuanganScreen> {
   late String filterArea = 'smpn_13_malang';
+  List<Map<String, dynamic>> _filteredPayments = [];
+  final List<String> _bulanIndonesia = [
+    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
+    'Agustus', 'September', 'Oktober', 'November', 'Desember'
+  ];
 
-  Future<void> onRefresh() async {}
+  @override
+  void initState() {
+    super.initState();
+    _filteredPayments = _allPayments;
+  }
+
+  Future<void> onRefresh() async {
+    setState(() {
+      _filteredPayments = _allPayments;
+    });
+  }
+
+  void _applyPaymentFilter(Map<String, dynamic> filters) {
+    setState(() {
+      _filteredPayments = _allPayments.where((payment) {
+        final statusFilter = filters['status_pembayaran'] as KeuanganFilterStatus;
+        final bool matchesStatus = statusFilter == KeuanganFilterStatus.semua ||
+            (statusFilter == KeuanganFilterStatus.lunas && payment['status'] == 'Lunas') ||
+            (statusFilter == KeuanganFilterStatus.belumLunas && payment['status'] == 'Belum Lunas') ||
+            (statusFilter == KeuanganFilterStatus.tenggat && payment['isOverdue'] == true);
+        
+        return matchesStatus;
+      }).toList();
+    });
+  }
 
   void _showFilterPopup() {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(1),
+      barrierColor: Colors.black.withOpacity(0.5),
       builder: (BuildContext context) {
-        return FractionallySizedBox(
-          heightFactor: 0.94,
-          child: FilterPopup(),
+        return FilterPopup(
+          currentPage: FilterPage.keuangan,
+          onApplyFilter: _applyPaymentFilter,
         );
       },
     );
@@ -49,6 +122,14 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
         ),
       ),
     );
+  }
+
+  // Metode untuk memformat tanggal secara manual
+  String _formatDateManual(DateTime date) {
+    String day = date.day.toString();
+    String month = _bulanIndonesia[date.month - 1];
+    String year = date.year.toString();
+    return '$day $month $year';
   }
 
   @override
@@ -86,7 +167,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                 subtitleText: 'SDN 13 Malang | Kelas 5',
                 onTitleTap: _navigateToAnakScreen,
               ),
-              // SecondaryTopbar untuk Keuangan
               SecondaryTopbar(
                 backgroundColor: theme.colorScheme.secondary,
                 lineColor: appTheme.gray300,
@@ -118,12 +198,10 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             _buildPaymentSummary(),
-                            // Mengganti _buildAdSection() dengan AdCard
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 20),
                               child: const AdCard(
-                                teks:
-                                    'In the lessns we leran new words and r for vacalaburities continues and article',
+                                teks: 'In the lessns we leran new words and r for vacalaburities continues and article',
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -187,48 +265,42 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
               fontSize: 16, fontWeight: FontWeight.bold, color: Colors.black),
         ),
         const SizedBox(height: 10),
-        // Wrap PaymentScheduleCard dengan GestureDetector untuk menambahkan onTap
-        GestureDetector(
-          onTap: () => _navigateToPaymentDetail(context),
-          child: const PaymentScheduleCard(
-            dueDate: '10 Agustus 2025',
-            amount: 'Rp 300.000',
-            description:
-                'Uang Sekolah Candra Bulan Agustus Tahun Ajaran 2025 / 2026',
-            status: 'Belum Lunas',
-            statusColor: Colors.grey,
-            isOverdue: false,
-          ),
-        ),
-        GestureDetector(
-          onTap: () => _navigateToPaymentDetail(context),
-          child: const PaymentScheduleCard(
-            dueDate: '30 Juli 2025',
-            amount: 'Rp 1.200.000',
-            description: 'Uang Seragam Candra Tahun Ajaran 2025 / 2026',
-            status: 'Lunas',
-            statusColor: Colors.green,
-            isOverdue: false,
-          ),
-        ),
-        GestureDetector(
-          onTap: () => _navigateToPaymentDetail(context),
-          child: const PaymentScheduleCard(
-            amount: 'Rp 300.000',
-            description:
-                'Uang Sekolah Candra Bulan Juli Tahun Ajaran 2025 / 2026',
-            status: 'Belum Lunas',
-            statusColor: Colors.grey,
-            isOverdue: true,
-          ),
-        ),
+        if (_filteredPayments.isEmpty)
+          const Center(
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: Text(
+                'Tidak ada jadwal pembayaran yang ditemukan.',
+                style: TextStyle(fontSize: 14, color: Colors.grey),
+              ),
+            ),
+          )
+        else
+          ..._filteredPayments.map((payment) {
+            final DateTime? dueDate = payment['dueDate'];
+            String? dueDateString;
+            if (dueDate != null) {
+              dueDateString = _formatDateManual(dueDate);
+            }
+
+            return GestureDetector(
+              onTap: () => _navigateToPaymentDetail(context),
+              child: PaymentScheduleCard(
+                dueDate: dueDateString,
+                amount: payment['amount'],
+                description: payment['description'],
+                status: payment['status'],
+                statusColor: payment['statusColor'],
+                isOverdue: payment['isOverdue'],
+              ),
+            );
+          }).toList(),
       ],
     );
   }
 
-  // Method untuk navigasi ke halaman detail pembayaran
   void _navigateToPaymentDetail(BuildContext context) {
     Navigator.pushNamed(
-        context, AppRoutes.paymentDetailPage); // Ganti dengan rute yang sesuai
+        context, AppRoutes.paymentDetailPage);
   }
 }

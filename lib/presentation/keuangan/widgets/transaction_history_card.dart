@@ -28,6 +28,7 @@ class TransactionHistoryCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(16.0),
+      margin: const EdgeInsets.symmetric(vertical: 4.0),
       decoration: BoxDecoration(
         border: Border.all(
           color: isRejected
@@ -53,6 +54,7 @@ class TransactionHistoryCard extends StatelessWidget {
             ),
           Row(
             crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Expanded(
                 child: Column(
@@ -89,14 +91,14 @@ class TransactionHistoryCard extends StatelessWidget {
               ElevatedButton(
                 onPressed: onPressed,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: buttonColor,
+                  backgroundColor: buttonColor, // Gunakan warna yang diterima
                   foregroundColor: Colors.white,
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 20,
+                    horizontal: 16,
+                    vertical: 12,
                   ),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(0),
+                    borderRadius: BorderRadius.circular(4),
                   ),
                   elevation: 0,
                 ),

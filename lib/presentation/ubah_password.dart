@@ -13,7 +13,7 @@ class UbahPasswordPageScreen extends State<UbahPasswordScreen> {
   final _passwordLamaController = TextEditingController();
   final _passwordBaruController = TextEditingController();
   final _ketikUlangPasswordController = TextEditingController();
-  
+
   bool _isLoading = false;
 
   @override
@@ -37,19 +37,19 @@ class UbahPasswordPageScreen extends State<UbahPasswordScreen> {
         _isLoading = false;
       });
 
-      // Tampilkan pesan sukses
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Password berhasil diubah',
-            style: CustomTextStyles.textSuccess,
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Password berhasil diubah',
+              style: CustomTextStyles.textSuccess,
+            ),
+            backgroundColor: appTheme.green600,
           ),
-          backgroundColor: appTheme.green600,
-        ),
-      );
+        );
 
-      // Kembali ke halaman sebelumnya
-      Navigator.pop(context);
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -65,7 +65,7 @@ class UbahPasswordPageScreen extends State<UbahPasswordScreen> {
     final hasUppercase = value.contains(RegExp(r'[A-Z]'));
     final hasLowercase = value.contains(RegExp(r'[a-z]'));
     final hasDigits = value.contains(RegExp(r'[0-9]'));
-    final hasSpecialCharacters = value.contains(RegExp(r'[!@#$%^&*(),.?":{}|<>]'));
+    final hasSpecialCharacters = value.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'));
     
     if (!hasUppercase || !hasLowercase || !hasDigits || !hasSpecialCharacters) {
       return 'Password harus mengandung huruf besar, kecil, angka, dan karakter khusus';
@@ -92,21 +92,30 @@ class UbahPasswordPageScreen extends State<UbahPasswordScreen> {
     return TextFormField(
       controller: controller,
       validator: validator,
+      obscureText: true,
       style: CustomTextStyles.titleMediumPrimaryContainer.copyWith(
         color: Colors.black,
       ),
       decoration: InputDecoration(
         hintText: hintText,
-        hintStyle: CustomTextStyles.titleMediumGrey,
+        hintStyle: CustomTextStyles.titleMediumPrimaryContainer.copyWith(
+          color: appTheme.gray500,
+        ),
         filled: true,
-        fillColor: appTheme.gray200,
+        fillColor: Colors.white,
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.h),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: appTheme.blueGray100,
+            width: 1.h,
+          ),
         ),
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.h),
-          borderSide: BorderSide.none,
+          borderSide: BorderSide(
+            color: appTheme.blueGray100,
+            width: 1.h,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8.h),
@@ -149,11 +158,11 @@ class UbahPasswordPageScreen extends State<UbahPasswordScreen> {
           icon: Icon(
             Icons.arrow_back_ios,
             color: theme.colorScheme.onPrimaryContainer,
-            size: 20.h,
+            size: 15.h,
           ),
           onPressed: () {
-                Navigator.pushReplacementNamed(context, AppRoutes.akunScreen); 
-            }
+            Navigator.pop(context);
+          },
         ),
         title: Text(
           'Ubah Password',
@@ -181,8 +190,7 @@ class UbahPasswordPageScreen extends State<UbahPasswordScreen> {
                   ),
                 ),
                 SizedBox(height: 30.v),
-                
-                // Password Lama Field
+
                 _buildPasswordField(
                   controller: _passwordLamaController,
                   hintText: 'Password lama',
@@ -194,24 +202,21 @@ class UbahPasswordPageScreen extends State<UbahPasswordScreen> {
                   },
                 ),
                 SizedBox(height: 16.v),
-                
-                // Password Baru Field
+
                 _buildPasswordField(
                   controller: _passwordBaruController,
                   hintText: 'Password baru',
                   validator: _validatePassword,
                 ),
                 SizedBox(height: 16.v),
-                
-                // Ketik Ulang Password Field
+
                 _buildPasswordField(
                   controller: _ketikUlangPasswordController,
                   hintText: 'Ketik ulang password baru',
                   validator: _validateKonfirmasiPassword,
                 ),
                 SizedBox(height: 30.v),
-                
-                // Konfirmasi Button
+
                 SizedBox(
                   width: double.infinity,
                   height: 50.v,

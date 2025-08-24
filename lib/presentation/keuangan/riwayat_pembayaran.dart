@@ -3,8 +3,8 @@ import 'package:guardian_app/core/app_export.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/transaction_history_card.dart';
 import 'package:guardian_app/widgets/search_card.dart';
 import 'package:guardian_app/widgets/dropdown_card.dart';
-import 'package:guardian_app/widgets/date_filter.dart'; // 1. Import the date filter
-import 'package:intl/intl.dart'; // 2. Import the intl package for date formatting
+import 'package:guardian_app/widgets/date_filter.dart';
+import 'package:intl/intl.dart';
 
 class RiwayatPembayaran extends StatefulWidget {
   const RiwayatPembayaran({super.key});
@@ -16,44 +16,40 @@ class RiwayatPembayaran extends StatefulWidget {
 class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
   final TextEditingController _searchController = TextEditingController();
 
-  // Dummy data for transaction history
+  // Dummy data dengan metode pembayaran
   final List<Map<String, dynamic>> _allTransactions = [
     {
       "date": "1 Juli 2025",
       "rawDate": DateTime(2025, 7, 1),
       "amount": "Rp 200.000",
       "description": "Pembayaran Transfer ke BCA #90.00.00",
-      "buttonText": "Detail",
-      "buttonColor": Colors.grey[600]!,
       "isRejected": false,
+      "paymentMethod": "transfer", // Tambahkan metode pembayaran
     },
     {
       "date": "1 Juli 2025",
       "rawDate": DateTime(2025, 7, 1),
       "amount": "Rp 1.000.000",
       "description": "Pembayaran Transfer ke BCA #90.00.00",
-      "buttonText": "Detail",
-      "buttonColor": Colors.grey[600]!,
       "isRejected": true,
       "rejectionMessage": "Konfirmasi ditolak karena attachment tidak valid",
+      "paymentMethod": "transfer", // Tambahkan metode pembayaran
     },
     {
       "date": "30 Juni 2025",
       "rawDate": DateTime(2025, 6, 30),
       "amount": "Rp 1.000.000",
       "description": "Pembayaran Tunai ke Kasir #09.00.00",
-      "buttonText": "Unduh Bukti",
-      "buttonColor": const Color(0xFF7D5C86),
       "isRejected": false,
+      "paymentMethod": "tunai", // Tambahkan metode pembayaran
     },
     {
       "date": "22 Agustus 2025",
       "rawDate": DateTime(2025, 8, 22),
       "amount": "Rp 550.000",
       "description": "Pembayaran SPP Agustus",
-      "buttonText": "Unduh Bukti",
-      "buttonColor": const Color(0xFF7D5C86),
       "isRejected": false,
+      "paymentMethod": "tunai", // Tambahkan metode pembayaran
     }
   ];
 
@@ -76,7 +72,6 @@ class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
     super.dispose();
   }
 
-  // Semua filter aktif
   void _applyAllFilters() {
     final query = _searchController.text.toLowerCase();
     setState(() {
@@ -84,20 +79,17 @@ class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
         final transactionDate = transaction['rawDate'] as DateTime;
         bool dateMatches = false;
         if (_startDate == null) {
-          dateMatches = true; // Default semua tanggal
-        } else if (_endDate == null ||
-            DateUtils.isSameDay(_startDate, _endDate)) {
+          dateMatches = true;
+        } else if (_endDate == null || DateUtils.isSameDay(_startDate, _endDate)) {
           dateMatches = DateUtils.isSameDay(transactionDate, _startDate);
         } else {
-          dateMatches = (transactionDate
-                  .isAfter(_startDate!.subtract(const Duration(days: 1))) &&
+          dateMatches = (transactionDate.isAfter(_startDate!.subtract(const Duration(days: 1))) &&
               transactionDate.isBefore(_endDate!.add(const Duration(days: 1))));
         }
 
         bool searchMatches = true;
         if (query.isNotEmpty) {
-          final description =
-              transaction['description'].toString().toLowerCase();
+          final description = transaction['description'].toString().toLowerCase();
           final date = transaction['date'].toString().toLowerCase();
           final amount = transaction['amount'].toString().toLowerCase();
           searchMatches = description.contains(query) ||
@@ -110,7 +102,6 @@ class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
     });
   }
 
-  // Show filter tanggal sebagai modal
   void _showDateFilter() async {
     final result = await showModalBottomSheet<Map<String, DateTime?>>(
       context: context,
@@ -134,15 +125,10 @@ class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
         ),
       ),
     );
-    print("Result from bottom sheet: $result");
-
-    // Handle data saat kembali ke main screen
     if (result != null) {
       setState(() {
         _startDate = result['startDate'];
         _endDate = result['endDate'];
-
-        // Update display teks
         if (_startDate != null) {
           final format = DateFormat('d MMM yyyy');
           if (_endDate == null || DateUtils.isSameDay(_startDate, _endDate)) {
@@ -155,12 +141,13 @@ class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
           _currentDateFilterText = 'Semua Tanggal';
         }
       });
-      _applyAllFilters(); // Re-apply
+      _applyAllFilters();
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -198,18 +185,29 @@ class _RiwayatPembayaranState extends State<RiwayatPembayaran> {
                         itemCount: _filteredTransactions.length,
                         itemBuilder: (context, index) {
                           final item = _filteredTransactions[index];
+                          
+                          // Tentukan teks dan warna tombol berdasarkan metode pembayaran
+                          String buttonText;
+                          Color buttonColor;
+                          if (item['paymentMethod'] == 'tunai') {
+                            buttonText = "Unduh Bukti";
+                            buttonColor = const Color(0xFF7D5C86); // Warna ungu
+                          } else { // 'transfer'
+                            buttonText = "Detail";
+                            buttonColor = Colors.grey[600]!; // Warna abu-abu
+                          }
+
                           return TransactionHistoryCard(
                             date: item['date'],
                             amount: item['amount'],
                             description: item['description'],
-                            buttonText: item['buttonText'],
-                            buttonColor: item['buttonColor'],
+                            buttonText: buttonText,
+                            buttonColor: buttonColor,
                             isRejected: item['isRejected'],
                             rejectionMessage: item['rejectionMessage'],
                             onPressed: () {
                               // ignore: avoid_print
-                              print(
-                                  '${item['buttonText']} pressed for item ${index + 1}');
+                              print('$buttonText pressed for item ${index + 1}');
                             },
                           );
                         },
