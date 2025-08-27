@@ -9,24 +9,26 @@ class NotificationPage extends StatefulWidget {
 }
 
 class NotificationPageState extends State<NotificationPage> {
-  // Data statis notifikasi
-  final List<Map<String, String>> notifications = [
+  // Data statis notifikasi dengan status isRead
+  final List<Map<String, dynamic>> notifications = [ // Gunakan dynamic karena nilainya berbeda tipe
     {
       'tanggal': '10 Juli 2025 08.30',
       'judul': 'Uang Sekolah Candra Bulan Juli Tahun Ajaran 2025 / 2026 sudah melewati batas pembayaran',
       'deskripsi': '',
+      'isRead': false, // Notifikasi ini belum dibaca
     },
     {
       'tanggal': '1 Juli 2025 09.30',
       'judul': 'Pembayaran Uang Seragam Candra Tahun Ajaran 2025 / 2026 sudah diterima',
       'deskripsi': '',
+      'isRead': true, // Notifikasi ini sudah dibaca
     },
   ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, 
+      backgroundColor: Colors.white,
       appBar: AppBar(
         title: const Text(
           "Notifikasi",
@@ -52,6 +54,7 @@ class NotificationPageState extends State<NotificationPage> {
             tanggal: notif['tanggal']!,
             judul: notif['judul']!,
             deskripsi: notif['deskripsi']!,
+            isRead: notif['isRead']!, // Kirim status isRead ke NotificationCard
           );
         },
       ),

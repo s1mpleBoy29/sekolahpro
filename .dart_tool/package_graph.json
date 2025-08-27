@@ -13,6 +13,7 @@
         "flutter_svg",
         "flutter_svg_provider",
         "intl",
+        "intl_phone_field",
         "logger",
         "lottie",
         "lucide_icons",
@@ -57,6 +58,13 @@
         "test_api",
         "vector_math",
         "vm_service"
+      ]
+    },
+    {
+      "name": "intl_phone_field",
+      "version": "3.2.0",
+      "dependencies": [
+        "flutter"
       ]
     },
     {

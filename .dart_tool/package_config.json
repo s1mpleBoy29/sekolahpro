@@ -158,6 +158,12 @@
       "languageVersion": "3.3"
     },
     {
+      "name": "intl_phone_field",
+      "rootUri": "file:///D:/pub-cache/hosted/pub.dev/intl_phone_field-3.2.0",
+      "packageUri": "lib/",
+      "languageVersion": "2.12"
+    },
+    {
       "name": "leak_tracker",
       "rootUri": "file:///D:/pub-cache/hosted/pub.dev/leak_tracker-10.0.9",
       "packageUri": "lib/",
