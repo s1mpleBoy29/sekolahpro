@@ -1,0 +1,324 @@
+-- Merging decision tree log ---
+application
+INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:3:5-34:19
+INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml
+MERGED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:22:5-29:19
+MERGED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:28:5-89
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:23:5-33:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:23:5-53:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/b997d1796d9c1d84849d99096e54f4ca/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/b997d1796d9c1d84849d99096e54f4ca/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:25:5-31:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/9b70401d804753d6e49083da2af17903/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/9b70401d804753d6e49083da2af17903/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:24:5-25:19
+	android:extractNativeLibs
+		INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml
+	android:appComponentFactory
+		ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:28:18-86
+	android:name
+		INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml
+manifest
+ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:1:1-46:12
+MERGED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:1:1-46:12
+INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml:1:1-7:12
+MERGED from [:package_info_plus] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/package_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:path_provider_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:permission_handler_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/permission_handler_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:shared_preferences_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/shared_preferences_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [:sqflite_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/sqflite_android/intermediates/merged_manifest/debug/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.preference:preference:1.2.1] /Users/cocoa/.gradle/caches/transforms-3/1d76b91ecc88506f31ce4e8ae76f57b7/transformed/preference-1.2.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/0f3d6d5500f12924210d6bce37a58468/transformed/appcompat-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.fragment:fragment-ktx:1.7.1] /Users/cocoa/.gradle/caches/transforms-3/97ea1594aaecb639b36c2b40cd254085/transformed/jetified-fragment-ktx-1.7.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/cocoa/.gradle/caches/transforms-3/a3a3304a43da3d3b23acd8d4a2472a07/transformed/fragment-1.7.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.recyclerview:recyclerview:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/46366c286be22d18f8b832f11851dd2b/transformed/recyclerview-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/360adc86b764af2881f5ba0af5ae2488/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/45b34d32a3dec255175072d1927a300b/transformed/slidingpanelayout-1.2.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:17:1-31:12
+MERGED from [androidx.window:window-java:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/af6244b5a39b73e9a6c917928cf1936e/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:17:1-21:12
+MERGED from [androidx.activity:activity-ktx:1.8.1] /Users/cocoa/.gradle/caches/transforms-3/a870af39aa01bd1b5494ec25b1f209b5/transformed/jetified-activity-ktx-1.8.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.activity:activity:1.8.1] /Users/cocoa/.gradle/caches/transforms-3/f2fedc42fd304ec91c26487775792ec6/transformed/jetified-activity-1.8.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/eaaa506f502dfc10a44591950c76a63d/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.loader:loader:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/87515ef097479a29a3c687589c5c58c2/transformed/loader-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/7cbe3a9d1368ce9f6bec94be7c639b5d/transformed/viewpager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/660ec7a1d2b8acb8d7ef32c7e4908bcc/transformed/jetified-lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/18d72faff802f155df6f8b113199283e/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/1ac7b78e45133198a0f75cd85604d36d/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/45457edbf3aab6e6dab6a216bed19c96/transformed/jetified-lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/714b4a4cc8f406dbda742a0e87eaf4c4/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/90ec171f08291b1942e610a3ff72511d/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/471eea46ec5a9db1f4454b89e9ef0ac4/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/df1f018598d7d397c38b78cb90eb09e2/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/ff109a018f081a221e24f42aa99993f6/transformed/jetified-appcompat-resources-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/2911bc91a2840c6ab7c2b0788c425fe7/transformed/drawerlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/3e965e9fcd0a80512b0572070c1b7a67/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.customview:customview:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/f7f8d10a5df395aa9654c7ffd1e3329a/transformed/customview-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.transition:transition:1.4.1] /Users/cocoa/.gradle/caches/transforms-3/9600c12aafce8947560928484bbb9572/transformed/transition-1.4.1/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/99ab9154a1c1881410061df3cfb4632b/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/e80b91d8dcb0480da0a879f03f7c36d6/transformed/vectordrawable-1.1.0/AndroidManifest.xml:17:1-24:12
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/abd68c421f41861a6839193578d826b5/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/567a66f2f36642396cac4c4ed7ae87d0/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:17:1-30:12
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/5b2635f51ec09ed8f49ae2e7ed9a566e/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:17:1-35:12
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/cocoa/.gradle/caches/transforms-3/2c9a367832645489e9093c67c9f37fdc/transformed/jetified-savedstate-ktx-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/cocoa/.gradle/caches/transforms-3/93de5f5e411ab4937bf5a4670d24e694/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:17:1-55:12
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/b997d1796d9c1d84849d99096e54f4ca/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:17:1-33:12
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/6a32684e099ee42e00a9f759ef82c965/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.datastore:datastore-core-android:1.1.3] /Users/cocoa/.gradle/caches/transforms-3/08dcef8b84349b66bd0acdcf3b0fd95d/transformed/jetified-datastore-core-release/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.3] /Users/cocoa/.gradle/caches/transforms-3/5c572f023ba6a10edc83254e8da08e91/transformed/jetified-datastore-preferences-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.datastore:datastore-android:1.1.3] /Users/cocoa/.gradle/caches/transforms-3/95964bcdbb398a89ff2e2fc12649489b/transformed/jetified-datastore-release/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/cocoa/.gradle/caches/transforms-3/4eb2314492f5178504385d49f14c420b/transformed/core-runtime-2.2.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/9b70401d804753d6e49083da2af17903/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:17:1-27:12
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/48383c31b20c56fd1a84412e82db5389/transformed/interpolator-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/f80a64945cdf3cfcd1a34ace52a75aa0/transformed/cursoradapter-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/95dbae5502c5b71b150a2f52b5d53939/transformed/jetified-core-1.0.0/AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/366d5bd63afe5e6479597895c610e188/transformed/documentfile-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/da932cf6744cd8581aa09e790578b346/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.print:print:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/b8c395d0fdd3c55828149c08e972a5a2/transformed/print-1.0.0/AndroidManifest.xml:17:1-22:12
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/cocoa/.gradle/caches/transforms-3/bc000f3444a9f5fd155cc683bdfa86e1/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:2:1-7:12
+	package
+		INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml
+	android:versionName
+		INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml
+	xmlns:android
+		ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:1:11-69
+uses-permission#android.permission.INTERNET
+ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:2:5-67
+MERGED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:2:5-67
+MERGED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:2:5-67
+	android:name
+		ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:2:22-64
+queries
+ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:40:5-45:15
+intent#action:name:android.intent.action.PROCESS_TEXT+data:mimeType:text/plain
+ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:41:9-44:18
+action#android.intent.action.PROCESS_TEXT
+ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:42:13-72
+	android:name
+		ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:42:21-70
+data
+ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:43:13-50
+	android:mimeType
+		ADDED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/main/AndroidManifest.xml:43:19-48
+uses-sdk
+INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml
+INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml
+MERGED from [:package_info_plus] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/package_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:package_info_plus] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/package_info_plus/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:path_provider_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:path_provider_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/path_provider_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:permission_handler_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/permission_handler_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:permission_handler_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/permission_handler_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/shared_preferences_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:shared_preferences_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/shared_preferences_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:sqflite_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/sqflite_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [:sqflite_android] /Users/cocoa/Documents/GitHub/guardian_app_flutter/build/sqflite_android/intermediates/merged_manifest/debug/AndroidManifest.xml:5:5-44
+MERGED from [androidx.preference:preference:1.2.1] /Users/cocoa/.gradle/caches/transforms-3/1d76b91ecc88506f31ce4e8ae76f57b7/transformed/preference-1.2.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.preference:preference:1.2.1] /Users/cocoa/.gradle/caches/transforms-3/1d76b91ecc88506f31ce4e8ae76f57b7/transformed/preference-1.2.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/0f3d6d5500f12924210d6bce37a58468/transformed/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/0f3d6d5500f12924210d6bce37a58468/transformed/appcompat-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.fragment:fragment-ktx:1.7.1] /Users/cocoa/.gradle/caches/transforms-3/97ea1594aaecb639b36c2b40cd254085/transformed/jetified-fragment-ktx-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment-ktx:1.7.1] /Users/cocoa/.gradle/caches/transforms-3/97ea1594aaecb639b36c2b40cd254085/transformed/jetified-fragment-ktx-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/cocoa/.gradle/caches/transforms-3/a3a3304a43da3d3b23acd8d4a2472a07/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.fragment:fragment:1.7.1] /Users/cocoa/.gradle/caches/transforms-3/a3a3304a43da3d3b23acd8d4a2472a07/transformed/fragment-1.7.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/46366c286be22d18f8b832f11851dd2b/transformed/recyclerview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.recyclerview:recyclerview:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/46366c286be22d18f8b832f11851dd2b/transformed/recyclerview-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/360adc86b764af2881f5ba0af5ae2488/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-ui:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/360adc86b764af2881f5ba0af5ae2488/transformed/legacy-support-core-ui-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/45b34d32a3dec255175072d1927a300b/transformed/slidingpanelayout-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.slidingpanelayout:slidingpanelayout:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/45b34d32a3dec255175072d1927a300b/transformed/slidingpanelayout-1.2.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window:window-java:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/af6244b5a39b73e9a6c917928cf1936e/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.window:window-java:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/af6244b5a39b73e9a6c917928cf1936e/transformed/jetified-window-java-1.2.0/AndroidManifest.xml:19:5-44
+MERGED from [androidx.activity:activity-ktx:1.8.1] /Users/cocoa/.gradle/caches/transforms-3/a870af39aa01bd1b5494ec25b1f209b5/transformed/jetified-activity-ktx-1.8.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity-ktx:1.8.1] /Users/cocoa/.gradle/caches/transforms-3/a870af39aa01bd1b5494ec25b1f209b5/transformed/jetified-activity-ktx-1.8.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.activity:activity:1.8.1] /Users/cocoa/.gradle/caches/transforms-3/f2fedc42fd304ec91c26487775792ec6/transformed/jetified-activity-1.8.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.activity:activity:1.8.1] /Users/cocoa/.gradle/caches/transforms-3/f2fedc42fd304ec91c26487775792ec6/transformed/jetified-activity-1.8.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/eaaa506f502dfc10a44591950c76a63d/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.legacy:legacy-support-core-utils:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/eaaa506f502dfc10a44591950c76a63d/transformed/legacy-support-core-utils-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/87515ef097479a29a3c687589c5c58c2/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.loader:loader:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/87515ef097479a29a3c687589c5c58c2/transformed/loader-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/7cbe3a9d1368ce9f6bec94be7c639b5d/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.viewpager:viewpager:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/7cbe3a9d1368ce9f6bec94be7c639b5d/transformed/viewpager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/660ec7a1d2b8acb8d7ef32c7e4908bcc/transformed/jetified-lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime-ktx:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/660ec7a1d2b8acb8d7ef32c7e4908bcc/transformed/jetified-lifecycle-runtime-ktx-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/18d72faff802f155df6f8b113199283e/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/18d72faff802f155df6f8b113199283e/transformed/lifecycle-livedata-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/1ac7b78e45133198a0f75cd85604d36d/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core-ktx:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/1ac7b78e45133198a0f75cd85604d36d/transformed/jetified-lifecycle-livedata-core-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/45457edbf3aab6e6dab6a216bed19c96/transformed/jetified-lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/45457edbf3aab6e6dab6a216bed19c96/transformed/jetified-lifecycle-viewmodel-ktx-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/714b4a4cc8f406dbda742a0e87eaf4c4/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/714b4a4cc8f406dbda742a0e87eaf4c4/transformed/lifecycle-viewmodel-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/90ec171f08291b1942e610a3ff72511d/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-livedata-core:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/90ec171f08291b1942e610a3ff72511d/transformed/lifecycle-livedata-core-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/471eea46ec5a9db1f4454b89e9ef0ac4/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-viewmodel-savedstate:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/471eea46ec5a9db1f4454b89e9ef0ac4/transformed/jetified-lifecycle-viewmodel-savedstate-2.7.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/df1f018598d7d397c38b78cb90eb09e2/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.core:core-ktx:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/df1f018598d7d397c38b78cb90eb09e2/transformed/jetified-core-ktx-1.13.1/AndroidManifest.xml:5:5-44
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/ff109a018f081a221e24f42aa99993f6/transformed/jetified-appcompat-resources-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.appcompat:appcompat-resources:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/ff109a018f081a221e24f42aa99993f6/transformed/jetified-appcompat-resources-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/2911bc91a2840c6ab7c2b0788c425fe7/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.drawerlayout:drawerlayout:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/2911bc91a2840c6ab7c2b0788c425fe7/transformed/drawerlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/3e965e9fcd0a80512b0572070c1b7a67/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.coordinatorlayout:coordinatorlayout:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/3e965e9fcd0a80512b0572070c1b7a67/transformed/coordinatorlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.customview:customview:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/f7f8d10a5df395aa9654c7ffd1e3329a/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.customview:customview:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/f7f8d10a5df395aa9654c7ffd1e3329a/transformed/customview-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.4.1] /Users/cocoa/.gradle/caches/transforms-3/9600c12aafce8947560928484bbb9572/transformed/transition-1.4.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.transition:transition:1.4.1] /Users/cocoa/.gradle/caches/transforms-3/9600c12aafce8947560928484bbb9572/transformed/transition-1.4.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/99ab9154a1c1881410061df3cfb4632b/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable-animated:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/99ab9154a1c1881410061df3cfb4632b/transformed/vectordrawable-animated-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/e80b91d8dcb0480da0a879f03f7c36d6/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.vectordrawable:vectordrawable:1.1.0] /Users/cocoa/.gradle/caches/transforms-3/e80b91d8dcb0480da0a879f03f7c36d6/transformed/vectordrawable-1.1.0/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/abd68c421f41861a6839193578d826b5/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.swiperefreshlayout:swiperefreshlayout:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/abd68c421f41861a6839193578d826b5/transformed/swiperefreshlayout-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/567a66f2f36642396cac4c4ed7ae87d0/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.asynclayoutinflater:asynclayoutinflater:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/567a66f2f36642396cac4c4ed7ae87d0/transformed/asynclayoutinflater-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/5b2635f51ec09ed8f49ae2e7ed9a566e/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-runtime:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/5b2635f51ec09ed8f49ae2e7ed9a566e/transformed/lifecycle-runtime-2.7.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:21:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/cocoa/.gradle/caches/transforms-3/2c9a367832645489e9093c67c9f37fdc/transformed/jetified-savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate-ktx:1.2.1] /Users/cocoa/.gradle/caches/transforms-3/2c9a367832645489e9093c67c9f37fdc/transformed/jetified-savedstate-ktx-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/cocoa/.gradle/caches/transforms-3/93de5f5e411ab4937bf5a4670d24e694/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.savedstate:savedstate:1.2.1] /Users/cocoa/.gradle/caches/transforms-3/93de5f5e411ab4937bf5a4670d24e694/transformed/jetified-savedstate-1.2.1/AndroidManifest.xml:20:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:21:5-44
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/b997d1796d9c1d84849d99096e54f4ca/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/b997d1796d9c1d84849d99096e54f4ca/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:21:5-23:41
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/6a32684e099ee42e00a9f759ef82c965/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.tracing:tracing:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/6a32684e099ee42e00a9f759ef82c965/transformed/jetified-tracing-1.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-core-android:1.1.3] /Users/cocoa/.gradle/caches/transforms-3/08dcef8b84349b66bd0acdcf3b0fd95d/transformed/jetified-datastore-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-core-android:1.1.3] /Users/cocoa/.gradle/caches/transforms-3/08dcef8b84349b66bd0acdcf3b0fd95d/transformed/jetified-datastore-core-release/AndroidManifest.xml:5:5-44
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.3] /Users/cocoa/.gradle/caches/transforms-3/5c572f023ba6a10edc83254e8da08e91/transformed/jetified-datastore-preferences-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-preferences-android:1.1.3] /Users/cocoa/.gradle/caches/transforms-3/5c572f023ba6a10edc83254e8da08e91/transformed/jetified-datastore-preferences-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-android:1.1.3] /Users/cocoa/.gradle/caches/transforms-3/95964bcdbb398a89ff2e2fc12649489b/transformed/jetified-datastore-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.datastore:datastore-android:1.1.3] /Users/cocoa/.gradle/caches/transforms-3/95964bcdbb398a89ff2e2fc12649489b/transformed/jetified-datastore-release/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/cocoa/.gradle/caches/transforms-3/4eb2314492f5178504385d49f14c420b/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.arch.core:core-runtime:2.2.0] /Users/cocoa/.gradle/caches/transforms-3/4eb2314492f5178504385d49f14c420b/transformed/core-runtime-2.2.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/9b70401d804753d6e49083da2af17903/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.versionedparcelable:versionedparcelable:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/9b70401d804753d6e49083da2af17903/transformed/versionedparcelable-1.1.1/AndroidManifest.xml:20:5-22:41
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/48383c31b20c56fd1a84412e82db5389/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.interpolator:interpolator:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/48383c31b20c56fd1a84412e82db5389/transformed/interpolator-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/f80a64945cdf3cfcd1a34ace52a75aa0/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.cursoradapter:cursoradapter:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/f80a64945cdf3cfcd1a34ace52a75aa0/transformed/cursoradapter-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/95dbae5502c5b71b150a2f52b5d53939/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.window.extensions.core:core:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/95dbae5502c5b71b150a2f52b5d53939/transformed/jetified-core-1.0.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/366d5bd63afe5e6479597895c610e188/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.documentfile:documentfile:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/366d5bd63afe5e6479597895c610e188/transformed/documentfile-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/da932cf6744cd8581aa09e790578b346/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.localbroadcastmanager:localbroadcastmanager:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/da932cf6744cd8581aa09e790578b346/transformed/localbroadcastmanager-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/b8c395d0fdd3c55828149c08e972a5a2/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.print:print:1.0.0] /Users/cocoa/.gradle/caches/transforms-3/b8c395d0fdd3c55828149c08e972a5a2/transformed/print-1.0.0/AndroidManifest.xml:20:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/cocoa/.gradle/caches/transforms-3/bc000f3444a9f5fd155cc683bdfa86e1/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+MERGED from [androidx.annotation:annotation-experimental:1.4.0] /Users/cocoa/.gradle/caches/transforms-3/bc000f3444a9f5fd155cc683bdfa86e1/transformed/jetified-annotation-experimental-1.4.0/AndroidManifest.xml:5:5-44
+	android:targetSdkVersion
+		INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /Users/cocoa/Documents/GitHub/guardian_app_flutter/android/app/src/debug/AndroidManifest.xml
+uses-library#androidx.window.extensions
+ADDED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:23:9-25:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:25:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:24:13-54
+uses-library#androidx.window.sidecar
+ADDED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:26:9-28:40
+	android:required
+		ADDED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:28:13-37
+	android:name
+		ADDED from [androidx.window:window:1.2.0] /Users/cocoa/.gradle/caches/transforms-3/e2f048c6bad322f628bdc36d7c600fa1/transformed/jetified-window-1.2.0/AndroidManifest.xml:27:13-51
+permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+permission#com.example.sekolahpro.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:22:5-24:47
+	android:protectionLevel
+		ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:24:9-44
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:23:9-81
+uses-permission#${applicationId}.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+uses-permission#com.example.sekolahpro.DYNAMIC_RECEIVER_NOT_EXPORTED_PERMISSION
+ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:26:5-97
+	android:name
+		ADDED from [androidx.core:core:1.13.1] /Users/cocoa/.gradle/caches/transforms-3/0d0776067cf19d25dac035683454f4b4/transformed/core-1.13.1/AndroidManifest.xml:26:22-94
+provider#androidx.startup.InitializationProvider
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:24:9-32:20
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/b997d1796d9c1d84849d99096e54f4ca/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+MERGED from [androidx.startup:startup-runtime:1.1.1] /Users/cocoa/.gradle/caches/transforms-3/b997d1796d9c1d84849d99096e54f4ca/transformed/jetified-startup-runtime-1.1.1/AndroidManifest.xml:26:9-30:34
+	tools:node
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:28:13-31
+	android:authorities
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:26:13-68
+	android:exported
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:27:13-37
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:25:13-67
+meta-data#androidx.lifecycle.ProcessLifecycleInitializer
+ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.lifecycle:lifecycle-process:2.7.0] /Users/cocoa/.gradle/caches/transforms-3/ca550f2148a89fd5cfa9d5747826950a/transformed/jetified-lifecycle-process-2.7.0/AndroidManifest.xml:30:17-78
+meta-data#androidx.profileinstaller.ProfileInstallerInitializer
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:29:13-31:52
+	android:value
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:31:17-49
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:30:17-85
+receiver#androidx.profileinstaller.ProfileInstallReceiver
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:34:9-52:20
+	android:enabled
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:37:13-35
+	android:exported
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:38:13-36
+	android:permission
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:39:13-57
+	android:directBootAware
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:36:13-44
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:35:13-76
+intent-filter#action:name:androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:40:13-42:29
+action#androidx.profileinstaller.action.INSTALL_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:17-91
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:41:25-88
+intent-filter#action:name:androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:43:13-45:29
+action#androidx.profileinstaller.action.SKIP_FILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:17-85
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:44:25-82
+intent-filter#action:name:androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:46:13-48:29
+action#androidx.profileinstaller.action.SAVE_PROFILE
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:17-88
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:47:25-85
+intent-filter#action:name:androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:49:13-51:29
+action#androidx.profileinstaller.action.BENCHMARK_OPERATION
+ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:17-95
+	android:name
+		ADDED from [androidx.profileinstaller:profileinstaller:1.3.1] /Users/cocoa/.gradle/caches/transforms-3/99605dcdd8eecca77884a2bd6fb24c1c/transformed/jetified-profileinstaller-1.3.1/AndroidManifest.xml:50:25-92

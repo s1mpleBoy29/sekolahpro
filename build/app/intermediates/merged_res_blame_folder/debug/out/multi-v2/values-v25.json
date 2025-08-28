@@ -1,0 +1,20 @@
+{
+    "logs": [
+        {
+            "outputFile": "com.example.sekolahpro.app-mergeDebugResources-39:/values-v25/values-v25.xml",
+            "map": [
+                {
+                    "source": "/Users/cocoa/.gradle/caches/transforms-3/0f3d6d5500f12924210d6bce37a58468/transformed/appcompat-1.1.0/res/values-v25/values-v25.xml",
+                    "from": {
+                        "startLines": "2,3,4,6",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "55,126,209,308",
+                        "endLines": "2,3,5,7",
+                        "endColumns": "70,82,12,12",
+                        "endOffsets": "121,204,303,414"
+                    }
+                }
+            ]
+        }
+    ]
+}

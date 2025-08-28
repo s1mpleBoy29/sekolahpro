@@ -3,10 +3,16 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:guardian_app/app_state.dart';
 import 'package:guardian_app/core/app_export.dart';
+import 'package:guardian_app/core/providers/auth_provider.dart';
+import 'package:guardian_app/core/providers/student_provider.dart';
+import 'package:guardian_app/core/utils/config.dart';
 import 'package:guardian_app/routes/app_routes.dart';
 import 'package:package_info_plus/package_info_plus.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
@@ -50,10 +56,27 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   AppState().appVersion = packageInfo.version;
+  await ConfigService.load();
+  await dotenv.load(fileName: ".env");
+
+  final authProvider = AuthProvider();
+  await authProvider.loadToken();
+
+  // Baca theme dari SharedPreferences
+  final prefs = await SharedPreferences.getInstance();
 
   ThemeHelper().changeTheme('primary');
 
-  runApp(const _MyApp());
+  runApp(
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => StudentProvider()),
+        ChangeNotifierProvider(create: (_) => authProvider),
+        ChangeNotifierProvider(create: (_) => AppState()),
+      ],
+      child: _MyApp(),
+    ),
+  );
 }
 
 class _MyApp extends StatefulWidget {

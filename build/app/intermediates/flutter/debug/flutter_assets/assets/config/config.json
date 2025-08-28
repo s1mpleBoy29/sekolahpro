@@ -1,0 +1,23 @@
+[
+    {
+      "branch": "main",
+      "is_using": 1,
+      "config": {
+        "is_customer_mandatory": false,
+        "is_using_outlet": false,
+        "is_using_discount": true,
+        "is_using_voucher": true,
+        "is_using_payment_channel": true,
+        "is_using_check_stock": false,
+        "is_using_therapist": false,
+        "is_using_list_product_discount_per_item": true,
+        "is_using_qty_item": false,
+        "is_using_kasbon": false,
+        "logo": "assets/images/logo.png"
+      },
+      "data_extension": {
+        "therapist": "",
+        "kasbon_account": ""
+      }
+    }
+]
