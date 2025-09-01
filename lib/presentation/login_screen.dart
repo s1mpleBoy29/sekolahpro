@@ -48,6 +48,9 @@ class LoginPageScreen extends State<LoginScreen> {
         LoadingScreen.hideModal(context);
       }
     });
+
+    enterPhoneController.text = 'wa_6289654562911@sekolahpro.id';
+    passwordController.text = 'sekolahpro!';
   }
 
   Future<void> _handleLogin() async {
@@ -392,7 +395,7 @@ class LoginPageScreen extends State<LoginScreen> {
           onEditingComplete: () {
             // print('debug');
             inputPassword.unfocus();
-            onTapMasuk(context);
+            _handleLogin();
           },
         ),
       ],

@@ -75,7 +75,8 @@ class _SplashScreen2State extends State<SplashScreen2>
         StudentAction.getStudents(1000, 0, ''),
       ]);
 
-      log(' ${results[0].toString()}');
+      print(' tes ${results}');
+      log(' tes ${results[0].toString()}');
 
       if (results[0].isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -86,7 +87,7 @@ class _SplashScreen2State extends State<SplashScreen2>
             duration: Duration(seconds: 3),
           ),
         );
-        Navigator.pushReplacementNamed(context, '/login');
+        Navigator.pushReplacementNamed(context, '/login_screen');
       }
 
       final student = results[0] as List<Student>;

@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/presentation/pilihanak/searchbar.dart';
 import 'package:guardian_app/presentation/pilihanak/studentcard.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
 import 'package:guardian_app/presentation/home/home.dart';
+import 'package:provider/provider.dart';
 import 'dart:ui';
+
+import 'package:shared_preferences/shared_preferences.dart';
 
 enum PostSelectionAction {
   goBack,
@@ -25,57 +29,16 @@ class PilihAnakScreen extends StatefulWidget {
 class PilihAnakPageScreen extends State<PilihAnakScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  List<Map<String, String>> _allChildren = [
-    {
-      'name': 'Agus Supriyadi',
-      'school': 'SDN 13 Malang',
-      'class': 'Kelas 5',
-      'avatar': 'assets/images/profileicon.jpg'
-    },
-    {
-      'name': 'Andi Wiratama',
-      'school': 'SDN 13 Malang',
-      'class': 'Kelas 5',
-      'avatar': 'assets/images/profileicon.jpg'
-    },
-    {
-      'name': 'Budi Santosa',
-      'school': 'SDN 13 Malang',
-      'class': 'Kelas 5',
-      'avatar': 'assets/images/profileicon.jpg'
-    },
-    {
-      'name': 'Candra Wijaya',
-      'school': 'SDN 13 Malang',
-      'class': 'Kelas 5',
-      'avatar': 'assets/images/profileicon.jpg'
-    },
-    {
-      'name': 'Gina Kartika',
-      'school': 'SDN 13 Malang',
-      'class': 'Kelas 5',
-      'avatar': 'assets/images/profileicon.jpg'
-    },
-    {
-      'name': 'Hendro Lesmono',
-      'school': 'SDN 13 Malang',
-      'class': 'Kelas 5',
-      'avatar': 'assets/images/profileicon.jpg'
-    },
-    {
-      'name': 'Indah Pratama',
-      'school': 'SDN 13 Malang',
-      'class': 'Kelas 5',
-      'avatar': 'assets/images/profileicon.jpg'
-    },
-  ];
+  List<Map<String, String>> allChildren = [];
 
   List<Map<String, String>> _filteredChildren = [];
+
+  SharedPreferences? _prefs;
 
   @override
   void initState() {
     super.initState();
-    _filteredChildren = _allChildren;
+    allChildren = _filteredChildren = allChildren;
   }
 
   @override
@@ -84,12 +47,44 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
     super.dispose();
   }
 
+  Future<void> _initializeData() async {
+    _prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> loadStudent() async {
+    final provider = Provider.of<StudentProvider>(context, listen: false);
+    final students = provider.students;
+
+    if (mounted) {
+      setState(() {
+        allChildren.clear();
+        allChildren.addAll(students.isNotEmpty
+            ? students
+                .map((student) => {
+                      'name': student.name,
+                      'school': student.school,
+                      'grade': student.grade,
+                    })
+                .toList()
+            : []);
+        // allChildren.clear();
+        // allChildren.addAll(students.isNotEmpty
+        //     ? students.map((student) => student).toList()
+        //     : ["TUNAI"]);
+        // _selectedPaymentMethod =
+        //     _paymentMethods.contains(_selectedPaymentMethod)
+        //         ? _selectedPaymentMethod
+        //         : _paymentMethods.first;
+      });
+    }
+  }
+
   void _filterChildren(String query) {
     setState(() {
       if (query.isEmpty) {
-        _filteredChildren = _allChildren;
+        _filteredChildren = allChildren;
       } else {
-        _filteredChildren = _allChildren
+        _filteredChildren = allChildren
             .where((child) =>
                 child['name']!.toLowerCase().contains(query.toLowerCase()) ||
                 child['school']!.toLowerCase().contains(query.toLowerCase()) ||

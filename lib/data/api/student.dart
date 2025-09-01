@@ -4,7 +4,7 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-String apiURLALL = '${dotenv.env['API_URL']}/api/resource/Student';
+String apiURLALL = '${dotenv.env['API_URL']}/api/method/gaStudentList';
 
 Future<Map<String, dynamic>?> getAllStudents() async {
   try {
@@ -40,12 +40,15 @@ Future<Map<String, dynamic>?> getStudent(
     int limit, int start, String filter) async {
   try {
     // Ambil SID dari Hive
+    print('limit $limit, start $start, filter $filter');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sid = prefs.getString('sid');
     prefs.getString('selected_outlet');
     String apiUrl = '';
 
-    apiUrl = '${dotenv.env['API_URL']}/api/resource/Student';
+    print('check sid, $sid');
+
+    apiUrl = '${dotenv.env['API_URL']}/api/method/gaStudentList';
 
     final Uri url = Uri.parse(apiUrl).replace(queryParameters: {
       'fields': '["*"]',
@@ -61,6 +64,9 @@ Future<Map<String, dynamic>?> getStudent(
         'Content-Type': 'application/json',
       },
     );
+
+    print('response, ${response.body}');
+    print('response, ${response.statusCode}');
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);

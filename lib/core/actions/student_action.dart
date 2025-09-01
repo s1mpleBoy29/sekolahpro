@@ -7,6 +7,7 @@ class StudentAction {
       int limit, int start, String filters) async {
     try {
       print('test');
+      print('limti: $limit, start: $start, filter: $filters');
       final response = await student.getStudent(limit, start, filters);
 
       print('response: $response');
