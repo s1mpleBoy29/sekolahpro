@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
+// Assuming this import is available from your project structure, similar to DueCard.
+import 'package:guardian_app/core/app_export.dart';
 
 class PaymentScheduleCard extends StatelessWidget {
   final String? dueDate;
   final String amount;
   final String description;
   final String status;
-  final Color statusColor;
   final bool isOverdue;
+  final VoidCallback? onPayPressed; // Added for the payment action
 
   const PaymentScheduleCard({
     Key? key,
@@ -14,40 +16,32 @@ class PaymentScheduleCard extends StatelessWidget {
     required this.amount,
     required this.description,
     required this.status,
-    required this.statusColor,
     this.isOverdue = false,
+    this.onPayPressed, // Can be null if no action is needed
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // Tentukan dekorasi dan warna berdasarkan status overdue
-    final Color cardColor = isOverdue ? const Color(0xFFFDE9E9) : Colors.white;
-    final BoxBorder cardBorder = isOverdue 
-        ? Border.all(color: Colors.red, width: 1.5) 
-        : Border.all(color: Colors.grey.shade300);
-    final Color titleColor = isOverdue ? Colors.red : Colors.grey.shade600;
-    final Color amountColor = isOverdue ? Colors.red : Colors.black;
-    final String titleText = isOverdue 
-        ? 'Melewati batas waktu pembayaran' 
-        : 'Bayar sebelum ${dueDate ?? 'Tidak ada'}';
+    // Using the theme for consistent styling, similar to DueCard
+    final theme = Theme.of(context);
 
-    // Tentukan style button berdasarkan status - remove this section
+    // Determine the title text based on overdue status
+    final String titleText = isOverdue
+        ? 'Melewati batas waktu pembayaran'
+        : 'Bayar sebelum ${dueDate ?? ''}';
 
     return Container(
+      padding: const EdgeInsets.all(12.0),
+      margin: const EdgeInsets.only(top: 0),
       decoration: BoxDecoration(
-        color: cardColor,
-        borderRadius: BorderRadius.circular(8),
-        border: cardBorder,
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.05),
-            spreadRadius: 1,
-            blurRadius: 3,
-            offset: const Offset(0, 1),
-          ),
-        ],
+        // The border color changes if the card is overdue
+        border: Border.all(
+            color: isOverdue
+                ? theme.colorScheme.error
+                : theme.colorScheme.outlineVariant),
+        borderRadius: BorderRadius.circular(4),
+        color: theme.colorScheme.surface,
       ),
-      padding: const EdgeInsets.all(16),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
@@ -58,54 +52,89 @@ class PaymentScheduleCard extends StatelessWidget {
                 Text(
                   titleText,
                   style: TextStyle(
-                    fontSize: 12,
-                    color: titleColor,
-                    fontWeight: FontWeight.w500,
+                    color: isOverdue
+                        ? theme.colorScheme.error
+                        : theme.colorScheme.secondary,
+                    fontWeight: isOverdue ? FontWeight.bold : FontWeight.normal,
+                    fontSize: 14,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
                   amount,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: amountColor,
+                    color: theme.colorScheme.onPrimaryContainer,
                   ),
                 ),
-                const SizedBox(height: 8),
+                const SizedBox(height: 4),
                 Text(
                   description,
                   style: TextStyle(
-                    fontSize: 12, 
-                    color: Colors.grey.shade600,
-                    height: 1.3,
+                    color: theme.colorScheme.secondary,
+                    fontSize: 14,
                   ),
                 ),
               ],
             ),
           ),
           const SizedBox(width: 12),
-          Container(
-            width: 90, // Fixed width untuk konsistensi ukuran
-            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(4),
-              border: Border.all(
-                color: status == 'Lunas' ? Colors.green : Colors.grey.shade400,
-                width: 1,
+          // Conditionally display a button or a status tag
+          if (status.toLowerCase() != 'lunas' && onPayPressed != null)
+            GestureDetector(
+              onTap: onPayPressed,
+              child: Container(
+                width: 90,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.transparent, // No filled color
+                  borderRadius: BorderRadius.circular(4),
+                  border: Border.all(
+                    color: Colors.grey.shade600, // Gray outline
+                    width: 1,
+                  ),
+                ),
+                child: Text(
+                  status, // Displays "Belum Lunas"
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    color: Colors.grey.shade600, // Gray font color
+                    fontSize: 11,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
+            )
+          else
+            // Status tag for "Lunas" or when no action is available
+            Container(
+              width: 90,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surface,
+                borderRadius: BorderRadius.circular(4),
+                border: Border.all(
+                  // Use green for "Lunas", otherwise a neutral color
+                  color: status.toLowerCase() == 'lunas'
+                      ? Colors.green
+                      : Colors.grey.shade400,
+                  width: 1,
+                ),
+              ),
+              child: Text(
+                status,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  color: status.toLowerCase() == 'lunas'
+                      ? Colors.green
+                      : Colors.grey.shade600,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
             ),
-            child: Text(
-              status,
-              textAlign: TextAlign.center, // Menempatkan teks di tengah
-              style: TextStyle(
-                color: status == 'Lunas' ? Colors.green : Colors.grey.shade600,
-                fontSize: 11,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
         ],
       ),
     );

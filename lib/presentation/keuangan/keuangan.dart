@@ -68,8 +68,18 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   late String filterArea = 'smpn_13_malang';
   List<Map<String, dynamic>> _filteredPayments = [];
   final List<String> _bulanIndonesia = [
-    'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli',
-    'Agustus', 'September', 'Oktober', 'November', 'Desember'
+    'Januari',
+    'Februari',
+    'Maret',
+    'April',
+    'Mei',
+    'Juni',
+    'Juli',
+    'Agustus',
+    'September',
+    'Oktober',
+    'November',
+    'Desember'
   ];
 
   @override
@@ -87,12 +97,16 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   void _applyPaymentFilter(Map<String, dynamic> filters) {
     setState(() {
       _filteredPayments = _allPayments.where((payment) {
-        final statusFilter = filters['status_pembayaran'] as KeuanganFilterStatus;
+        final statusFilter =
+            filters['status_pembayaran'] as KeuanganFilterStatus;
         final bool matchesStatus = statusFilter == KeuanganFilterStatus.semua ||
-            (statusFilter == KeuanganFilterStatus.lunas && payment['status'] == 'Lunas') ||
-            (statusFilter == KeuanganFilterStatus.belumLunas && payment['status'] == 'Belum Lunas') ||
-            (statusFilter == KeuanganFilterStatus.tenggat && payment['isOverdue'] == true);
-        
+            (statusFilter == KeuanganFilterStatus.lunas &&
+                payment['status'] == 'Lunas') ||
+            (statusFilter == KeuanganFilterStatus.belumLunas &&
+                payment['status'] == 'Belum Lunas') ||
+            (statusFilter == KeuanganFilterStatus.tenggat &&
+                payment['isOverdue'] == true);
+
         return matchesStatus;
       }).toList();
     });
@@ -134,21 +148,21 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      bottomNavigationBar: BottomNavBar(
-        selected: AppRoutes.keuanganScreen,
-        context: context,
-        theme: theme,
-      ),
-      floatingActionButton: CustomFAB(
-        onPressed: () {
-          Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: SafeArea(
-        child: Container(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: theme.colorScheme.surface,
+        bottomNavigationBar: BottomNavBar(
+          selected: AppRoutes.keuanganScreen,
+          context: context,
+          theme: theme,
+        ),
+        floatingActionButton: CustomFAB(
+          onPressed: () {
+            Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
+          },
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        body: Container(
           width: double.maxFinite,
           decoration: BoxDecoration(
             color: theme.colorScheme.surfaceContainer,
@@ -201,7 +215,8 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 20),
                               child: const AdCard(
-                                teks: 'In the lessns we leran new words and r for vacalaburities continues and article',
+                                teks:
+                                    'In the lessns we leran new words and r for vacalaburities continues and article',
                               ),
                             ),
                             const SizedBox(height: 20),
@@ -296,8 +311,8 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                 amount: payment['amount'],
                 description: payment['description'],
                 status: payment['status'],
-                statusColor: payment['statusColor'],
                 isOverdue: payment['isOverdue'],
+                onPayPressed: () => _navigateToPayScreen(),
               ),
             );
           }).toList(),
@@ -305,8 +320,11 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     );
   }
 
+  void _navigateToPayScreen() {
+    Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
+  }
+
   void _navigateToPaymentDetail(BuildContext context) {
-    Navigator.pushNamed(
-        context, AppRoutes.paymentDetailPage);
+    Navigator.pushNamed(context, AppRoutes.paymentDetailPage);
   }
 }
