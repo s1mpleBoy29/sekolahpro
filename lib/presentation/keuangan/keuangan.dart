@@ -12,50 +12,10 @@ import 'package:guardian_app/widgets/topbar.dart';
 import 'package:guardian_app/widgets/secondary_topbar.dart';
 import 'package:guardian_app/widgets/filterpopup.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
-
-// Data dummy untuk Jadwal Pembayaran
-final List<Map<String, dynamic>> _allPayments = [
-  {
-    "description": 'Uang Sekolah Candra Bulan Agustus Tahun Ajaran 2025 / 2026',
-    "amount": 'Rp 300.000',
-    "status": 'Belum Lunas',
-    "statusColor": Colors.grey,
-    "isOverdue": false,
-    "dueDate": DateTime.parse("2025-08-10"),
-  },
-  {
-    "description": 'Uang Seragam Candra Tahun Ajaran 2025 / 2026',
-    "amount": 'Rp 1.200.000',
-    "status": 'Lunas',
-    "statusColor": Colors.green,
-    "isOverdue": false,
-    "dueDate": DateTime.parse("2025-07-30"),
-  },
-  {
-    "description": 'Uang Sekolah Candra Bulan Juli Tahun Ajaran 2025 / 2026',
-    "amount": 'Rp 300.000',
-    "status": 'Belum Lunas',
-    "statusColor": Colors.red,
-    "isOverdue": true,
-    "dueDate": DateTime.parse("2025-07-01"),
-  },
-  {
-    "description": 'Uang Pembangunan Gedung Baru',
-    "amount": 'Rp 500.000',
-    "status": 'Lunas',
-    "statusColor": Colors.green,
-    "isOverdue": false,
-    "dueDate": DateTime.parse("2025-06-15"),
-  },
-  {
-    "description": 'Uang Kegiatan Ekstrakurikuler',
-    "amount": 'Rp 150.000',
-    "status": 'Belum Lunas',
-    "statusColor": Colors.grey,
-    "isOverdue": false,
-    "dueDate": DateTime.parse("2025-09-01"),
-  },
-];
+import 'package:guardian_app/data/api/payment.dart';
+import 'package:guardian_app/data/models/payment.dart';
+import 'package:intl/intl.dart';
+import 'dart:convert';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
@@ -65,8 +25,12 @@ class KeuanganScreen extends StatefulWidget {
 }
 
 class KeuanganPageScreen extends State<KeuanganScreen> {
-  late String filterArea = 'smpn_13_malang';
-  List<Map<String, dynamic>> _filteredPayments = [];
+  // Variable selanjutnya untuk _fetchData.
+  late Future<List<Payment>> _paymentsFuture;
+
+  List<Payment> _allPayments = [];
+  List<Payment> _filteredPayments = [];
+
   final List<String> _bulanIndonesia = [
     'Januari',
     'Februari',
@@ -85,15 +49,72 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   @override
   void initState() {
     super.initState();
-    _filteredPayments = _allPayments;
+    // Langsung ambil data.
+    _paymentsFuture = _fetchData();
+  }
+
+  Future<List<Payment>> _fetchData() async {
+    // TODO: Update
+    const studentId = 'TLAB.0001';
+    const academicYear = '2025 / 2026';
+
+    final responseData = await getJadwalBayar(
+      studentId: studentId,
+      academicYear: academicYear,
+    );
+
+    // Cek apakah data valid untuk masuk ke list.
+    if (responseData != null && responseData['message'] is List) {
+      final List<dynamic> dataList = responseData['message'];
+
+      // Map JSON list ke model.
+      final List<Payment> payments =
+          dataList.map((json) => Payment.fromJson(json)).toList();
+
+      setState(() {
+        _allPayments = payments;
+        _filteredPayments = payments;
+      });
+
+      return payments;
+    } else {
+      // Jika pemanggilan API gagal atau data format salah.
+      String serverError =
+          'Gagal memuat atau memproses jadwal pembayaran.'; // Default error.
+
+      if (responseData != null) {
+        if (responseData.containsKey('_server_messages')) {
+          try {
+            final serverMessages = responseData['_server_messages'] as List;
+            if (serverMessages.isNotEmpty) {
+              final messageJson = jsonDecode(serverMessages.first);
+              serverError = messageJson['message'] ?? serverError;
+            }
+          } catch (e) {
+            // Jika parsing gagal.
+            serverError = responseData['_server_messages'].toString();
+          }
+        } else if (responseData.containsKey('exception')) {
+          serverError = responseData['exception'].toString();
+        }
+      } else {
+        // Jika responseData == null.
+        serverError =
+            'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.';
+      }
+
+      throw Exception(serverError);
+    }
   }
 
   Future<void> onRefresh() async {
     setState(() {
-      _filteredPayments = _allPayments;
+      // Re-assign.
+      _paymentsFuture = _fetchData();
     });
   }
 
+  /// Status filter.
   void _applyPaymentFilter(Map<String, dynamic> filters) {
     setState(() {
       _filteredPayments = _allPayments.where((payment) {
@@ -101,12 +122,10 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
             filters['status_pembayaran'] as KeuanganFilterStatus;
         final bool matchesStatus = statusFilter == KeuanganFilterStatus.semua ||
             (statusFilter == KeuanganFilterStatus.lunas &&
-                payment['status'] == 'Lunas') ||
+                payment.status == 'Lunas') ||
             (statusFilter == KeuanganFilterStatus.belumLunas &&
-                payment['status'] == 'Belum Lunas') ||
-            (statusFilter == KeuanganFilterStatus.tenggat &&
-                payment['isOverdue'] == true);
-
+                payment.status == 'Belum Lunas') ||
+            (statusFilter == KeuanganFilterStatus.tenggat && payment.isOverdue);
         return matchesStatus;
       }).toList();
     });
@@ -138,12 +157,14 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     );
   }
 
-  // Metode untuk memformat tanggal secara manual
   String _formatDateManual(DateTime date) {
-    String day = date.day.toString();
-    String month = _bulanIndonesia[date.month - 1];
-    String year = date.year.toString();
-    return '$day $month $year';
+    return '${date.day} ${_bulanIndonesia[date.month - 1]} ${date.year}';
+  }
+
+  String _formatCurrency(double amount) {
+    final format =
+        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+    return format.format(amount);
   }
 
   @override
@@ -162,80 +183,103 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: Container(
-          width: double.maxFinite,
-          decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceContainer,
-          ),
-          child: Column(
-            children: [
-              StickyTopBar(
-                backgroundColor: theme.colorScheme.onPrimary,
-                lineColor: appTheme.gray300,
-                textColor: appTheme.gray600,
-                titleFontSize: 22.0,
-                titleFontFamily: 'Urbanist',
-                subtitleFontSize: 12.0,
-                subtitleFontFamily: 'Lato',
-                titleText: 'Candra Wijaya',
-                subtitleText: 'SDN 13 Malang | Kelas 5',
-                onTitleTap: _navigateToAnakScreen,
-              ),
-              SecondaryTopbar(
-                backgroundColor: theme.colorScheme.secondary,
-                lineColor: appTheme.gray300,
-                title: 'Keuangan',
-                titleColor: Colors.white,
-                slot: [],
-                onActionTap: (selectedValue) {
-                  _showFilterPopup();
-                },
-                onFilterChanged: (onFilter, selectedValue) {
-                  if (onFilter == "area") {
-                    setState(() {
-                      filterArea = selectedValue;
-                    });
+        body: Column(
+          children: [
+            StickyTopBar(
+              backgroundColor: theme.colorScheme.onPrimary,
+              lineColor: appTheme.gray300,
+              textColor: appTheme.gray600,
+              titleFontSize: 22.0,
+              titleText: 'Candra Wijaya', // TODO: Update
+              subtitleText: 'SDN 13 Malang | Kelas 5', // TODO: Update
+              onTitleTap: _navigateToAnakScreen,
+            ),
+            SecondaryTopbar(
+              backgroundColor: theme.colorScheme.secondary,
+              lineColor: appTheme.gray300,
+              title: 'Keuangan',
+              titleColor: Colors.white,
+              slot: [],
+              onActionTap: (selectedValue) => _showFilterPopup(),
+              onFilterChanged: (onFilter, selectedValue) {},
+            ),
+            Expanded(
+              child: FutureBuilder<List<Payment>>(
+                future: _paymentsFuture,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            'Error: ${snapshot.error}',
+                            style: TextStyle(color: theme.colorScheme.error),
+                          ),
+                          const SizedBox(height: 16),
+                          ElevatedButton(
+                            onPressed: onRefresh,
+                            child: const Text('Refresh',
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 16)),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: theme.colorScheme.primary,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                    return RefreshIndicator(
+                      onRefresh: onRefresh,
+                      child: SingleChildScrollView(
+                        primary: true,
+                        physics: const AlwaysScrollableScrollPhysics(),
+                        child: Container(
+                          color: const Color(0xFFF0F2F5),
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _buildPaymentSummary(snapshot.data!),
+                              const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 20),
+                                child: AdCard(
+                                  teks: 'In the lessons we learn new words...',
+                                ),
+                              ),
+                              _buildPaymentSchedule(context),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  } else {
+                    return const Center(
+                        child: Text('Tidak ada data pembayaran ditemukan.'));
                   }
                 },
               ),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: onRefresh,
-                  child: SingleChildScrollView(
-                    primary: true,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Container(
-                      color: const Color(0xFFF0F2F5),
-                      child: Padding(
-                        padding: const EdgeInsets.all(16.0),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            _buildPaymentSummary(),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: const AdCard(
-                                teks:
-                                    'In the lessns we leran new words and r for vacalaburities continues and article',
-                              ),
-                            ),
-                            const SizedBox(height: 20),
-                            _buildPaymentSchedule(context),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
   }
 
-  Widget _buildPaymentSummary() {
+  Widget _buildPaymentSummary(List<Payment> payments) {
+    double totalKewajiban = payments
+        .where((p) => p.status == 'Belum Lunas')
+        .fold(0, (sum, item) => sum + item.amount);
+
+    double totalTunggakan = payments
+        .where((p) => p.isOverdue)
+        .fold(0, (sum, item) => sum + item.amount);
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -253,7 +297,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
             Expanded(
               child: SummaryCard(
                 label: 'Total Kewajiban',
-                value: 'Rp 1.800.000',
+                value: _formatCurrency(totalKewajiban),
                 valueColor: theme.colorScheme.onSurface,
               ),
             ),
@@ -261,8 +305,8 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
             Expanded(
               child: SummaryCard(
                 label: 'Total Tunggakan',
-                value: 'Rp 300.000',
-                valueColor: theme.colorScheme.onError,
+                value: _formatCurrency(totalTunggakan),
+                valueColor: theme.colorScheme.error,
               ),
             ),
           ],
@@ -291,27 +335,21 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
             child: Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                'Tidak ada jadwal pembayaran yang ditemukan.',
+                'Tidak ada jadwal pembayaran yang cocok dengan filter.',
                 style: TextStyle(fontSize: 14, color: Colors.grey),
               ),
             ),
           )
         else
           ..._filteredPayments.map((payment) {
-            final DateTime? dueDate = payment['dueDate'];
-            String? dueDateString;
-            if (dueDate != null) {
-              dueDateString = _formatDateManual(dueDate);
-            }
-
             return GestureDetector(
               onTap: () => _navigateToPaymentDetail(context),
               child: PaymentScheduleCard(
-                dueDate: dueDateString,
-                amount: payment['amount'],
-                description: payment['description'],
-                status: payment['status'],
-                isOverdue: payment['isOverdue'],
+                dueDate: _formatDateManual(payment.dueDate),
+                amount: _formatCurrency(payment.amount),
+                description: payment.description,
+                status: payment.status,
+                isOverdue: payment.isOverdue,
                 onPayPressed: () => _navigateToPayScreen(),
               ),
             );

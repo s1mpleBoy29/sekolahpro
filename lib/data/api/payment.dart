@@ -7,16 +7,10 @@ import 'package:http/http.dart' as http;
 /// Fetches the payment schedule (Jadwal Pembayaran) for a specific student.
 ///
 /// Dibutuhkan [studentId] dan [academicYear].
-/// Optional parameters [search], [page], dan [limit].
-/// untuk pencarian dan halaman.
-///
 /// Autentikasi admin menggunakan 'sid' dari SharedPreferences dan dikirim sebagai cookie.
 Future<Map<String, dynamic>?> getJadwalBayar({
   required String studentId,
   required String academicYear,
-  String? search,
-  int? page,
-  int? limit,
 }) async {
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -36,16 +30,6 @@ Future<Map<String, dynamic>?> getJadwalBayar({
       'student': studentId,
       'academic_year': academicYear,
     };
-
-    if (search != null) {
-      queryParameters['search'] = search;
-    }
-    if (page != null) {
-      queryParameters['page'] = page.toString();
-    }
-    if (limit != null) {
-      queryParameters['limit'] = limit.toString();
-    }
 
     final Uri url = Uri.parse(apiUrl).replace(queryParameters: queryParameters);
 
