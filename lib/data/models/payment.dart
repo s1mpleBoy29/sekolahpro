@@ -4,53 +4,39 @@ class Payment {
   final String description;
   final double amount;
   final String status;
-  final DateTime dueDate;
   final bool isOverdue;
+  final DateTime dueDate;
 
   Payment({
     required this.description,
     required this.amount,
     required this.status,
-    required this.dueDate,
     required this.isOverdue,
+    required this.dueDate,
   });
 
-  // Dari JSON ke Payment
+  // Dari JSON ke Payment.
   factory Payment.fromJson(Map<String, dynamic> json) {
-    DateTime parsedDueDate = DateTime.parse(json['due_date']);
-    bool overdue =
-        parsedDueDate.isBefore(DateTime.now()) && json['status'] != 'Paid';
+    final double outstanding = (json['outstanding'] as num? ?? 0.0).toDouble();
+
+    // Jika outstanding > 0, maka dianggap Belum Lunas.
+    final String status = outstanding > 0 ? 'Belum Lunas' : 'Lunas';
+
+    // Ambil dan parse tanggal jatuh tempo.
+    final DateTime dueDate =
+        DateTime.parse(json['due_date'] ?? DateTime.now().toIso8601String());
+
+    // Cek apakah sudah lewat tanggal jatuh tempo dan belum lunas.
+    final bool isOverdue = status == 'Belum Lunas' &&
+        dueDate.isBefore(DateUtils.dateOnly(DateTime.now()));
 
     //Variabel dari API
     return Payment(
-      description: json['remark'] ?? 'No Description',
-      amount: (json['amount'] as num).toDouble(),
-      status: _mapStatus(json['status']),
-      dueDate: parsedDueDate,
-      isOverdue: overdue,
+      description: json['remark'] ?? 'Tidak ada deskripsi',
+      amount: (json['amount'] as num? ?? 0.0).toDouble(),
+      status: status,
+      isOverdue: isOverdue,
+      dueDate: dueDate,
     );
-  }
-
-  static String _mapStatus(String apiStatus) {
-    switch (apiStatus) {
-      case 'Paid':
-        return 'Lunas';
-      case 'Unpaid':
-        return 'Belum Lunas';
-      case 'Overdue':
-        return 'Belum Lunas';
-      default:
-        return 'Unknown';
-    }
-  }
-
-  Color get statusColor {
-    if (status == 'Lunas') {
-      return Colors.green;
-    }
-    if (isOverdue) {
-      return Colors.red;
-    }
-    return Colors.grey;
   }
 }
