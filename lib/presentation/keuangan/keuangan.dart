@@ -12,10 +12,12 @@ import 'package:guardian_app/widgets/topbar.dart';
 import 'package:guardian_app/widgets/secondary_topbar.dart';
 import 'package:guardian_app/widgets/filterpopup.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
-import 'package:guardian_app/data/api/payment.dart';
-import 'package:guardian_app/data/models/payment.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
+
+// Pastikan path import ini sesuai dengan struktur proyek Anda
+import 'package:guardian_app/data/api/payment.dart';
+import 'package:guardian_app/data/models/payment.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
@@ -25,9 +27,7 @@ class KeuanganScreen extends StatefulWidget {
 }
 
 class KeuanganPageScreen extends State<KeuanganScreen> {
-  // Variable selanjutnya untuk _fetchData.
   late Future<List<Payment>> _paymentsFuture;
-
   List<Payment> _allPayments = [];
   List<Payment> _filteredPayments = [];
 
@@ -49,7 +49,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   @override
   void initState() {
     super.initState();
-    // Langsung ambil data.
     _paymentsFuture = _fetchData();
   }
 
@@ -63,26 +62,35 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
       academicYear: academicYear,
     );
 
-    // Cek apakah data valid untuk masuk ke list.
-    if (responseData != null && responseData['message'] is List) {
-      final List<dynamic> dataList = responseData['message'];
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    debugPrint('Raw API Response:\n${encoder.convert(responseData)}');
 
-      // Map JSON list ke model.
+    // Cek struktur JSON: response -> 'message' (Map) -> 'lists' (List)
+    if (responseData != null &&
+        responseData['message'] is Map &&
+        responseData['message']['lists'] is List) {
+      // Akses list pembayaran dari dalam 'message' menggunakan 'lists'
+      final List<dynamic> dataList = responseData['message']['lists'];
+
       final List<Payment> payments =
           dataList.map((json) => Payment.fromJson(json)).toList();
 
-      setState(() {
-        _allPayments = payments;
-        _filteredPayments = payments;
-      });
+      // Cek apakah widget masih ada di tree sebelum memanggil setState untuk menghindari error
+      if (mounted) {
+        setState(() {
+          _allPayments = payments;
+          _filteredPayments = payments;
+        });
+      }
 
       return payments;
     } else {
       // Jika pemanggilan API gagal atau data format salah.
       String serverError =
-          'Gagal memuat atau memproses jadwal pembayaran.'; // Default error.
+          'Gagal memuat jadwal. Format data dari server tidak sesuai.'; //Default error.
 
       if (responseData != null) {
+        // Pesan error spesifik dari server
         if (responseData.containsKey('_server_messages')) {
           try {
             final serverMessages = responseData['_server_messages'] as List;
@@ -109,12 +117,10 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
 
   Future<void> onRefresh() async {
     setState(() {
-      // Re-assign.
       _paymentsFuture = _fetchData();
     });
   }
 
-  /// Status filter.
   void _applyPaymentFilter(Map<String, dynamic> filters) {
     setState(() {
       _filteredPayments = _allPayments.where((payment) {
@@ -211,26 +217,31 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                     return const Center(child: CircularProgressIndicator());
                   } else if (snapshot.hasError) {
                     return Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            'Error: ${snapshot.error}',
-                            style: TextStyle(color: theme.colorScheme.error),
-                          ),
-                          const SizedBox(height: 16),
-                          ElevatedButton(
-                            onPressed: onRefresh,
-                            child: const Text('Refresh',
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 16)),
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: theme.colorScheme.primary,
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              '${snapshot.error}'
+                                  .replaceFirst('Exception: ', ''),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(color: theme.colorScheme.error),
                             ),
-                          )
-                        ],
+                            const SizedBox(height: 16),
+                            ElevatedButton(
+                              onPressed: onRefresh,
+                              child: const Text('Coba Lagi',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16)),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: theme.colorScheme.primary,
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 16, vertical: 12),
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     );
                   } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
@@ -272,6 +283,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   }
 
   Widget _buildPaymentSummary(List<Payment> payments) {
+    // outstanding > 0 berarti Belum Lunas
     double totalKewajiban = payments
         .where((p) => p.status == 'Belum Lunas')
         .fold(0, (sum, item) => sum + item.amount);
