@@ -9,7 +9,7 @@ class TotalPaymentCard extends StatelessWidget {
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(3),
         border: Border.all(color: Colors.grey.shade300),
         boxShadow: [
           BoxShadow(
@@ -24,11 +24,11 @@ class TotalPaymentCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Expanded(
-            flex: 2,
+          const Expanded(
+            flex: 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: const [
+              children: [
                 Text(
                   'Total Pembayaran',
                   style: TextStyle(fontSize: 12, color: Colors.grey),
@@ -46,8 +46,7 @@ class TotalPaymentCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 15), // Spacing yang lebih besar
-          Flexible(
-            flex: 1,
+          IntrinsicWidth(
             child: ElevatedButton(
               onPressed: () {
                 Navigator.pushNamed(context, AppRoutes.riwayatPembayaran);
@@ -55,15 +54,15 @@ class TotalPaymentCard extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color(0xFF6A4C93),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(3),
                 ),
                 elevation: 0,
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                minimumSize: const Size(0, 36), // Set minimum height
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 20),
               ),
               child: const Text(
                 'Riwayat Pembayaran',
+                softWrap: false,
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 12,
