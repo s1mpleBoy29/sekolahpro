@@ -1,4 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+void main() {
+  runApp(const MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Payment Detail Demo',
+      theme: ThemeData(
+        primarySwatch: Colors.deepPurple,
+        fontFamily: 'Roboto',
+      ),
+      debugShowCheckedModeBanner: false,
+      home: const PaymentDetailPage(),
+    );
+  }
+}
 
 class PaymentDetailPage extends StatelessWidget {
   const PaymentDetailPage({Key? key}) : super(key: key);
@@ -6,7 +28,7 @@ class PaymentDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0,
@@ -27,52 +49,49 @@ class PaymentDetailPage extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(4),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Card Detail Pembayaran
-                  Card(
-                    elevation: 2,
-                    color: Colors.white,
-                    child: Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          _buildDetailItem(
-                            'Deskripsi',
-                            'Uang Seragam Chandra Tahun Ajaran 2025 / 2026',
-                            hasIcon: true,
-                          ),
-                          const SizedBox(height: 16),
-                          _buildDetailItem('Nominal', 'Rp 1.200.000'),
-                          const SizedBox(height: 16),
-                          _buildDetailItem('Kategori',
-                              'PPDB (Penerimaan Peserta Didik Baru)'),
-                          const SizedBox(height: 16),
-                          _buildDetailItem(
-                              'Batas Waktu Pembayaran', '30 Juli 2025'),
-                        ],
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
+                    child: Column(
+                      children: [
+                        _buildDetailItem(
+                          context,
+                          'Deskripsi',
+                          'Uang Seragam Chandra Tahun Ajaran 2025 / 2026',
+                          hasIcon: true,
+                        ),
+                        const Divider(height: 10),
+                        _buildDetailItem(context, 'Nominal', 'Rp 1.200.000'),
+                        const Divider(height: 10),
+                        _buildDetailItem(context, 'Kategori',
+                            'PPDB (Penerimaan Peserta Didik Baru)'),
+                        const Divider(height: 10),
+                        _buildDetailItem(
+                            context, 'Batas Waktu Pembayaran', '30 Juli 2025'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Text(
+                      'Riwayat Pembayaran',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
                       ),
                     ),
                   ),
-
-                  const SizedBox(height: 24),
-
-                  // Riwayat Pembayaran Section
-                  const Text(
-                    'Riwayat Pembayaran',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-
                   const SizedBox(height: 12),
-
-                  // Payment History Items
                   _buildPaymentHistoryItem(
                     date: '1 Juli 2025',
                     amount: 'Rp 200.000',
@@ -80,9 +99,7 @@ class PaymentDetailPage extends StatelessWidget {
                     buttonText: 'Detail',
                     buttonColor: Colors.grey[600]!,
                   ),
-
                   const SizedBox(height: 8),
-
                   _buildPaymentHistoryItem(
                     date: '30 Juni 2025',
                     amount: 'Rp 1.000.000',
@@ -94,14 +111,11 @@ class PaymentDetailPage extends StatelessWidget {
               ),
             ),
           ),
-
-          // Bottom Button
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
             child: ElevatedButton(
               onPressed: () {
-                // Action untuk unduh faktur
                 print('Unduh Faktur pressed');
               },
               style: ElevatedButton.styleFrom(
@@ -127,40 +141,61 @@ class PaymentDetailPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailItem(String label, String value, {bool hasIcon = false}) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            fontSize: 14,
-            color: Colors.grey[600],
-            fontWeight: FontWeight.w400,
+  Widget _buildDetailItem(BuildContext context, String label, String value,
+      {bool hasIcon = false}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 14,
+              color: Colors.grey[600],
+              fontWeight: FontWeight.w400,
+            ),
           ),
-        ),
-        const SizedBox(height: 4),
-        Row(
-          children: [
-            Expanded(
-              child: Text(
-                value,
-                style: const TextStyle(
-                  fontSize: 16,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500,
+          const SizedBox(height: 4),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ),
-            ),
-            if (hasIcon)
-              Icon(
-                Icons.content_copy,
-                size: 20,
-                color: Colors.grey[400],
-              ),
-          ],
-        ),
-      ],
+              if (hasIcon)
+                InkWell(
+                  onTap: () {
+                    // Copy deskripsi.
+                    Clipboard.setData(ClipboardData(text: value));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                            'Deskripsi disalin ke clipboard'), // Bisa menggunakan Toast.
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  },
+                  borderRadius: BorderRadius.circular(20),
+                  child: Padding(
+                    padding: const EdgeInsets.all(4.0),
+                    child: Icon(
+                      Icons.content_copy,
+                      size: 20,
+                      color: Colors.grey[400],
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 
@@ -175,6 +210,7 @@ class PaymentDetailPage extends StatelessWidget {
       elevation: 1,
       color: Colors.white,
       margin: const EdgeInsets.only(bottom: 8),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Row(
@@ -215,14 +251,13 @@ class PaymentDetailPage extends StatelessWidget {
             const SizedBox(width: 12),
             ElevatedButton(
               onPressed: () {
-                // Action untuk button
                 print('$buttonText pressed');
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: buttonColor,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
+                  horizontal: 12,
                   vertical: 8,
                 ),
                 shape: RoundedRectangleBorder(
