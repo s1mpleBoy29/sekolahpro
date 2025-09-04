@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:guardian_app/presentation/agenda/agenda.dart';
 import 'package:guardian_app/presentation/akun/akun.dart';
 import 'package:guardian_app/presentation/akun/edit_profile.dart';
-import 'package:guardian_app/presentation/detailpembayaran.dart';
+import 'package:guardian_app/presentation/keuangan/detailpembayaran.dart';
 import 'package:guardian_app/presentation/info_sekolah/info_sekolah.dart';
 import 'package:guardian_app/presentation/keuangan/keuangan.dart';
 import 'package:guardian_app/presentation/notifikasi.dart';
