@@ -5,11 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 /// Mengambil daftar jadwal pembayaran (gaTuitionList).
-/// Dibutuhkan [studentId] dan [academicYear].
+/// Dibutuhkan [studentId] dan [tuitionPlanId].
 /// Autentikasi admin menggunakan 'sid' dari SharedPreferences dan dikirim sebagai cookie.
-Future<Map<String, dynamic>?> getJadwalBayar({
+Future<Map<String, dynamic>?> getViewJadwalBayar({
   required String studentId,
-  required String academicYear,
+  required String tuitionPlanId, // ID unik untuk satu jadwal pembayaran
 }) async {
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -23,39 +23,30 @@ Future<Map<String, dynamic>?> getJadwalBayar({
       return null; // Bila tidak ada SID, tidak bisa melakukan permintaan.
     }
 
-    final String apiUrl = '${dotenv.env['API_URL']}/api/method/gaTuitionList';
+    final String apiUrl = '${dotenv.env['API_URL']}/api/method/gaTuitionView';
 
-    final Map<String, String> queryParameters = {
+    final Uri url = Uri.parse(apiUrl).replace(queryParameters: {
       'student': studentId,
-      'academic_year': academicYear,
-    };
-
-    final Uri url = Uri.parse(apiUrl).replace(queryParameters: queryParameters);
+      'tuition': tuitionPlanId,
+    });
 
     final http.Response response = await http.get(
       url,
       headers: {
         'Cookie': 'sid=$sid', // Autentikasi
-        'sekolahproapp': 'PA-1.0.0',
         'Content-Type': 'application/json',
       },
     );
 
     if (response.statusCode == 200) {
-      //print('Response body: ${response.body}');
-      final Map<String, dynamic> data = jsonDecode(response.body);
-      return data;
+      print('Response body: ${response.body}');
+      return jsonDecode(response.body);
     } else {
-      if (kDebugMode) {
-        //print('Error fetching payment schedule: ${response.statusCode}');
-        //print('Response body: ${response.body}');
-      }
-      return null;
+      debugPrint('Error - getViewJadwalBayar: ${response.body}');
+      return jsonDecode(response.body);
     }
   } catch (error) {
-    if (kDebugMode) {
-      print('An exception occurred while fetching payment schedule: $error');
-    }
+    debugPrint('Exception - getViewJadwalBayar: $error');
     return null;
   }
 }

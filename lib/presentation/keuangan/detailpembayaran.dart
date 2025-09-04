@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:guardian_app/core/app_export.dart';
 
 void main() {
   runApp(const MyApp());
@@ -97,7 +98,7 @@ class PaymentDetailPage extends StatelessWidget {
                     amount: 'Rp 200.000',
                     description: 'Pembayaran Transfer ke BCA #90 00 00',
                     buttonText: 'Detail',
-                    buttonColor: Colors.grey[600]!,
+                    buttonColor: theme.colorScheme.outline,
                   ),
                   const SizedBox(height: 8),
                   _buildPaymentHistoryItem(
@@ -105,7 +106,7 @@ class PaymentDetailPage extends StatelessWidget {
                     amount: 'Rp 1.000.000',
                     description: 'Pembayaran Tunai di kasir #009.009.001',
                     buttonText: 'Unduh Bukti',
-                    buttonColor: const Color(0xFF8E44AD),
+                    buttonColor: theme.colorScheme.primary,
                   ),
                 ],
               ),
