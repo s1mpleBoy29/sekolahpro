@@ -28,7 +28,7 @@ class TransactionHistoryCard extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(16.0),
-      margin: const EdgeInsets.symmetric(vertical: 4.0),
+      margin: const EdgeInsets.symmetric(vertical: 0.0),
       decoration: BoxDecoration(
         border: Border.all(
           color: isRejected

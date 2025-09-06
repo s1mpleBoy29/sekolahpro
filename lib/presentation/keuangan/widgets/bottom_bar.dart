@@ -61,7 +61,7 @@ class BottomBar extends StatelessWidget {
             ),
           if (isNeeded) const SizedBox(height: 16),
           CustomElevatedButton(
-            text: "Lanjutkan",
+            text: "Unduh Faktur",
             height: 38.v,
             buttonTextStyle: const TextStyle(
                 fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),

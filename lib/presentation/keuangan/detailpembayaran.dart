@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:guardian_app/core/app_export.dart';
-
-void main() {
-  runApp(const MyApp());
-}
+import 'package:guardian_app/presentation/keuangan/widgets/transaction_history_card.dart';
+import 'package:guardian_app/presentation/keuangan/widgets/bottom_bar.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -28,6 +25,8 @@ class PaymentDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -50,7 +49,8 @@ class PaymentDetailPage extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(4),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -59,8 +59,6 @@ class PaymentDetailPage extends StatelessWidget {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(8),
                     ),
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 0),
                     child: Column(
                       children: [
                         _buildDetailItem(
@@ -80,19 +78,17 @@ class PaymentDetailPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      'Riwayat Pembayaran',
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.black87,
-                      ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Riwayat Pembayaran',
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black87,
                     ),
                   ),
                   const SizedBox(height: 12),
+                  // Now this will be perfectly aligned with the title
                   _buildPaymentHistoryItem(
                     date: '1 Juli 2025',
                     amount: 'Rp 200.000',
@@ -100,7 +96,8 @@ class PaymentDetailPage extends StatelessWidget {
                     buttonText: 'Detail',
                     buttonColor: theme.colorScheme.outline,
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
+                  // This one too
                   _buildPaymentHistoryItem(
                     date: '30 Juni 2025',
                     amount: 'Rp 1.000.000',
@@ -112,36 +109,19 @@ class PaymentDetailPage extends StatelessWidget {
               ),
             ),
           ),
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
-              onPressed: () {
-                print('Unduh Faktur pressed');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF8E44AD),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                elevation: 0,
-              ),
-              child: const Text(
-                'Unduh Faktur',
-                style: TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ),
         ],
       ),
+      bottomNavigationBar: BottomBar(
+          isNeeded: false,
+          totalAmount:
+              1, // TotalAmount tidak digunakan di sini, nilai 1 hanya example
+          onContinuePressed: () {
+            print('Unduh Faktur ditekan.');
+          }),
     );
   }
 
+  // This helper method builds a detail item row
   Widget _buildDetailItem(BuildContext context, String label, String value,
       {bool hasIcon = false}) {
     return Padding(
@@ -173,12 +153,10 @@ class PaymentDetailPage extends StatelessWidget {
               if (hasIcon)
                 InkWell(
                   onTap: () {
-                    // Copy deskripsi.
                     Clipboard.setData(ClipboardData(text: value));
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text(
-                            'Deskripsi disalin ke clipboard'), // Bisa menggunakan Toast.
+                        content: Text('Deskripsi disalin ke clipboard'),
                         duration: Duration(seconds: 2),
                       ),
                     );
@@ -207,77 +185,15 @@ class PaymentDetailPage extends StatelessWidget {
     required String buttonText,
     required Color buttonColor,
   }) {
-    return Card(
-      elevation: 1,
-      color: Colors.white,
-      margin: const EdgeInsets.only(bottom: 8),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    date,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[600],
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    amount,
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[700],
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            ElevatedButton(
-              onPressed: () {
-                print('$buttonText pressed');
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: buttonColor,
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 8,
-                ),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                elevation: 0,
-                minimumSize: const Size(80, 36),
-              ),
-              child: Text(
-                buttonText,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+    return TransactionHistoryCard(
+      date: date,
+      amount: amount,
+      description: description,
+      buttonText: buttonText,
+      buttonColor: buttonColor,
+      onPressed: () {
+        print('$buttonText pressed for amount $amount');
+      },
     );
   }
 }
