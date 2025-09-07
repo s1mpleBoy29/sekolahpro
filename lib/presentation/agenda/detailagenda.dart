@@ -211,87 +211,88 @@ class _DetailAgendaState extends State<DetailAgenda> {
               final String formattedDate = DateFormat('dd MMMM yyyy', 'id_ID').format(agendaDetail.date);
               
               return SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.all(24.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Date header
+                    // Date header with larger font
                     Text(
                       formattedDate,
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                          ),
+                      style: const TextStyle(
+                        fontSize: 28,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                      ),
                     ),
                     const SizedBox(height: 24),
                     
                     // From field
                     if (agendaDetail.from.isNotEmpty) ...[
-                      RichText(
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.bodyLarge,
-                          children: [
-                            const TextSpan(
-                              text: 'Dari: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey,
-                              ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Dari: ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w400,
                             ),
-                            TextSpan(
-                              text: agendaDetail.from,
+                          ),
+                          Expanded(
+                            child: Text(
+                              agendaDetail.from,
                               style: const TextStyle(
+                                fontSize: 16,
                                 color: Colors.black,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 8),
                     ],
                     
                     // To field
                     if (agendaDetail.to.isNotEmpty) ...[
-                      RichText(
-                        text: TextSpan(
-                          style: Theme.of(context).textTheme.bodyLarge,
-                          children: [
-                            const TextSpan(
-                              text: 'Untuk: ',
-                              style: TextStyle(
-                                fontWeight: FontWeight.w600,
-                                color: Colors.grey,
-                              ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Untuk: ',
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: Colors.grey,
+                              fontWeight: FontWeight.w400,
                             ),
-                            TextSpan(
-                              text: agendaDetail.to,
+                          ),
+                          Expanded(
+                            child: Text(
+                              agendaDetail.to,
                               style: const TextStyle(
+                                fontSize: 16,
                                 color: Colors.black,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 24),
                     ],
                     
-                    // Detail content
+                    // Detail content without container decoration
                     if (agendaDetail.detail.isNotEmpty)
-                      Container(
-                        width: double.infinity,
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: Colors.grey.shade50,
-                          borderRadius: BorderRadius.circular(8),
-                          border: Border.all(color: Colors.grey.shade200),
+                      Text(
+                        agendaDetail.detail,
+                        style: const TextStyle(
+                          fontSize: 16,
+                          color: Colors.black,
+                          height: 1.6,
+                          fontWeight: FontWeight.w400,
                         ),
-                        child: Text(
-                          agendaDetail.detail,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                color: Colors.black,
-                                height: 1.5,
-                              ),
-                        ),
+                        textAlign: TextAlign.justify,
                       ),
                   ],
                 ),
