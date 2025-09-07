@@ -14,7 +14,7 @@ import '../presentation/pilihanak/pilihanak.dart';
 import '../presentation/pembayaran/bayarsatu.dart';
 import '../presentation/pembayaran/bayardua.dart';
 import '../presentation/pembayaran/bayartiga.dart';
-import '../presentation/detailagenda.dart';
+import '../presentation/agenda/detailagenda.dart';
 import '../presentation/keuangan/riwayat_pembayaran.dart';
 import '../presentation/akun/data_anak.dart';
 
