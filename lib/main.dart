@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -56,6 +56,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   PackageInfo packageInfo = await PackageInfo.fromPlatform();
   AppState().appVersion = packageInfo.version;
+  
   await ConfigService.load();
   await dotenv.load(fileName: ".env");
 
@@ -66,6 +67,7 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
 
   ThemeHelper().changeTheme('primary');
+  await initializeDateFormatting('id_ID', null);
 
   runApp(
     MultiProvider(

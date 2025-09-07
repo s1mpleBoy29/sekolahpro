@@ -87,7 +87,7 @@ class _SplashScreen2State extends State<SplashScreen2>
             duration: Duration(seconds: 3),
           ),
         );
-        Navigator.pushReplacementNamed(context, '/login_screen');
+        Navigator.pushReplacementNamed(context, '/agenda_screen');
       }
 
       final student = results[0] as List<Student>;
@@ -95,7 +95,7 @@ class _SplashScreen2State extends State<SplashScreen2>
       await provider.saveStudents(student);
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/pilih_anak_screen');
+      Navigator.pushReplacementNamed(context, '/agenda_screen');
     } catch (e) {
       if (!mounted) return;
       setState(() {
