@@ -5,7 +5,7 @@ class PaymentDetail {
   final double amount;
   final String category;
   final DateTime dueDate;
-  final List<PaymentHistoryItem> history; // List untuk riwayat pembayaran.
+  final List<PaymentHistoryItem> history;
 
   PaymentDetail({
     required this.description,
@@ -15,21 +15,20 @@ class PaymentDetail {
     required this.history,
   });
 
-  // Dari JSON ke PaymentDetail.
   factory PaymentDetail.fromJson(Map<String, dynamic> json) {
-    // Akses data dari dalam object 'message'
-    final Map<String, dynamic> data = json['message'] ?? {};
-    final List<dynamic> receipts = data['receipts'] ?? [];
+    final List<dynamic> receiptsData =
+        json['receipts'] is List ? json['receipts'] : [];
 
     return PaymentDetail(
-      description: data['remark'] ?? 'Tidak ada deskripsi',
-      amount: (data['amount'] as num? ?? 0.0).toDouble(),
-      category: data['fee_category'] ?? 'Tidak ada kategori',
+      description: json['remark'] ?? 'Tidak ada deskripsi',
+      amount: (json['amount'] as num? ?? 0.0).toDouble(),
+      category: json['fee_category'] ?? 'Tidak ada kategori',
       dueDate:
-          DateTime.parse(data['due_date'] ?? DateTime.now().toIso8601String()),
-      // Ubah setiap item di 'receipts' menjadi object PaymentHistoryItem
-      history:
-          receipts.map((item) => PaymentHistoryItem.fromJson(item)).toList(),
+          DateTime.parse(json['due_date'] ?? DateTime.now().toIso8601String()),
+      history: receiptsData
+          .whereType<Map<String, dynamic>>()
+          .map((item) => PaymentHistoryItem.fromJson(item))
+          .toList(),
     );
   }
 }
@@ -45,11 +44,19 @@ class PaymentHistoryItem {
     required this.description,
   });
 
-  // Dari JSON ke PaymentHistoryItem.
   factory PaymentHistoryItem.fromJson(Map<String, dynamic> json) {
-    // Format tanggal dari 'posting_date'
-    final DateTime parsedDate = DateTime.parse(
-        json['posting_date'] ?? DateTime.now().toIso8601String());
+    DateTime parsedDate;
+    try {
+      if (json['posting_date'] != null &&
+          json['posting_date'].toString().isNotEmpty) {
+        parsedDate = DateTime.parse(json['posting_date']);
+      } else {
+        parsedDate = DateTime.now();
+      }
+    } catch (e) {
+      parsedDate = DateTime.now();
+    }
+
     final String formattedDate =
         DateFormat('d MMMM yyyy', 'id_ID').format(parsedDate);
 

@@ -9,7 +9,7 @@ import 'package:http/http.dart' as http;
 /// Autentikasi admin menggunakan 'sid' dari SharedPreferences dan dikirim sebagai cookie.
 Future<Map<String, dynamic>?> getViewJadwalBayar({
   required String studentId,
-  required String tuitionPlanId, // ID unik untuk satu jadwal pembayaran
+  required String tuitionPlanId,
 }) async {
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -20,7 +20,7 @@ Future<Map<String, dynamic>?> getViewJadwalBayar({
         print(
             'Error: SID not found in SharedPreferences. User may not be logged in.');
       }
-      return null; // Bila tidak ada SID, tidak bisa melakukan permintaan.
+      return null;
     }
 
     final String apiUrl = '${dotenv.env['API_URL']}/api/method/gaTuitionView';
@@ -33,6 +33,7 @@ Future<Map<String, dynamic>?> getViewJadwalBayar({
     final http.Response response = await http.get(
       url,
       headers: {
+        'sekolahproapp': 'PA-1.0.0',
         'Cookie': 'sid=$sid', // Autentikasi
         'Content-Type': 'application/json',
       },

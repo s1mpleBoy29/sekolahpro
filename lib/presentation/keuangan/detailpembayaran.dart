@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart'; // Import for formatting
+// Assuming your files are in these locations, adjust if necessary
+import 'package:guardian_app/data/api/detailpayment.dart'; // Import your API service
+import 'package:guardian_app/data/models/detailpayment.dart'; // Import your model
 import 'package:guardian_app/presentation/keuangan/widgets/transaction_history_card.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/bottom_bar.dart';
 
+// Your existing MyApp widget remains the same
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
@@ -20,8 +25,40 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class PaymentDetailPage extends StatelessWidget {
+// Converted to a StatefulWidget to manage state for the API call
+class PaymentDetailPage extends StatefulWidget {
   const PaymentDetailPage({Key? key}) : super(key: key);
+
+  @override
+  State<PaymentDetailPage> createState() => _PaymentDetailPageState();
+}
+
+class _PaymentDetailPageState extends State<PaymentDetailPage> {
+  // A Future to hold the result of our API call
+  late Future<PaymentDetail?> _paymentDetailFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchPaymentDetails();
+  }
+
+  void _fetchPaymentDetails() {
+    // In a real app, these IDs would be passed into the widget
+    const String studentId = "TLAB.0001";
+    const String tuitionPlanId = "PLAN-TLAB-250822-000731";
+
+    // Call the API and store the Future
+    // The model will automatically parse the JSON if the API call is successful
+    _paymentDetailFuture =
+        getViewJadwalBayar(studentId: studentId, tuitionPlanId: tuitionPlanId)
+            .then((data) {
+      if (data != null && data.containsKey('message')) {
+        return PaymentDetail.fromJson(data);
+      }
+      return null;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,83 +82,118 @@ class PaymentDetailPage extends StatelessWidget {
           ),
         ),
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: SingleChildScrollView(
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    child: Column(
-                      children: [
-                        _buildDetailItem(
-                          context,
-                          'Deskripsi',
-                          'Uang Seragam Chandra Tahun Ajaran 2025 / 2026',
-                          hasIcon: true,
-                        ),
-                        const Divider(height: 10),
-                        _buildDetailItem(context, 'Nominal', 'Rp 1.200.000'),
-                        const Divider(height: 10),
-                        _buildDetailItem(context, 'Kategori',
-                            'PPDB (Penerimaan Peserta Didik Baru)'),
-                        const Divider(height: 10),
-                        _buildDetailItem(
-                            context, 'Batas Waktu Pembayaran', '30 Juli 2025'),
-                      ],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  const Text(
-                    'Riwayat Pembayaran',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.black87,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  // Now this will be perfectly aligned with the title
-                  _buildPaymentHistoryItem(
-                    date: '1 Juli 2025',
-                    amount: 'Rp 200.000',
-                    description: 'Pembayaran Transfer ke BCA #90 00 00',
-                    buttonText: 'Detail',
-                    buttonColor: theme.colorScheme.outline,
-                  ),
-                  const SizedBox(height: 12),
-                  // This one too
-                  _buildPaymentHistoryItem(
-                    date: '30 Juni 2025',
-                    amount: 'Rp 1.000.000',
-                    description: 'Pembayaran Tunai di kasir #009.009.001',
-                    buttonText: 'Unduh Bukti',
-                    buttonColor: theme.colorScheme.primary,
-                  ),
-                ],
+      // Use FutureBuilder to handle the async API call
+      body: FutureBuilder<PaymentDetail?>(
+        future: _paymentDetailFuture,
+        builder: (context, snapshot) {
+          // --- LOADING STATE ---
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          // --- ERROR STATE ---
+          if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+            return Center(
+              child: Text(
+                'Gagal memuat data.\nError: ${snapshot.error ?? "Data tidak ditemukan."}',
+                textAlign: TextAlign.center,
               ),
-            ),
-          ),
-        ],
+            );
+          }
+          // --- SUCCESS STATE ---
+          final paymentDetail = snapshot.data!;
+          final currencyFormatter = NumberFormat.decimalPattern('id_ID');
+          final dateFormatter = DateFormat('d MMMM yyyy', 'id_ID');
+
+          return Column(
+            children: [
+              Expanded(
+                child: SingleChildScrollView(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0, vertical: 4.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Column(
+                          children: [
+                            _buildDetailItem(
+                              context,
+                              'Deskripsi',
+                              paymentDetail.description,
+                              hasIcon: true,
+                            ),
+                            const Divider(height: 10),
+                            _buildDetailItem(context, 'Nominal',
+                                'Rp ${currencyFormatter.format(paymentDetail.amount)}'),
+                            const Divider(height: 10),
+                            _buildDetailItem(
+                                context, 'Kategori', paymentDetail.category),
+                            const Divider(height: 10),
+                            _buildDetailItem(context, 'Batas Waktu Pembayaran',
+                                dateFormatter.format(paymentDetail.dueDate)),
+                          ],
+                        ),
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Riwayat Pembayaran',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      const SizedBox(height: 12),
+                      // Display a message if there is no payment history
+                      if (paymentDetail.history.isEmpty)
+                        const Center(
+                          child: Padding(
+                            padding: EdgeInsets.all(16.0),
+                            child: Text('Belum ada riwayat pembayaran.'),
+                          ),
+                        )
+                      else
+                        // Build the list of payment history items dynamically
+                        ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: paymentDetail.history.length,
+                          itemBuilder: (context, index) {
+                            final item = paymentDetail.history[index];
+                            return _buildPaymentHistoryItem(
+                              date: item.date,
+                              amount:
+                                  'Rp ${currencyFormatter.format(item.amount)}',
+                              description: item.description,
+                              buttonText: 'Detail', // Example button
+                              buttonColor: theme.colorScheme.outline,
+                            );
+                          },
+                          separatorBuilder: (context, index) =>
+                              const SizedBox(height: 12),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
+        },
       ),
       bottomNavigationBar: BottomBar(
-          isNeeded: false,
-          totalAmount:
-              1, // TotalAmount tidak digunakan di sini, nilai 1 hanya example
+          isNeeded: false, // Set this based on your logic
+          totalAmount: 1,
           onContinuePressed: () {
             print('Unduh Faktur ditekan.');
           }),
     );
   }
 
-  // This helper method builds a detail item row
+  // This helper method remains the same
   Widget _buildDetailItem(BuildContext context, String label, String value,
       {bool hasIcon = false}) {
     return Padding(
@@ -178,6 +250,7 @@ class PaymentDetailPage extends StatelessWidget {
     );
   }
 
+  // This helper method remains the same
   Widget _buildPaymentHistoryItem({
     required String date,
     required String amount,

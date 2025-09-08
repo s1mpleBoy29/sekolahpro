@@ -42,13 +42,13 @@ Future<Map<String, dynamic>?> getJadwalBayar({
     );
 
     if (response.statusCode == 200) {
-      //print('Response body: ${response.body}');
+      // print('Response body: ${response.body}');
       final Map<String, dynamic> data = jsonDecode(response.body);
       return data;
     } else {
       if (kDebugMode) {
-        //print('Error fetching payment schedule: ${response.statusCode}');
-        //print('Response body: ${response.body}');
+        print('Error fetching payment schedule: ${response.statusCode}');
+        print('Response body: ${response.body}');
       }
       return null;
     }
