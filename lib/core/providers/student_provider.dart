@@ -9,6 +9,9 @@ class StudentProvider with ChangeNotifier {
 
   List<Student> get students => _students;
 
+  Student? _selectedStudent;
+  Student? get selectedStudent => _selectedStudent;
+
   StudentProvider() {
     loadStudent();
   }
@@ -27,13 +30,16 @@ class StudentProvider with ChangeNotifier {
     final prefs = await SharedPreferences.getInstance();
     final jsonString = prefs.getString('students');
 
-    print('json string: $jsonString');
-
     if (jsonString != null) {
       final List<dynamic> jsonData = jsonDecode(jsonString);
       _students = jsonData.map((e) => Student.fromJson(e)).toList();
     }
 
+    notifyListeners();
+  }
+
+  void setSelectedStudent(Student student) async {
+    _selectedStudent = student;
     notifyListeners();
   }
 }

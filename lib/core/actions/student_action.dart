@@ -6,22 +6,39 @@ class StudentAction {
   static Future<List<Student>> getStudents(
       int limit, int start, String filters) async {
     try {
-      print('test');
-      print('limti: $limit, start: $start, filter: $filters');
       final response = await student.getStudent(limit, start, filters);
 
-      print('response: $response');
-
-      if (response == null || response['data'] == null) {
+      if (response == null || response['message'] == null) {
         return [];
       }
-      final List<dynamic> itemsJson = response['data'];
-      return itemsJson.map((json) => Student.fromJson(json)).toList();
+      final List<dynamic> itemsJson = response['message']['lists'] ?? [];
+
+      List<dynamic> itemsJsonNew = [];
+
+      itemsJsonNew = itemsJson.map((json) {
+        return {
+          'name': json['student'] ?? '',
+          'full_name': json['student_name'] ?? '',
+          'school': json['school'] ?? '',
+          'school_name': json['school_name'] ?? '',
+          'grade': json['grade'] ?? '',
+          'grade_name': json['grade_name'] ?? '',
+          'academic_year': json['academic_year'] ?? '',
+          'academic_year_name': json['academic_year_title'] ?? '',
+        };
+      }).toList();
+
+      return itemsJsonNew.map((json) => Student.fromJson(json)).toList();
     } catch (error) {
       if (kDebugMode) {
         print('Error: $error');
       }
       throw Exception('Error fetching items: $error');
     }
+  }
+
+  void setStudentSelected(String student) {
+    // selectedStudent = student;
+    // notifyListeners();
   }
 }

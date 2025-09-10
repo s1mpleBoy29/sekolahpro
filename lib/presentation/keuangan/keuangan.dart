@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/paymentschedule_card.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/summarycard.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/totalpayment.dart';
@@ -18,6 +19,7 @@ import 'dart:convert';
 // Pastikan path import ini sesuai dengan struktur proyek Anda
 import 'package:guardian_app/data/api/payment.dart';
 import 'package:guardian_app/data/models/payment.dart';
+import 'package:provider/provider.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
@@ -175,29 +177,33 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: theme.colorScheme.surface,
-        bottomNavigationBar: BottomNavBar(
-          selected: AppRoutes.keuanganScreen,
-          context: context,
-          theme: theme,
-        ),
-        floatingActionButton: CustomFAB(
-          onPressed: () {
-            Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: Column(
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
+      bottomNavigationBar: BottomNavBar(
+        selected: AppRoutes.keuanganScreen,
+        context: context,
+        theme: theme,
+      ),
+      floatingActionButton: CustomFAB(
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      body: SafeArea(
+        child: Column(
           children: [
             StickyTopBar(
               backgroundColor: theme.colorScheme.onPrimary,
               lineColor: appTheme.gray300,
               textColor: appTheme.gray600,
               titleFontSize: 22.0,
-              titleText: 'Candra Wijaya', // TODO: Update
-              subtitleText: 'SDN 13 Malang | Kelas 5', // TODO: Update
+              titleText:
+                  studentProvider.selectedStudent?.fullName ?? 'Pilih Anak',
+              subtitleText:
+                  '${studentProvider.selectedStudent?.schoolName} | ${studentProvider.selectedStudent?.gradeName ?? '-'}',
               onTitleTap: _navigateToAnakScreen,
             ),
             SecondaryTopbar(

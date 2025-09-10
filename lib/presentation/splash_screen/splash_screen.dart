@@ -65,37 +65,36 @@ class _SplashScreen2State extends State<SplashScreen2>
     });
 
     try {
-      print('test 1');
       final provider = Provider.of<StudentProvider>(context, listen: false);
-
-      print('provider: $provider');
-
       // Parallel execution of API calls
       final results = await Future.wait<dynamic>([
         StudentAction.getStudents(1000, 0, ''),
       ]);
 
-      print(' tes ${results}');
-      log(' tes ${results[0].toString()}');
+      // print(' tes ${results[0].isEmpty}');
+      // log(' tes ${results[0].toString()}');
 
-      if (results[0].isEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Sesi anda telah berakhir. Silakan login kembali.'),
-            backgroundColor: Colors.red,
-            behavior: SnackBarBehavior.floating,
-            duration: Duration(seconds: 3),
-          ),
-        );
-        Navigator.pushReplacementNamed(context, '/agenda_screen');
-      }
+      // if (results[0].isEmpty) {
+      //   ScaffoldMessenger.of(context).showSnackBar(
+      //     const SnackBar(
+      //       content: Text('Sesi anda telah berakhir. Silakan login kembali.'),
+      //       backgroundColor: Colors.red,
+      //       behavior: SnackBarBehavior.floating,
+      //       duration: Duration(seconds: 3),
+      //     ),
+      //   );
+      //   Navigator.pushReplacementNamed(context, '/login_screen');
+      // }
 
       final student = results[0] as List<Student>;
 
       await provider.saveStudents(student);
 
       if (!mounted) return;
-      Navigator.pushReplacementNamed(context, '/agenda_screen');
+      print('test');
+      Navigator.pushReplacementNamed(context, '/pilih_anak_screen', arguments: {
+        'postSelectionAction': 'navigateToHome',
+      });
     } catch (e) {
       if (!mounted) return;
       setState(() {
@@ -106,7 +105,6 @@ class _SplashScreen2State extends State<SplashScreen2>
   }
 
   String _parseErrorMessage(dynamic error) {
-    print('check error: $error');
     if (error.toString().contains('No internet')) {
       return 'Tidak ada koneksi internet. Periksa jaringan Anda.';
     } else if (error.toString().contains('timeout')) {

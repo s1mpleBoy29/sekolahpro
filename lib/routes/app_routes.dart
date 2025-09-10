@@ -42,7 +42,9 @@ class AppRoutes {
     agendaScreen: (context) => const AgendaScreen(),
     DetailAgendaScreen: (context) => const DetailAgenda(),
     NotifikasiScreen: (context) => const NotificationPage(),
-    pilihAnakScreen: (context) => const PilihAnakScreen(),
+    pilihAnakScreen: (context) => const PilihAnakScreen(
+          postSelectionAction: PostSelectionAction.navigateToHome,
+        ),
     bayarSatuScreen: (context) => const BayarSatuScreen(),
     bayarDuaScreen: (context) => const BayarDuaScreen(),
     bayarTigaScreen: (context) => const BayarTigaScreen(),

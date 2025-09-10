@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/data/api/Agenda.dart';
 import 'package:guardian_app/data/models/Agenda.dart';
 import 'package:guardian_app/widgets/filterpopup.dart';
@@ -13,6 +14,7 @@ import 'package:guardian_app/routes/app_routes.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 import 'package:intl/intl.dart';
 import 'package:guardian_app/widgets/agenda_card.dart'; // Mengimpor AgendaCard
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AgendaScreen extends StatefulWidget {
@@ -41,7 +43,8 @@ class AgendaPageScreen extends State<AgendaScreen> {
       _errorMessage = null;
     });
 
-    final AgendaListResponse? response = await getAgendaList(studentId: _currentStudentId);
+    final AgendaListResponse? response =
+        await getAgendaList(studentId: _currentStudentId);
 
     if (response != null) {
       if (mounted) {
@@ -80,12 +83,17 @@ class AgendaPageScreen extends State<AgendaScreen> {
     setState(() {
       // Ini adalah filter sederhana pada data yang sudah diambil dari API
       // Jika Anda perlu filter dari sisi server, logikanya perlu diubah
-      final List<AgendaDetail> filteredTemp = _filteredAgendaList.where((agenda) {
+      final List<AgendaDetail> filteredTemp =
+          _filteredAgendaList.where((agenda) {
         final pengirimFilter = filters['pengirim'] as AgendaFilterPengirim;
-        final bool matchesPengirim = pengirimFilter == AgendaFilterPengirim.semua ||
-            (pengirimFilter == AgendaFilterPengirim.waliKelas5A && agenda.from == 'Wali Kelas 5A') ||
-            (pengirimFilter == AgendaFilterPengirim.guruOlahraga && agenda.from == 'Guru Seni Budaya 5A') ||
-            (pengirimFilter == AgendaFilterPengirim.adminSekolah && agenda.from == 'Admin Sekolah');
+        final bool matchesPengirim =
+            pengirimFilter == AgendaFilterPengirim.semua ||
+                (pengirimFilter == AgendaFilterPengirim.waliKelas5A &&
+                    agenda.from == 'Wali Kelas 5A') ||
+                (pengirimFilter == AgendaFilterPengirim.guruOlahraga &&
+                    agenda.from == 'Guru Seni Budaya 5A') ||
+                (pengirimFilter == AgendaFilterPengirim.adminSekolah &&
+                    agenda.from == 'Admin Sekolah');
 
         final DateTime? startDate = filters['tanggal_mulai'];
         final DateTime? endDate = filters['tanggal_akhir'];
@@ -93,7 +101,9 @@ class AgendaPageScreen extends State<AgendaScreen> {
 
         bool matchesDate = true;
         if (startDate != null && endDate != null) {
-          matchesDate = agendaDate.isAfter(startDate.subtract(const Duration(days: 1))) && agendaDate.isBefore(endDate.add(const Duration(days: 1)));
+          matchesDate =
+              agendaDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
+                  agendaDate.isBefore(endDate.add(const Duration(days: 1)));
         } else if (startDate != null) {
           matchesDate = DateUtils.isSameDay(agendaDate, startDate);
         } else {
@@ -134,6 +144,8 @@ class AgendaPageScreen extends State<AgendaScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       bottomNavigationBar: BottomNavBar(
@@ -158,8 +170,10 @@ class AgendaPageScreen extends State<AgendaScreen> {
               titleFontFamily: 'Urbanist',
               subtitleFontSize: 12.0,
               subtitleFontFamily: 'Lato',
-              titleText: 'Candra Wijaya',
-              subtitleText: 'SDN 13 Malang | Kelas 5',
+              titleText:
+                  studentProvider.selectedStudent?.fullName ?? 'Pilih Anak',
+              subtitleText:
+                  '${studentProvider.selectedStudent?.schoolName} | ${studentProvider.selectedStudent?.gradeName ?? '-'}',
               onTitleTap: _navigateToAnakScreen,
             ),
             SecondaryTopbar(
@@ -267,10 +281,12 @@ class AgendaPageScreen extends State<AgendaScreen> {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: onRefresh,
-                child: const Text('Coba Lagi', style: TextStyle(color: Colors.white, fontSize: 16)),
+                child: const Text('Coba Lagi',
+                    style: TextStyle(color: Colors.white, fontSize: 16)),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: theme.colorScheme.primary,
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
               )
             ],
@@ -295,7 +311,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
           // Item pertama adalah AdCard
           return _buildAdCard();
         }
-        
+
         // Item sisanya adalah AgendaCard
         // Kurangi index dengan 1 untuk mengakses data dari _filteredAgendaList
         final item = _filteredAgendaList[index - 1];

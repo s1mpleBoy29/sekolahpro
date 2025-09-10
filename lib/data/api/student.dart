@@ -40,33 +40,30 @@ Future<Map<String, dynamic>?> getStudent(
     int limit, int start, String filter) async {
   try {
     // Ambil SID dari Hive
-    print('limit $limit, start $start, filter $filter');
     SharedPreferences prefs = await SharedPreferences.getInstance();
     String? sid = prefs.getString('sid');
     prefs.getString('selected_outlet');
     String apiUrl = '';
 
-    print('check sid, $sid');
-
     apiUrl = '${dotenv.env['API_URL']}/api/method/gaStudentList';
 
-    final Uri url = Uri.parse(apiUrl).replace(queryParameters: {
-      'fields': '["*"]',
-      'limit_page_length': limit.toString(),
-      'limit_start': start.toString(),
-      // 'filters': '[["name", "=", "Monroe Pos"]]'
-    });
+    // final Uri url = Uri.parse(apiUrl).replace(queryParameters: {
+    //   'fields': '["*"]',
+    //   'limit_page_length': limit.toString(),
+    //   'limit_start': start.toString(),
+    //   // 'filters': '[["name", "=", "Monroe Pos"]]'
+    // });
+
+    final Uri url = Uri.parse(apiUrl);
 
     final http.Response response = await http.get(
       url,
       headers: {
         'Cookie': 'sid=$sid',
         'Content-Type': 'application/json',
+        'sekolahproapp': 'PA-1.0.0'
       },
     );
-
-    print('response, ${response.body}');
-    print('response, ${response.statusCode}');
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);

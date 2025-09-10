@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/providers/student_provider.dart';
+import 'package:guardian_app/data/models/student.dart';
 import 'package:guardian_app/presentation/pilihanak/searchbar.dart';
 import 'package:guardian_app/presentation/pilihanak/studentcard.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
@@ -29,16 +30,17 @@ class PilihAnakScreen extends StatefulWidget {
 class PilihAnakPageScreen extends State<PilihAnakScreen> {
   final TextEditingController _searchController = TextEditingController();
 
-  List<Map<String, String>> allChildren = [];
+  List<Student> allChildren = [];
 
-  List<Map<String, String>> _filteredChildren = [];
+  List<Student> _filteredChildren = [];
 
   SharedPreferences? _prefs;
 
   @override
   void initState() {
     super.initState();
-    allChildren = _filteredChildren = allChildren;
+    _initializeData();
+    // allChildren = _filteredChildren = allChildren;
   }
 
   @override
@@ -49,53 +51,36 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
 
   Future<void> _initializeData() async {
     _prefs = await SharedPreferences.getInstance();
+    loadStudent();
   }
 
   Future<void> loadStudent() async {
     final provider = Provider.of<StudentProvider>(context, listen: false);
     final students = provider.students;
-
-    if (mounted) {
-      setState(() {
-        allChildren.clear();
-        allChildren.addAll(students.isNotEmpty
-            ? students
-                .map((student) => {
-                      'name': student.name,
-                      'school': student.school,
-                      'grade': student.grade,
-                    })
-                .toList()
-            : []);
-        // allChildren.clear();
-        // allChildren.addAll(students.isNotEmpty
-        //     ? students.map((student) => student).toList()
-        //     : ["TUNAI"]);
-        // _selectedPaymentMethod =
-        //     _paymentMethods.contains(_selectedPaymentMethod)
-        //         ? _selectedPaymentMethod
-        //         : _paymentMethods.first;
-      });
-    }
   }
 
   void _filterChildren(String query) {
-    setState(() {
-      if (query.isEmpty) {
-        _filteredChildren = allChildren;
-      } else {
-        _filteredChildren = allChildren
-            .where((child) =>
-                child['name']!.toLowerCase().contains(query.toLowerCase()) ||
-                child['school']!.toLowerCase().contains(query.toLowerCase()) ||
-                child['class']!.toLowerCase().contains(query.toLowerCase()))
-            .toList();
-      }
-    });
+    // setState(() {
+    //   if (query.isEmpty) {
+    //     _filteredChildren = allChildren;
+    //   } else {
+    //     _filteredChildren = allChildren
+    //         .where((child) =>
+    //             child['name']!.toLowerCase().contains(query.toLowerCase()) ||
+    //             child['school']!.toLowerCase().contains(query.toLowerCase()) ||
+    //             child['class']!.toLowerCase().contains(query.toLowerCase()))
+    //         .toList();
+    //   }
+    // });
   }
 
-  void _onSelectChild(Map<String, String> childData) {
-    print('Anak yang dipilih: ${childData['name']}');
+  void _onSelectChild(Student childData) {
+    // StudentProvider.setSelectedStudent(childData);
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
+    studentProvider.setSelectedStudent(childData);
+
+    print('widget, ${widget.postSelectionAction}');
 
     switch (widget.postSelectionAction) {
       case PostSelectionAction.navigateToHome:
@@ -121,6 +106,8 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
     // Estimasi tinggi AdCard untuk padding bawah
     // Anda mungkin perlu menyesuaikannya agar pas dengan tinggi AdCard yang sebenarnya
     final double adCardEstimatedHeight =
@@ -145,7 +132,6 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Judul "Pilih Anak" (Fixed)
                 Padding(
                   padding: const EdgeInsets.only(
                       top: 60.0,
@@ -188,26 +174,24 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0), // Padding horizontal untuk daftar
-                    child: _filteredChildren.isEmpty
+                    child: studentProvider.students.isEmpty
                         ? const Center(
                             child: Text('Tidak ada anak ditemukan.'),
                           )
                         : ListView.builder(
-                            // Tidak perlu shrinkWrap dan NeverScrollableScrollPhysics lagi
-                            // karena sudah di dalam Expanded SingleChildScrollView atau langsung Expanded ListView.builder
-                            // Jika list ini terlalu panjang dan butuh scroll, maka dia sendiri yang akan scroll
-                            itemCount: _filteredChildren.length,
+                            itemCount: studentProvider.students.length,
                             itemBuilder: (context, index) {
-                              final childData = _filteredChildren[index];
+                              final childData = studentProvider.students[index];
+                              print('check childData: ${childData.fullName}');
+
                               return Padding(
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 4.0),
                                 child: StudentCard(
-                                  studentName: childData['name']!,
-                                  schoolName: childData['school']!,
-                                  className: childData['class']!,
-                                  avatarImagePath:
-                                      'assets/images/profileicon.jpg',
+                                  studentName: childData.fullName,
+                                  schoolName: childData.schoolName,
+                                  className: childData.gradeName,
+                                  avatarImagePath: null,
                                   onSelectPressed: () {
                                     _onSelectChild(childData);
                                   },
