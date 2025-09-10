@@ -162,19 +162,23 @@ class AgendaPageScreen extends State<AgendaScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            StickyTopBar(
-              backgroundColor: theme.colorScheme.onPrimary,
-              lineColor: appTheme.gray300,
-              textColor: appTheme.gray600,
-              titleFontSize: 22.0,
-              titleFontFamily: 'Urbanist',
-              subtitleFontSize: 12.0,
-              subtitleFontFamily: 'Lato',
-              titleText:
-                  studentProvider.selectedStudent?.fullName ?? 'Pilih Anak',
-              subtitleText:
-                  '${studentProvider.selectedStudent?.schoolName} | ${studentProvider.selectedStudent?.gradeName ?? '-'}',
-              onTitleTap: _navigateToAnakScreen,
+            Consumer<StudentProvider>(
+              builder: (context, studentProvider, _) {
+                return StickyTopBar(
+                  backgroundColor: theme.colorScheme.onPrimary,
+                  lineColor: appTheme.gray300,
+                  textColor: appTheme.gray600,
+                  titleFontSize: 22.0,
+                  titleFontFamily: 'Urbanist',
+                  subtitleFontSize: 12.0,
+                  subtitleFontFamily: 'Lato',
+                  titleText:
+                      studentProvider.selectedStudent?.fullName ?? 'Pilih Anak',
+                  subtitleText:
+                      '${studentProvider.selectedStudent?.schoolName ?? '-'} | ${studentProvider.selectedStudent?.gradeName ?? '-'}',
+                  onTitleTap: _navigateToAnakScreen,
+                );
+              },
             ),
             SecondaryTopbar(
               backgroundColor: theme.colorScheme.secondary,

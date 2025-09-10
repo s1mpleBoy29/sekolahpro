@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:guardian_app/core/app_export.dart';
 
 class AgendaCard extends StatelessWidget {
@@ -17,6 +18,15 @@ class AgendaCard extends StatelessWidget {
     required this.detail,
     this.onTap, // Parameter onTap bersifat opsional
   });
+
+  String cleanHtml(String rawHtml) {
+    return rawHtml
+        .replaceAll(
+            RegExp(r'&nbsp;'), ' ') // ubah non-breaking space jadi biasa
+        .replaceAll(RegExp(r'<p><br></p>'), '') // hapus paragraf kosong
+        .replaceAll(RegExp(r'\s+'), ' ') // rapikan spasi berlebih
+        .trim();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,13 +71,29 @@ class AgendaCard extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Text(
-              detail,
-              style: TextStyle(
-                color: theme.colorScheme.onPrimaryContainer,
-                fontSize: 16,
-              ),
-            )
+            Html(
+              data: cleanHtml(detail),
+              style: {
+                "p": Style(
+                  fontSize: FontSize(16),
+                  margin: Margins.symmetric(
+                      vertical: 4), // jarak antar paragraf kecil
+                  padding: HtmlPaddings.zero,
+                  color: theme.colorScheme.onPrimaryContainer,
+                ),
+                "strong": Style(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red, // bisa override warna bold
+                ),
+              },
+            ),
+            // Text(
+            //   detail,
+            //   style: TextStyle(
+            //     color: theme.colorScheme.onPrimaryContainer,
+            //     fontSize: 16,
+            //   ),
+            // )
           ],
         ),
       ),

@@ -26,7 +26,7 @@ class AgendaListResponse {
 }
 
 class AgendaDetail {
-  final DateTime date;   // simpan sebagai DateTime (sama seperti model Keuangan)
+  final DateTime date; // simpan sebagai DateTime (sama seperti model Keuangan)
   final String from;
   final String to;
   final String detail;
@@ -43,18 +43,17 @@ class AgendaDetail {
     final String rawNote = json['note'] ?? '';
 
     // Bersihkan HTML (helper ada di bawah)
-    final String cleanNote = _removeHtmlTags(rawNote).trim();
+    // final String cleanNote = _removeHtmlTags(rawNote).trim();
 
     // Parse tanggal — gunakan tryParse untuk aman
     final String rawDate = json['date'] ?? '';
-    final DateTime parsedDate =
-        DateTime.tryParse(rawDate) ?? DateTime.now();
+    final DateTime parsedDate = DateTime.tryParse(rawDate) ?? DateTime.now();
 
     return AgendaDetail(
       date: parsedDate,
       from: json['staff_name'] ?? 'Tidak diketahui',
       to: json['party_name'] ?? 'Tidak diketahui',
-      detail: cleanNote,
+      detail: rawNote,
     );
   }
 }
