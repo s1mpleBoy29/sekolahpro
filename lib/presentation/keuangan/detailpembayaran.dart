@@ -1,31 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart'; // Import for formatting
-// Assuming your files are in these locations, adjust if necessary
-import 'package:guardian_app/data/api/detailpayment.dart'; // Import your API service
-import 'package:guardian_app/data/models/detailpayment.dart'; // Import your model
+import 'package:intl/intl.dart';
+import 'package:guardian_app/data/api/detailpayment.dart';
+import 'package:guardian_app/data/models/detailpayment.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/transaction_history_card.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/bottom_bar.dart';
 
-// Your existing MyApp widget remains the same
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Payment Detail Demo',
-      theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
-        fontFamily: 'Roboto',
-      ),
-      debugShowCheckedModeBanner: false,
-      home: const PaymentDetailPage(),
-    );
-  }
-}
-
-// Converted to a StatefulWidget to manage state for the API call
 class PaymentDetailPage extends StatefulWidget {
   const PaymentDetailPage({Key? key}) : super(key: key);
 
@@ -34,36 +15,63 @@ class PaymentDetailPage extends StatefulWidget {
 }
 
 class _PaymentDetailPageState extends State<PaymentDetailPage> {
-  // A Future to hold the result of our API call
-  late Future<PaymentDetail?> _paymentDetailFuture;
+  late Future<PaymentDetail> _paymentDetailFuture;
 
   @override
   void initState() {
     super.initState();
-    _fetchPaymentDetails();
+    _paymentDetailFuture = _fetchPaymentDetails();
   }
 
-  void _fetchPaymentDetails() {
-    // In a real app, these IDs would be passed into the widget
+  Future<PaymentDetail> _fetchPaymentDetails() async {
     const String studentId = "TLAB.0001";
     const String tuitionPlanId = "PLAN-TLAB-250822-000731";
 
-    // Call the API and store the Future
-    // The model will automatically parse the JSON if the API call is successful
-    _paymentDetailFuture =
-        getViewJadwalBayar(studentId: studentId, tuitionPlanId: tuitionPlanId)
-            .then((data) {
-      if (data != null && data.containsKey('message')) {
-        return PaymentDetail.fromJson(data);
+    final responseData = await getViewJadwalBayar(
+      studentId: studentId,
+      tuitionPlanId: tuitionPlanId,
+    );
+
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    debugPrint('Raw Detail API Response:\n${encoder.convert(responseData)}');
+
+    if (responseData != null && responseData.containsKey('message')) {
+      return PaymentDetail.fromJson(responseData['message']);
+    } else {
+      String serverError =
+          'Gagal memuat detail. Format data dari server tidak sesuai.';
+
+      if (responseData != null) {
+        if (responseData.containsKey('_server_messages')) {
+          try {
+            final serverMessages = responseData['_server_messages'] as List;
+            if (serverMessages.isNotEmpty) {
+              final messageJson = jsonDecode(serverMessages.first);
+              serverError = messageJson['message'] ?? serverError;
+            }
+          } catch (e) {
+            serverError = responseData['_server_messages'].toString();
+          }
+        } else if (responseData.containsKey('exception')) {
+          serverError = responseData['exception'].toString();
+        }
+      } else {
+        serverError =
+            'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.';
       }
-      return null;
+      throw Exception(serverError);
+    }
+  }
+
+  Future<void> onRefresh() async {
+    setState(() {
+      _paymentDetailFuture = _fetchPaymentDetails();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -82,8 +90,7 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
           ),
         ),
       ),
-      // Use FutureBuilder to handle the async API call
-      body: FutureBuilder<PaymentDetail?>(
+      body: FutureBuilder<PaymentDetail>(
         future: _paymentDetailFuture,
         builder: (context, snapshot) {
           // --- LOADING STATE ---
@@ -91,109 +98,129 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
             return const Center(child: CircularProgressIndicator());
           }
           // --- ERROR STATE ---
-          if (snapshot.hasError || !snapshot.hasData || snapshot.data == null) {
+          if (snapshot.hasError) {
             return Center(
-              child: Text(
-                'Gagal memuat data.\nError: ${snapshot.error ?? "Data tidak ditemukan."}',
-                textAlign: TextAlign.center,
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      '${snapshot.error}'.replaceFirst('Exception: ', ''),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: theme.colorScheme.error),
+                    ),
+                    const SizedBox(height: 16),
+                    ElevatedButton(
+                      onPressed: onRefresh,
+                      child: const Text('Coba Lagi',
+                          style: TextStyle(color: Colors.white, fontSize: 16)),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: theme.colorScheme.primary,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                      ),
+                    )
+                  ],
+                ),
               ),
             );
           }
           // --- SUCCESS STATE ---
-          final paymentDetail = snapshot.data!;
-          final currencyFormatter = NumberFormat.decimalPattern('id_ID');
-          final dateFormatter = DateFormat('d MMMM yyyy', 'id_ID');
+          if (snapshot.hasData) {
+            final paymentDetail = snapshot.data!;
+            final currencyFormatter = NumberFormat.decimalPattern('id_ID');
+            final dateFormatter = DateFormat('d MMMM yyyy', 'id_ID');
 
-          return Column(
-            children: [
-              Expanded(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0, vertical: 4.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        child: Column(
-                          children: [
-                            _buildDetailItem(
-                              context,
-                              'Deskripsi',
-                              paymentDetail.description,
-                              hasIcon: true,
-                            ),
-                            const Divider(height: 10),
-                            _buildDetailItem(context, 'Nominal',
-                                'Rp ${currencyFormatter.format(paymentDetail.amount)}'),
-                            const Divider(height: 10),
-                            _buildDetailItem(
-                                context, 'Kategori', paymentDetail.category),
-                            const Divider(height: 10),
-                            _buildDetailItem(context, 'Batas Waktu Pembayaran',
-                                dateFormatter.format(paymentDetail.dueDate)),
-                          ],
-                        ),
+            return RefreshIndicator(
+              onRefresh: onRefresh,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Main details section
+                    Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                      const SizedBox(height: 8),
-                      const Text(
-                        'Riwayat Pembayaran',
-                        style: TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black87,
-                        ),
-                      ),
-                      const SizedBox(height: 12),
-                      // Display a message if there is no payment history
-                      if (paymentDetail.history.isEmpty)
-                        const Center(
-                          child: Padding(
-                            padding: EdgeInsets.all(16.0),
-                            child: Text('Belum ada riwayat pembayaran.'),
+                      child: Column(
+                        children: [
+                          _buildDetailItem(
+                            context,
+                            'Deskripsi',
+                            paymentDetail.description,
+                            hasIcon: true,
                           ),
-                        )
-                      else
-                        // Build the list of payment history items dynamically
-                        ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: paymentDetail.history.length,
-                          itemBuilder: (context, index) {
-                            final item = paymentDetail.history[index];
-                            return _buildPaymentHistoryItem(
-                              date: item.date,
-                              amount:
-                                  'Rp ${currencyFormatter.format(item.amount)}',
-                              description: item.description,
-                              buttonText: 'Detail', // Example button
-                              buttonColor: theme.colorScheme.outline,
-                            );
-                          },
-                          separatorBuilder: (context, index) =>
-                              const SizedBox(height: 12),
+                          const Divider(height: 10),
+                          _buildDetailItem(context, 'Nominal',
+                              'Rp ${currencyFormatter.format(paymentDetail.amount)}'),
+                          const Divider(height: 10),
+                          _buildDetailItem(
+                              context, 'Kategori', paymentDetail.category),
+                          const Divider(height: 10),
+                          _buildDetailItem(context, 'Batas Waktu Pembayaran',
+                              dateFormatter.format(paymentDetail.dueDate)),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+
+                    // Payment history section
+                    const Text(
+                      'Riwayat Pembayaran',
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.black87,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    if (paymentDetail.history.isEmpty)
+                      const Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(16.0),
+                          child: Text('Belum ada riwayat pembayaran.'),
                         ),
-                    ],
-                  ),
+                      )
+                    else
+                      ListView.separated(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: paymentDetail.history.length,
+                        itemBuilder: (context, index) {
+                          final item = paymentDetail.history[index];
+                          return _buildPaymentHistoryItem(
+                            item: item,
+                            currencyFormatter: currencyFormatter,
+                            theme: theme,
+                          );
+                        },
+                        separatorBuilder: (context, index) =>
+                            const SizedBox(height: 12),
+                      ),
+                  ],
                 ),
               ),
-            ],
-          );
+            );
+          }
+
+          return const Center(child: Text('Tidak ada data ditemukan.'));
         },
       ),
       bottomNavigationBar: BottomBar(
-          isNeeded: false, // Set this based on your logic
-          totalAmount: 1,
-          onContinuePressed: () {
-            print('Unduh Faktur ditekan.');
-          }),
+        isNeeded: false,
+        totalAmount: 1,
+        onContinuePressed: () {
+          print('Unduh Faktur ditekan.');
+        },
+      ),
     );
   }
 
-  // This helper method remains the same
   Widget _buildDetailItem(BuildContext context, String label, String value,
       {bool hasIcon = false}) {
     return Padding(
@@ -250,22 +277,19 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
     );
   }
 
-  // This helper method remains the same
   Widget _buildPaymentHistoryItem({
-    required String date,
-    required String amount,
-    required String description,
-    required String buttonText,
-    required Color buttonColor,
+    required PaymentHistoryItem item,
+    required NumberFormat currencyFormatter,
+    required ThemeData theme,
   }) {
     return TransactionHistoryCard(
-      date: date,
-      amount: amount,
-      description: description,
-      buttonText: buttonText,
-      buttonColor: buttonColor,
+      date: item.date,
+      amount: 'Rp ${currencyFormatter.format(item.amount)}',
+      description: item.description,
+      buttonText: 'Detail',
+      buttonColor: theme.colorScheme.outline,
       onPressed: () {
-        print('$buttonText pressed for amount $amount');
+        print('Detail pressed for receipt ${item.description}');
       },
     );
   }

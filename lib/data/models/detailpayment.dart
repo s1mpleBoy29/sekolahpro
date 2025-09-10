@@ -16,16 +16,24 @@ class PaymentDetail {
   });
 
   factory PaymentDetail.fromJson(Map<String, dynamic> json) {
-    final List<dynamic> receiptsData =
-        json['receipts'] is List ? json['receipts'] : [];
+    final Map<String, dynamic> viewData = json['view'] ?? {};
+    final List<dynamic> historyData =
+        json['incoming_receipt'] is List ? json['incoming_receipt'] : [];
+
+    String category = 'Tidak ada kategori';
+    if (viewData['articles'] is List &&
+        (viewData['articles'] as List).isNotEmpty) {
+      final article = (viewData['articles'] as List).first;
+      category = (article['article'] as String?)?.split(' - ').last ?? category;
+    }
 
     return PaymentDetail(
-      description: json['remark'] ?? 'Tidak ada deskripsi',
-      amount: (json['amount'] as num? ?? 0.0).toDouble(),
-      category: json['fee_category'] ?? 'Tidak ada kategori',
-      dueDate:
-          DateTime.parse(json['due_date'] ?? DateTime.now().toIso8601String()),
-      history: receiptsData
+      description: viewData['remark'] ?? 'Tidak ada deskripsi',
+      amount: (viewData['amount'] as num? ?? 0.0).toDouble(),
+      category: category,
+      dueDate: DateTime.parse(
+          viewData['due_date'] ?? DateTime.now().toIso8601String()),
+      history: historyData
           .whereType<Map<String, dynamic>>()
           .map((item) => PaymentHistoryItem.fromJson(item))
           .toList(),
@@ -47,9 +55,8 @@ class PaymentHistoryItem {
   factory PaymentHistoryItem.fromJson(Map<String, dynamic> json) {
     DateTime parsedDate;
     try {
-      if (json['posting_date'] != null &&
-          json['posting_date'].toString().isNotEmpty) {
-        parsedDate = DateTime.parse(json['posting_date']);
+      if (json['date'] != null && json['date'].toString().isNotEmpty) {
+        parsedDate = DateTime.parse(json['date']);
       } else {
         parsedDate = DateTime.now();
       }
@@ -62,8 +69,8 @@ class PaymentHistoryItem {
 
     return PaymentHistoryItem(
       date: formattedDate,
-      amount: (json['paid_amount'] as num? ?? 0.0).toDouble(),
-      description: json['remark'] ?? 'Tidak ada deskripsi pembayaran.',
+      amount: (json['amount'] as num? ?? 0.0).toDouble(),
+      description: json['name'] ?? 'Tidak ada deskripsi pembayaran.',
     );
   }
 }
