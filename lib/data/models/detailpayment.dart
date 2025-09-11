@@ -70,7 +70,7 @@ class PaymentHistoryItem {
     return PaymentHistoryItem(
       date: formattedDate,
       amount: (json['amount'] as num? ?? 0.0).toDouble(),
-      description: json['name'] ?? 'Tidak ada deskripsi pembayaran.',
+      description: json['remark'] ?? 'Tidak ada deskripsi pembayaran.',
     );
   }
 }
