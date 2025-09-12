@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_app/theme/theme_helper.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../routes/app_routes.dart'; // sesuaikan dengan lokasi file route kamu
 
 class BottomNavBar extends StatelessWidget {
   final BuildContext context;
-  final ThemeData theme;
 
   const BottomNavBar({
     super.key,
     required this.context,
-    required this.theme,
     String? selected,
   });
 

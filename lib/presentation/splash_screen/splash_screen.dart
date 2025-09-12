@@ -2,10 +2,13 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:guardian_app/core/actions/config_action.dart';
 import 'package:guardian_app/core/actions/student_action.dart';
+import 'package:guardian_app/core/providers/config_provider.dart';
 import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/core/utils/config.dart';
 import 'package:guardian_app/data/models/student.dart';
+import 'package:guardian_app/theme/theme_helper.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -41,7 +44,8 @@ class _SplashScreen2State extends State<SplashScreen2>
   }
 
   Future<void> _initializeData() async {
-    _fetchStudent();
+    await _fetchConfig();
+    await _fetchStudent();
     // if (ConfigService.isUsingOutlet) {
     //   await checkOutlet();
     //   await checkRoles();
@@ -54,6 +58,52 @@ class _SplashScreen2State extends State<SplashScreen2>
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+
+  Future<void> _fetchConfig() async {
+    print('fetch config');
+    print('mouned: $mounted');
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    try {
+      print('try');
+      final configProvider =
+          Provider.of<ConfigProvider>(context, listen: false);
+      // Parallel execution of API calls
+      final results = await Future.wait<dynamic>([
+        ConfigAction.getConfig(),
+      ]);
+
+      if (results.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                const Text('Sesi anda telah berakhir. Silakan login kembali.'),
+            backgroundColor: theme.colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        Navigator.pushReplacementNamed(context, '/login_screen');
+      }
+
+      if (results.isNotEmpty) {
+        final config = results[0] as Map<String, dynamic>;
+        await configProvider.saveConfig(config);
+      }
+    } catch (e) {
+      print('error $e');
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        _errorMessage = _parseErrorMessage(e);
+      });
+    }
   }
 
   Future<void> _fetchStudent() async {
@@ -87,11 +137,10 @@ class _SplashScreen2State extends State<SplashScreen2>
       // }
 
       final student = results[0] as List<Student>;
-
       await provider.saveStudents(student);
 
       if (!mounted) return;
-      print('test');
+
       Navigator.pushReplacementNamed(context, '/pilih_anak_screen', arguments: {
         'postSelectionAction': 'navigateToHome',
       });
@@ -207,36 +256,6 @@ class _SplashScreen2State extends State<SplashScreen2>
           ),
         ),
         const SizedBox(height: 32),
-        // SizedBox(
-        //   width: double.infinity,
-        //   height: 50,
-        //   child: ElevatedButton(
-        //     onPressed: _fetchModeOfPayment,
-        //     style: ElevatedButton.styleFrom(
-        //       backgroundColor: Colors.black87,
-        //       foregroundColor: Colors.white,
-        //       shape: RoundedRectangleBorder(
-        //         borderRadius: BorderRadius.circular(12),
-        //       ),
-        //       elevation: 0,
-        //     ),
-        //     child: Row(
-        //       mainAxisSize: MainAxisSize.min,
-        //       children: const [
-        //         Icon(Icons.refresh, size: 20),
-        //         SizedBox(width: 12),
-        //         Text(
-        //           'Coba Lagi',
-        //           style: TextStyle(
-        //             fontSize: 16,
-        //             fontWeight: FontWeight.w500,
-        //             letterSpacing: 0.5,
-        //           ),
-        //         ),
-        //       ],
-        //     ),
-        //   ),
-        // ),
       ],
     );
   }

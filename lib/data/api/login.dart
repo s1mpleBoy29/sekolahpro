@@ -53,13 +53,12 @@ class AuthService {
           Match? match = regex.firstMatch(cookie);
           if (match != null) {
             String sid = match.group(1)!;
-            print('Login berhasil. SID: $sid');
 
-            final String url =
-                "${dotenv.env['API_URL']}/api/resource/User/$username";
+            final String url = "${dotenv.env['API_URL']}/api/method/gaWhoami";
             final Map<String, String> headers = {
               "Content-Type": "application/json",
               'Cookie': 'sid=$sid',
+              'sekolahproapp': 'PA-1.0.0',
             };
 
             final responseUser = await http.get(
@@ -67,13 +66,24 @@ class AuthService {
               headers: headers,
             );
 
+            print('check user, ${responseUser.body}');
+
             if (responseUser.statusCode == 200) {
+              final Map<String, dynamic> responseData =
+                  jsonDecode(responseUser.body);
+
+              print('check responseData, ${responseData['message']['user']}');
+              print(
+                  'check responseData, ${responseData['message']['guardian']}');
+
               return {
                 "message": message,
                 "homePage": homePage,
                 "fullName": fullName,
                 "sid": sid,
-                "role": responseUser.body
+                "role": responseData['message']['user'],
+                "user": responseData['message']['user'],
+                "guardian": responseData['message']['guardian'],
               };
             }
           }
