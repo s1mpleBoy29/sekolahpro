@@ -3,14 +3,12 @@ import 'package:intl/intl.dart';
 class PaymentDetail {
   final String description;
   final double amount;
-  final String category;
   final DateTime dueDate;
   final List<PaymentHistoryItem> history;
 
   PaymentDetail({
     required this.description,
     required this.amount,
-    required this.category,
     required this.dueDate,
     required this.history,
   });
@@ -20,17 +18,9 @@ class PaymentDetail {
     final List<dynamic> historyData =
         json['incoming_receipt'] is List ? json['incoming_receipt'] : [];
 
-    String category = 'Tidak ada kategori';
-    if (viewData['articles'] is List &&
-        (viewData['articles'] as List).isNotEmpty) {
-      final article = (viewData['articles'] as List).first;
-      category = (article['article'] as String?)?.split(' - ').last ?? category;
-    }
-
     return PaymentDetail(
       description: viewData['remark'] ?? 'Tidak ada deskripsi',
       amount: (viewData['amount'] as num? ?? 0.0).toDouble(),
-      category: category,
       dueDate: DateTime.parse(
           viewData['due_date'] ?? DateTime.now().toIso8601String()),
       history: historyData
