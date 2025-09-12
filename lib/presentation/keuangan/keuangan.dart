@@ -4,7 +4,6 @@ import 'package:guardian_app/presentation/keuangan/widgets/summarycard.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/totalpayment.dart';
 import 'package:guardian_app/routes/app_routes.dart';
 import 'package:guardian_app/theme/theme_helper.dart';
-import 'package:guardian_app/theme/app_decoration.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
 import 'package:guardian_app/widgets/custom_fab.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
@@ -16,6 +15,8 @@ import 'package:intl/intl.dart';
 import 'dart:convert';
 import 'package:guardian_app/data/api/payment.dart';
 import 'package:guardian_app/data/models/payment.dart';
+import 'package:provider/provider.dart';
+import 'package:guardian_app/core/providers/student_provider.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
@@ -151,18 +152,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: theme.colorScheme.surface,
-        bottomNavigationBar: BottomNavBar(
-            selected: AppRoutes.keuanganScreen, context: context, theme: theme),
-        floatingActionButton: CustomFAB(
-            onPressed: () =>
-                Navigator.pushNamed(context, AppRoutes.bayarSatuScreen)),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        body: Column(
-=======
     final studentProvider =
         Provider.of<StudentProvider>(context, listen: false);
     return Scaffold(
@@ -179,7 +168,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       body: SafeArea(
         child: Column(
->>>>>>> 14187a152468b092faabce4619bec0a75e9a5141
           children: [
             StickyTopBar(
               backgroundColor: theme.colorScheme.onPrimary,
