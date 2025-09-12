@@ -61,8 +61,6 @@ class _SplashScreen2State extends State<SplashScreen2>
   }
 
   Future<void> _fetchConfig() async {
-    print('fetch config');
-    print('mouned: $mounted');
     if (!mounted) return;
 
     setState(() {
@@ -71,7 +69,6 @@ class _SplashScreen2State extends State<SplashScreen2>
     });
 
     try {
-      print('try');
       final configProvider =
           Provider.of<ConfigProvider>(context, listen: false);
       // Parallel execution of API calls
@@ -97,7 +94,6 @@ class _SplashScreen2State extends State<SplashScreen2>
         await configProvider.saveConfig(config);
       }
     } catch (e) {
-      print('error $e');
       if (!mounted) return;
       setState(() {
         _isLoading = false;
@@ -121,20 +117,18 @@ class _SplashScreen2State extends State<SplashScreen2>
         StudentAction.getStudents(1000, 0, ''),
       ]);
 
-      // print(' tes ${results[0].isEmpty}');
-      // log(' tes ${results[0].toString()}');
-
-      // if (results[0].isEmpty) {
-      //   ScaffoldMessenger.of(context).showSnackBar(
-      //     const SnackBar(
-      //       content: Text('Sesi anda telah berakhir. Silakan login kembali.'),
-      //       backgroundColor: Colors.red,
-      //       behavior: SnackBarBehavior.floating,
-      //       duration: Duration(seconds: 3),
-      //     ),
-      //   );
-      //   Navigator.pushReplacementNamed(context, '/login_screen');
-      // }
+      if (results.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                const Text('Sesi anda telah berakhir. Silakan login kembali.'),
+            backgroundColor: theme.colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        Navigator.pushReplacementNamed(context, '/login_screen');
+      }
 
       final student = results[0] as List<Student>;
       await provider.saveStudents(student);

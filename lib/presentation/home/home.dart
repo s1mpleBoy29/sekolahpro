@@ -1,11 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_app/core/actions/home_action.dart';
 import 'package:guardian_app/core/app_export.dart';
 import 'package:guardian_app/core/providers/auth_provider.dart';
+import 'package:guardian_app/core/providers/home_provider.dart';
 import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/core/utils/datetime_ui.dart';
 import 'package:guardian_app/core/utils/number_format.dart';
+import 'package:guardian_app/data/models/student.dart';
+import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
 import 'package:guardian_app/widgets/custom_fab.dart';
+import 'package:guardian_app/widgets/empty_card.dart';
 import 'package:guardian_app/widgets/topbar.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
 import 'package:guardian_app/widgets/agenda_card.dart';
@@ -22,9 +27,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class HomePageScreen extends State<HomeScreen> {
+  List<dynamic> outstandings = [];
+  List<dynamic> upcomings = [];
   List<dynamic> payment = [];
-  List<dynamic> agenda = [];
+  List<dynamic> agendas = [];
+
   dynamic user = {};
+
+  late final child;
+  bool _isLoading = true;
 
   void setDummyData() {
     payment = [
@@ -44,7 +55,7 @@ class HomePageScreen extends State<HomeScreen> {
       },
     ];
 
-    agenda = [
+    agendas = [
       {
         'date': '2025-07-07',
         'child': 'Candra Wijaya',
@@ -64,19 +75,89 @@ class HomePageScreen extends State<HomeScreen> {
 
   @override
   void initState() {
-    setDummyData();
     super.initState();
-    final authProvider = Provider.of<AuthProvider>(context, listen: false);
-    user = authProvider.user;
+    // setDummyData();
 
-    // print('check auth token:  ${authProvider.fullName}');
-    // print('check auth token:  ${authProvider.user}');
-    print('check auth token:  ${user}');
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
+
+    user = authProvider.user;
+    child = studentProvider.selectedStudent;
+
+    _fetchHome();
+    fetchData();
+  }
+
+  Future<void> _fetchHome() async {
+    if (!mounted) return;
+
+    setState(() {
+      _isLoading = true;
+      // _errorMessage = '';
+    });
+
+    try {
+      final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+      // Parallel execution of API calls
+      final results = await Future.wait<dynamic>([
+        HomeAction.getHome(child.name),
+      ]);
+
+      if (results.isEmpty) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content:
+                const Text('Sesi anda telah berakhir. Silakan login kembali.'),
+            backgroundColor: theme.colorScheme.error,
+            behavior: SnackBarBehavior.floating,
+            duration: const Duration(seconds: 3),
+          ),
+        );
+        Navigator.pushReplacementNamed(context, '/login_screen');
+      }
+
+      if (results.isNotEmpty) {
+        final home = results[0] as Map<String, dynamic>;
+        await homeProvider.saveHome(home);
+        homeProvider.setHome(home);
+      }
+
+      setState(() {
+        _isLoading = false;
+      });
+    } catch (e) {
+      if (!mounted) return;
+      setState(() {
+        _isLoading = false;
+        // _errorMessage = _parseErrorMessage(e);
+      });
+    }
+  }
+
+  void fetchData() async {
+    final homeProvider = Provider.of<HomeProvider>(context, listen: false);
+    setState(() {
+      outstandings = homeProvider.tuitions['outstanding'] ?? [];
+      upcomings = homeProvider.tuitions['upcoming'] ?? [];
+      agendas = homeProvider.agendas;
+    });
   }
 
   @override
   void dispose() {
     super.dispose();
+  }
+
+  void _navigateToPilihAnak() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const PilihAnakScreen(
+          postSelectionAction: PostSelectionAction.goBack,
+        ),
+      ),
+    );
   }
 
   @override
@@ -99,94 +180,156 @@ class HomePageScreen extends State<HomeScreen> {
           decoration: BoxDecoration(
             color: theme.colorScheme.surfaceContainer,
           ),
-          child: ListView(
-            padding: const EdgeInsets.all(16),
+          child: Column(
             children: [
-              const SizedBox(height: 16),
               Header(
-                title: "Selamat Datang",
-                value: user['full_name'] ?? 'Orang Tua',
+                greeting: "Halo, ${user['full_name'] ?? 'Ibu'}",
+                childName:
+                    child.fullName.isNotEmpty ? child.fullName : 'Anak Anda',
+                schoolName: child.schoolName.isNotEmpty
+                    ? child.schoolName
+                    : 'Sekolah Anak',
+                onDropdownTap: _navigateToPilihAnak,
               ),
-              const AdCard(
-                teks:
-                    "In the lessons we new words and for vocabularities continues and article...",
-              ),
-              const SizedBox(height: 24),
-              const SectionTitle(title: "Tunggakan Hari Ini"),
-              DueCard(
-                isOverdue: true,
-                harga: "Rp 300.000",
-                deskripsi:
-                    "Uang Sekolah Chandra Bulan Juli\nTahun Ajaran 2025 / 2026",
-                onPayPressed: () {
-                  // Aksi ketika tombol bayar ditekan
-                },
-              ),
-              const SizedBox(height: 24),
-              const SectionTitle(
-                  title: "Jadwal Pembayaran Selanjutnya",
-                  action: "Lihat Jadwal"),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(
-                  0.0,
-                  4.0,
-                  0.0,
-                  4.0,
-                ),
-                child: Column(
-                  children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: payment.length,
-                      itemBuilder: (context, idx) {
-                        dynamic paymentItem = payment[idx];
-                        return DueCard(
-                          isOverdue: paymentItem['is_overdue'],
-                          dueDate: dateTimeFormat(
-                            'dateui',
-                            paymentItem['due_date'],
+              Expanded(
+                // ✅ supaya ListView bisa scroll
+                child: _isLoading
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView(
+                        padding: const EdgeInsets.all(16),
+                        children: [
+                          const AdCard(
+                            teks:
+                                "In the lessons we new words and for vocabularities continues and article...",
                           ),
-                          harga:
-                              numberFormat('idr_fixed', paymentItem['amount']),
-                          deskripsi: paymentItem['description'],
-                          onPayPressed: () {
-                            // Aksi ketika tombol bayar ditekan
-                          },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 24),
-              const SectionTitle(
-                  title: "Agenda Hari Ini", action: "Lihat Agenda"),
-              Padding(
-                padding: const EdgeInsetsDirectional.fromSTEB(
-                  0.0,
-                  4.0,
-                  0.0,
-                  4.0,
-                ),
-                child: Column(
-                  children: [
-                    ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: agenda.length,
-                      itemBuilder: (context, idx) {
-                        dynamic agendaItem = agenda[idx];
-                        return AgendaCard(
-                          tanggal: agendaItem['date'],
-                          dari: agendaItem['from'],
-                          untuk: agendaItem['child'],
-                          detail: agendaItem['description'],
-                        );
-                      },
-                    ),
-                  ],
-                ),
+                          const SizedBox(height: 24),
+                          const SectionTitle(title: "Tunggakan Hari Ini"),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0,
+                              4.0,
+                              0.0,
+                              4.0,
+                            ),
+                            child: Column(
+                              children: [
+                                if (outstandings.isEmpty)
+                                  const EmptyDueCard(
+                                    message: "Tidak ada tunggakan saat ini",
+                                  ),
+                                if (outstandings.isNotEmpty)
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: outstandings.length,
+                                    itemBuilder: (context, idx) {
+                                      dynamic outstanding = outstandings[idx];
+                                      return DueCard(
+                                        isOverdue:
+                                            outstanding['is_overdue'] ?? false,
+                                        dueDate: dateTimeFormat(
+                                          'dateui',
+                                          outstanding['due_date'],
+                                        ),
+                                        amount: numberFormat(
+                                            'idr_fixed', outstanding['amount']),
+                                        remark: outstanding['remark'] ?? '',
+                                        subRemark:
+                                            'Tahun Ajaran ${outstanding['academic_year']}',
+                                        onPayPressed: () {
+                                          // Aksi ketika tombol bayar ditekan
+                                        },
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          const SectionTitle(
+                              title: "Jadwal Pembayaran Selanjutnya",
+                              action: "Lihat Jadwal"),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0,
+                              4.0,
+                              0.0,
+                              4.0,
+                            ),
+                            child: Column(
+                              children: [
+                                if (upcomings.isEmpty)
+                                  const EmptyDueCard(
+                                    message:
+                                        "Tidak ada jadwal pembayaran selanjutnya",
+                                  ),
+                                if (upcomings.isNotEmpty)
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: upcomings.length,
+                                    itemBuilder: (context, idx) {
+                                      dynamic upcoming = upcomings[idx];
+                                      return DueCard(
+                                        isOverdue:
+                                            upcoming['is_overdue'] ?? false,
+                                        dueDate: dateTimeFormat(
+                                          'dateui',
+                                          upcoming['due_date'],
+                                        ),
+                                        amount: numberFormat(
+                                            'idr_fixed', upcoming['amount']),
+                                        remark: upcoming['remark'] ?? '',
+                                        subRemark:
+                                            'Tahun Ajaran ${upcoming['academic_year']}',
+                                        onPayPressed: () {
+                                          // Aksi ketika tombol bayar ditekan
+                                        },
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          const SectionTitle(
+                              title: "Agenda Hari Ini", action: "Lihat Agenda"),
+                          Padding(
+                            padding: const EdgeInsetsDirectional.fromSTEB(
+                              0.0,
+                              4.0,
+                              0.0,
+                              4.0,
+                            ),
+                            child: Column(
+                              children: [
+                                if (agendas.isEmpty)
+                                  const EmptyDueCard(
+                                    message: "Tidak ada agenda hari ini",
+                                  ),
+                                if (agendas.isNotEmpty)
+                                  ListView.builder(
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    itemCount: agendas.length,
+                                    itemBuilder: (context, idx) {
+                                      dynamic agendaItem = agendas[idx];
+                                      return AgendaCard(
+                                        tanggal: agendaItem['date'],
+                                        dari: agendaItem['from'],
+                                        untuk: agendaItem['child'],
+                                        detail: agendaItem['description'],
+                                      );
+                                    },
+                                  ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
               ),
             ],
           ),

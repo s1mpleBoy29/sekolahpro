@@ -1,15 +1,21 @@
-import 'package:flutter/foundation.dart';
-import 'package:guardian_app/data/api/config.dart' as config;
+import 'dart:convert';
 
-class ConfigAction {
-  static Future<Map<String, dynamic>> getConfig() async {
+import 'package:flutter/foundation.dart';
+import 'package:guardian_app/data/api/home.dart' as home;
+import 'package:guardian_app/data/models/home.dart';
+
+class HomeAction {
+  static Future<Map<String, dynamic>?> getHome(String student) async {
     try {
-      final response = await config.getConfig();
+      final response = await home.getHome(student);
 
       if (response == null || response['message'] == null) {
-        return {};
+        return null;
       }
+
       final Map<String, dynamic> itemsJson = response['message'] ?? {};
+
+      print('check home: $itemsJson');
 
       return itemsJson;
     } catch (error) {

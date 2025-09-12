@@ -6,7 +6,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class StudentProvider with ChangeNotifier {
   List<Student> _students = [];
-
   List<Student> get students => _students;
 
   Student? _selectedStudent;

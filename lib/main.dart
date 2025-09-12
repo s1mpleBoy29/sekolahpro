@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:guardian_app/core/providers/config_provider.dart';
+import 'package:guardian_app/core/providers/home_provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +11,6 @@ import 'package:guardian_app/core/app_export.dart';
 import 'package:guardian_app/core/providers/auth_provider.dart';
 import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/core/utils/config.dart';
-import 'package:guardian_app/routes/app_routes.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -75,10 +75,11 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ConfigProvider()),
         ChangeNotifierProvider(create: (_) => StudentProvider()),
+        ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => authProvider),
         ChangeNotifierProvider(create: (_) => AppState()),
       ],
-      child: _MyApp(),
+      child: const _MyApp(),
     ),
   );
 }

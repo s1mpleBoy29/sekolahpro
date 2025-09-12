@@ -5,16 +5,18 @@ import 'package:guardian_app/widgets/custom_elevated_button.dart';
 class DueCard extends StatelessWidget {
   final bool isOverdue;
   final String? dueDate;
-  final String harga;
-  final String deskripsi;
+  final String amount;
+  final String remark;
+  final String? subRemark;
   final VoidCallback onPayPressed;
 
   const DueCard({
     super.key,
     required this.isOverdue,
     this.dueDate,
-    required this.harga,
-    required this.deskripsi,
+    required this.amount,
+    required this.remark,
+    this.subRemark,
     required this.onPayPressed,
   });
 
@@ -53,7 +55,7 @@ class DueCard extends StatelessWidget {
                   ),
                 const SizedBox(height: 4),
                 Text(
-                  harga,
+                  amount,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
@@ -62,12 +64,21 @@ class DueCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  deskripsi,
+                  remark,
                   style: TextStyle(
                     color: theme.colorScheme.secondary,
                     fontSize: 14,
                   ),
-                )
+                ),
+                const SizedBox(height: 4),
+                if (subRemark != null)
+                  Text(
+                    subRemark!,
+                    style: TextStyle(
+                      color: theme.colorScheme.outline,
+                      fontSize: 12,
+                    ),
+                  ),
               ],
             ),
           ),
