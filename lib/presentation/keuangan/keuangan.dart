@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/paymentschedule_card.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/summarycard.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/totalpayment.dart';
@@ -15,11 +14,8 @@ import 'package:guardian_app/widgets/filterpopup.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 import 'package:intl/intl.dart';
 import 'dart:convert';
-
-// Pastikan path import ini sesuai dengan struktur proyek Anda
 import 'package:guardian_app/data/api/payment.dart';
 import 'package:guardian_app/data/models/payment.dart';
-import 'package:provider/provider.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
@@ -29,7 +25,7 @@ class KeuanganScreen extends StatefulWidget {
 }
 
 class KeuanganPageScreen extends State<KeuanganScreen> {
-  late Future<List<Payment>> _paymentsFuture;
+  late Future<PaymentData> _paymentsFuture;
   List<Payment> _allPayments = [];
   List<Payment> _filteredPayments = [];
 
@@ -54,30 +50,29 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     _paymentsFuture = _fetchData();
   }
 
-  Future<List<Payment>> _fetchData() async {
-    // TODO: Update
-    const studentId = 'TLAB.0001';
-    const academicYear = '2025 / 2026';
+  Future<PaymentData> _fetchData() async {
+    const studentId = 'TLAB.0001'; // TODO: Update
+    const academicYear = '2025 / 2026'; // TODO: Update
 
     final responseData = await getJadwalBayar(
       studentId: studentId,
       academicYear: academicYear,
     );
 
-    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
+    const JsonEncoder encoder = JsonEncoder.withIndent('  ');
     debugPrint('Raw API Response:\n${encoder.convert(responseData)}');
 
-    // Cek struktur JSON: response -> 'message' (Map) -> 'lists' (List)
     if (responseData != null &&
         responseData['message'] is Map &&
-        responseData['message']['lists'] is List) {
-      // Akses list pembayaran dari dalam 'message' menggunakan 'lists'
+        responseData['message']['lists'] is List &&
+        responseData['message']['stat'] is Map) {
       final List<dynamic> dataList = responseData['message']['lists'];
+      final Map<String, dynamic> statData = responseData['message']['stat'];
 
       final List<Payment> payments =
           dataList.map((json) => Payment.fromJson(json)).toList();
+      final PaymentSummary summary = PaymentSummary.fromJson(statData);
 
-      // Cek apakah widget masih ada di tree sebelum memanggil setState untuk menghindari error
       if (mounted) {
         setState(() {
           _allPayments = payments;
@@ -85,14 +80,10 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
         });
       }
 
-      return payments;
+      return PaymentData(payments: payments, summary: summary);
     } else {
-      // Jika pemanggilan API gagal atau data format salah.
-      String serverError =
-          'Gagal memuat jadwal. Format data dari server tidak sesuai.'; //Default error.
-
+      String serverError = 'Gagal memuat jadwal. Format data tidak sesuai.';
       if (responseData != null) {
-        // Pesan error spesifik dari server
         if (responseData.containsKey('_server_messages')) {
           try {
             final serverMessages = responseData['_server_messages'] as List;
@@ -101,18 +92,14 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
               serverError = messageJson['message'] ?? serverError;
             }
           } catch (e) {
-            // Jika parsing gagal.
             serverError = responseData['_server_messages'].toString();
           }
         } else if (responseData.containsKey('exception')) {
           serverError = responseData['exception'].toString();
         }
       } else {
-        // Jika responseData == null.
-        serverError =
-            'Tidak dapat terhubung ke server. Periksa koneksi internet Anda.';
+        serverError = 'Tidak dapat terhubung ke server.';
       }
-
       throw Exception(serverError);
     }
   }
@@ -128,13 +115,12 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
       _filteredPayments = _allPayments.where((payment) {
         final statusFilter =
             filters['status_pembayaran'] as KeuanganFilterStatus;
-        final bool matchesStatus = statusFilter == KeuanganFilterStatus.semua ||
+        return statusFilter == KeuanganFilterStatus.semua ||
             (statusFilter == KeuanganFilterStatus.lunas &&
                 payment.status == 'Lunas') ||
             (statusFilter == KeuanganFilterStatus.belumLunas &&
                 payment.status == 'Belum Lunas') ||
             (statusFilter == KeuanganFilterStatus.tenggat && payment.isOverdue);
-        return matchesStatus;
       }).toList();
     });
   }
@@ -144,97 +130,58 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      barrierColor: Colors.black.withOpacity(0.5),
-      builder: (BuildContext context) {
-        return FilterPopup(
-          currentPage: FilterPage.keuangan,
-          onApplyFilter: _applyPaymentFilter,
-        );
-      },
+      builder: (BuildContext context) => FilterPopup(
+          currentPage: FilterPage.keuangan, onApplyFilter: _applyPaymentFilter),
     );
   }
 
   void _navigateToAnakScreen() {
     Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const PilihAnakScreen(
-          postSelectionAction: PostSelectionAction.goBack,
-        ),
-      ),
-    );
+        context,
+        MaterialPageRoute(
+            builder: (context) => const PilihAnakScreen(
+                postSelectionAction: PostSelectionAction.goBack)));
   }
 
-  String _formatDateManual(DateTime date) {
-    return '${date.day} ${_bulanIndonesia[date.month - 1]} ${date.year}';
-  }
-
-  String _formatCurrency(double amount) {
-    final format =
-        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
-    return format.format(amount);
-  }
+  String _formatDateManual(DateTime date) =>
+      '${date.day} ${_bulanIndonesia[date.month - 1]} ${date.year}';
+  String _formatCurrency(double amount) =>
+      NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0)
+          .format(amount);
 
   @override
   Widget build(BuildContext context) {
-    final studentProvider =
-        Provider.of<StudentProvider>(context, listen: false);
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      bottomNavigationBar: BottomNavBar(
-        selected: AppRoutes.keuanganScreen,
-        context: context,
-        theme: theme,
-      ),
-      floatingActionButton: CustomFAB(
-        onPressed: () {
-          Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
-        },
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-      body: SafeArea(
-        child: Column(
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: theme.colorScheme.surface,
+        bottomNavigationBar: BottomNavBar(
+            selected: AppRoutes.keuanganScreen, context: context, theme: theme),
+        floatingActionButton: CustomFAB(
+            onPressed: () =>
+                Navigator.pushNamed(context, AppRoutes.bayarSatuScreen)),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        body: Column(
           children: [
-            Consumer<StudentProvider>(
-              builder: (context, studentProvider, _) {
-                return StickyTopBar(
-                  backgroundColor: theme.colorScheme.onPrimary,
-                  lineColor: appTheme.gray300,
-                  textColor: appTheme.gray600,
-                  titleFontSize: 22.0,
-                  titleFontFamily: 'Urbanist',
-                  subtitleFontSize: 12.0,
-                  subtitleFontFamily: 'Lato',
-                  titleText:
-                      studentProvider.selectedStudent?.fullName ?? 'Pilih Anak',
-                  subtitleText:
-                      '${studentProvider.selectedStudent?.schoolName ?? '-'} | ${studentProvider.selectedStudent?.gradeName ?? '-'}',
-                  onTitleTap: _navigateToAnakScreen,
-                );
-              },
+            StickyTopBar(
+              backgroundColor: theme.colorScheme.onPrimary,
+              lineColor: appTheme.gray300,
+              textColor: appTheme.gray600,
+              titleFontSize: 22.0,
+              titleText: 'Candra Wijaya', // TODO: Update
+              subtitleText: 'SDN 13 Malang | Kelas 5', // TODO: Update
+              onTitleTap: _navigateToAnakScreen,
             ),
-            // StickyTopBar(
-            //   backgroundColor: theme.colorScheme.onPrimary,
-            //   lineColor: appTheme.gray300,
-            //   textColor: appTheme.gray600,
-            //   titleFontSize: 22.0,
-            //   titleText:
-            //       studentProvider.selectedStudent?.fullName ?? 'Pilih Anak',
-            //   subtitleText:
-            //       '${studentProvider.selectedStudent?.schoolName} | ${studentProvider.selectedStudent?.gradeName ?? '-'}',
-            //   onTitleTap: _navigateToAnakScreen,
-            // ),
             SecondaryTopbar(
               backgroundColor: theme.colorScheme.secondary,
               lineColor: appTheme.gray300,
               title: 'Keuangan',
               titleColor: Colors.white,
               slot: [],
-              onActionTap: (selectedValue) => _showFilterPopup(),
-              onFilterChanged: (onFilter, selectedValue) {},
+              onActionTap: (_) => _showFilterPopup(),
+              onFilterChanged: (_, __) {},
             ),
             Expanded(
-              child: FutureBuilder<List<Payment>>(
+              child: FutureBuilder<PaymentData>(
                 future: _paymentsFuture,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -247,11 +194,11 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              '${snapshot.error}'
-                                  .replaceFirst('Exception: ', ''),
-                              textAlign: TextAlign.center,
-                              style: TextStyle(color: theme.colorScheme.error),
-                            ),
+                                '${snapshot.error}'
+                                    .replaceFirst('Exception: ', ''),
+                                textAlign: TextAlign.center,
+                                style:
+                                    TextStyle(color: theme.colorScheme.error)),
                             const SizedBox(height: 16),
                             ElevatedButton(
                               onPressed: onRefresh,
@@ -268,7 +215,9 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                         ),
                       ),
                     );
-                  } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                  } else if (snapshot.hasData &&
+                      snapshot.data!.payments.isNotEmpty) {
+                    final paymentData = snapshot.data!;
                     return RefreshIndicator(
                       onRefresh: onRefresh,
                       child: SingleChildScrollView(
@@ -280,12 +229,12 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              _buildPaymentSummary(snapshot.data!),
+                              _buildPaymentSummary(paymentData.summary),
                               const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 20),
                                 child: AdCard(
-                                  teks: 'In the lessons we learn new words...',
-                                ),
+                                    teks:
+                                        'In the lessons we learn new words...'),
                               ),
                               _buildPaymentSchedule(context),
                             ],
@@ -306,34 +255,22 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     );
   }
 
-  Widget _buildPaymentSummary(List<Payment> payments) {
-    // outstanding > 0 berarti Belum Lunas
-    double totalKewajiban = payments
-        .where((p) => p.status == 'Belum Lunas')
-        .fold(0, (sum, item) => sum + item.amount);
-
-    double totalTunggakan = payments
-        .where((p) => p.isOverdue)
-        .fold(0, (sum, item) => sum + item.amount);
-
+  Widget _buildPaymentSummary(PaymentSummary summary) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Ringkasan Pembayaran',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
+        Text('Ringkasan Pembayaran',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface)),
         const SizedBox(height: 10),
         Row(
           children: [
             Expanded(
               child: SummaryCard(
                 label: 'Total Kewajiban',
-                value: _formatCurrency(totalKewajiban),
+                value: _formatCurrency(summary.totalKewajiban),
                 valueColor: theme.colorScheme.onSurface,
               ),
             ),
@@ -341,14 +278,14 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
             Expanded(
               child: SummaryCard(
                 label: 'Total Tunggakan',
-                value: _formatCurrency(totalTunggakan),
+                value: _formatCurrency(summary.totalTunggakan),
                 valueColor: theme.colorScheme.error,
               ),
             ),
           ],
         ),
         const SizedBox(height: 10),
-        const TotalPaymentCard(),
+        TotalPaymentCard(paidAmount: summary.totalPembayaran),
       ],
     );
   }
@@ -357,23 +294,19 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Jadwal Pembayaran',
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: theme.colorScheme.onSurface,
-          ),
-        ),
+        Text('Jadwal Pembayaran',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface)),
         const SizedBox(height: 10),
         if (_filteredPayments.isEmpty)
           const Center(
             child: Padding(
               padding: EdgeInsets.all(20.0),
               child: Text(
-                'Tidak ada jadwal pembayaran yang cocok dengan filter.',
-                style: TextStyle(fontSize: 14, color: Colors.grey),
-              ),
+                  'Tidak ada jadwal pembayaran yang cocok dengan filter.',
+                  style: TextStyle(fontSize: 14, color: Colors.grey)),
             ),
           )
         else
@@ -394,11 +327,8 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     );
   }
 
-  void _navigateToPayScreen() {
-    Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
-  }
-
-  void _navigateToPaymentDetail(BuildContext context) {
-    Navigator.pushNamed(context, AppRoutes.paymentDetailPage);
-  }
+  void _navigateToPayScreen() =>
+      Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
+  void _navigateToPaymentDetail(BuildContext context) =>
+      Navigator.pushNamed(context, AppRoutes.paymentDetailPage);
 }

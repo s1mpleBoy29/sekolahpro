@@ -1,8 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/routes/app_routes.dart';
+import 'package:intl/intl.dart'; // Import for currency formatting
 
+// This widget now accepts a `paidAmount` to display dynamic data from the API.
 class TotalPaymentCard extends StatelessWidget {
-  const TotalPaymentCard({Key? key}) : super(key: key);
+  final double paidAmount;
+
+  const TotalPaymentCard({
+    Key? key,
+    required this.paidAmount,
+  }) : super(key: key);
+
+  // Helper function to format the amount into Indonesian Rupiah currency format.
+  String _formatCurrency(double amount) {
+    final format =
+        NumberFormat.currency(locale: 'id_ID', symbol: 'Rp ', decimalDigits: 0);
+    return format.format(amount);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,19 +38,20 @@ class TotalPaymentCard extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Expanded(
+          Expanded(
             flex: 1,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                const Text(
                   'Total Pembayaran',
                   style: TextStyle(fontSize: 12, color: Colors.grey),
                 ),
-                SizedBox(height: 5),
+                const SizedBox(height: 5),
                 Text(
-                  'Rp 1.200.000',
-                  style: TextStyle(
+                  _formatCurrency(
+                      paidAmount), // Display the dynamic, formatted value.
+                  style: const TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.green,
@@ -45,7 +60,7 @@ class TotalPaymentCard extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(width: 15), // Spacing yang lebih besar
+          const SizedBox(width: 15),
           IntrinsicWidth(
             child: ElevatedButton(
               onPressed: () {
