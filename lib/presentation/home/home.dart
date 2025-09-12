@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
+import 'package:guardian_app/core/providers/auth_provider.dart';
+import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/core/utils/datetime_ui.dart';
 import 'package:guardian_app/core/utils/number_format.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
@@ -10,6 +12,7 @@ import 'package:guardian_app/widgets/agenda_card.dart';
 import 'package:guardian_app/widgets/due_card.dart';
 import 'package:guardian_app/presentation/home/widgets/section_title.dart';
 import 'package:guardian_app/presentation/home/widgets/header.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -21,6 +24,7 @@ class HomeScreen extends StatefulWidget {
 class HomePageScreen extends State<HomeScreen> {
   List<dynamic> payment = [];
   List<dynamic> agenda = [];
+  dynamic user = {};
 
   void setDummyData() {
     payment = [
@@ -62,6 +66,12 @@ class HomePageScreen extends State<HomeScreen> {
   void initState() {
     setDummyData();
     super.initState();
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    user = authProvider.user;
+
+    // print('check auth token:  ${authProvider.fullName}');
+    // print('check auth token:  ${authProvider.user}');
+    print('check auth token:  ${user}');
   }
 
   @override
@@ -76,7 +86,6 @@ class HomePageScreen extends State<HomeScreen> {
       bottomNavigationBar: BottomNavBar(
         selected: AppRoutes.homeScreen,
         context: context,
-        theme: theme,
       ),
       floatingActionButton: CustomFAB(
         onPressed: () {
@@ -94,9 +103,9 @@ class HomePageScreen extends State<HomeScreen> {
             padding: const EdgeInsets.all(16),
             children: [
               const SizedBox(height: 16),
-              const Header(
-                waktu: "Selamat Pagi",
-                user: "Bapak Santoso",
+              Header(
+                title: "Selamat Datang",
+                value: user['full_name'] ?? 'Orang Tua',
               ),
               const AdCard(
                 teks:

@@ -7,6 +7,7 @@ class CustomSearchBar extends StatelessWidget {
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onSearchTap;
+  final Widget? suffixIcon;
 
   const CustomSearchBar({
     super.key,
@@ -15,6 +16,7 @@ class CustomSearchBar extends StatelessWidget {
     this.onChanged,
     this.onSubmitted,
     this.onSearchTap,
+    this.suffixIcon,
   });
 
   @override
@@ -22,7 +24,8 @@ class CustomSearchBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
-        color: appTheme.blueGray50, // <--- PERUBAHAN DI SINI: Menggunakan warna abu-abu
+        color: appTheme
+            .blueGray50, // <--- PERUBAHAN DI SINI: Menggunakan warna abu-abu
         borderRadius: BorderRadius.circular(8.0), // Sudut membulat
         border: Border.all(
           color: theme.colorScheme.outlineVariant, // Warna border tetap sama
@@ -52,6 +55,7 @@ class CustomSearchBar extends StatelessWidget {
                 ),
                 border: InputBorder.none,
                 contentPadding: const EdgeInsets.symmetric(vertical: 12.0),
+                suffixIcon: suffixIcon,
               ),
               style: TextStyle(
                 color: theme.colorScheme.onPrimaryContainer,
@@ -61,11 +65,12 @@ class CustomSearchBar extends StatelessWidget {
             ),
           ),
           GestureDetector(
-            onTap: onSearchTap ?? () {
-              if (controller != null && onSubmitted != null) {
-                onSubmitted!(controller!.text);
-              }
-            },
+            onTap: onSearchTap ??
+                () {
+                  if (controller != null && onSubmitted != null) {
+                    onSubmitted!(controller!.text);
+                  }
+                },
             child: Padding(
               padding: const EdgeInsets.only(left: 8.0),
               child: Icon(

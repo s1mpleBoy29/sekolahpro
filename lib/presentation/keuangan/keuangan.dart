@@ -151,6 +151,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     return SafeArea(
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
@@ -161,6 +162,24 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                 Navigator.pushNamed(context, AppRoutes.bayarSatuScreen)),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         body: Column(
+=======
+    final studentProvider =
+        Provider.of<StudentProvider>(context, listen: false);
+    return Scaffold(
+      backgroundColor: theme.colorScheme.surface,
+      bottomNavigationBar: BottomNavBar(
+        selected: AppRoutes.keuanganScreen,
+        context: context,
+      ),
+      floatingActionButton: CustomFAB(
+        onPressed: () {
+          Navigator.pushNamed(context, AppRoutes.bayarSatuScreen);
+        },
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      body: SafeArea(
+        child: Column(
+>>>>>>> 14187a152468b092faabce4619bec0a75e9a5141
           children: [
             StickyTopBar(
               backgroundColor: theme.colorScheme.onPrimary,

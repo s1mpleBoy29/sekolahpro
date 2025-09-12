@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
 
 class Header extends StatelessWidget {
-  final String waktu;
-  final String user;
+  final String title;
+  final String value;
 
-  const Header({super.key, required this.waktu, required this.user});
+  const Header({
+    super.key,
+    required this.title,
+    required this.value,
+  });
 
   Widget build(BuildContext context) {
     return Padding(
@@ -17,12 +21,12 @@ class Header extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  waktu,
+                  title,
                   style: TextStyle(
                       color: theme.colorScheme.secondary, fontSize: 16),
                 ),
                 Text(
-                  user,
+                  value,
                   style: TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 22,

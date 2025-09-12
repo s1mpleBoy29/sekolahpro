@@ -54,7 +54,6 @@ class LoginPageScreen extends State<LoginScreen> {
   }
 
   Future<void> _handleLogin() async {
-    print('yes');
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
@@ -80,18 +79,37 @@ class LoginPageScreen extends State<LoginScreen> {
 
           String fullName = loginResponse['fullName'];
 
-          String role = loginResponse['role'];
+          // String role = loginResponse['role'];
 
-          final roles = jsonDecode(role)['data']['roles'];
+          // final roles = jsonDecode(role)['data']['roles'];
 
-          if (roles.isNotEmpty) {
-            SharedPreferences prefs = await SharedPreferences.getInstance();
-            await prefs.setString('roles', jsonEncode(roles));
-          }
+          dynamic user = loginResponse['user'];
+          dynamic guardian = loginResponse['guardian'];
+
+          // if (roles.isNotEmpty) {
+          //   SharedPreferences prefs = await SharedPreferences.getInstance();
+          //   await prefs.setString('roles', jsonEncode(roles));
+          // }
 
           if (fullName.isNotEmpty) {
             SharedPreferences prefs = await SharedPreferences.getInstance();
             await prefs.setString('full_name', fullName);
+          }
+
+          if (user != null) {
+            await authProvider.saveUser(user);
+          } else {
+            if (kDebugMode) {
+              print("DEBUG: User data is null");
+            }
+          }
+
+          if (guardian != null) {
+            await authProvider.saveGuardian(guardian);
+          } else {
+            if (kDebugMode) {
+              print("DEBUG: Guardian data is null");
+            }
           }
 
           // Ambil SID dari cookie response

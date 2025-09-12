@@ -151,7 +151,6 @@ class AgendaPageScreen extends State<AgendaScreen> {
       bottomNavigationBar: BottomNavBar(
         selected: AppRoutes.agendaScreen,
         context: context,
-        theme: theme,
       ),
       floatingActionButton: CustomFAB(
         onPressed: () {

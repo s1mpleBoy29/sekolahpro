@@ -31,7 +31,6 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
   final TextEditingController _searchController = TextEditingController();
 
   List<Student> allChildren = [];
-
   List<Student> _filteredChildren = [];
 
   SharedPreferences? _prefs;
@@ -40,7 +39,6 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
   void initState() {
     super.initState();
     _initializeData();
-    // allChildren = _filteredChildren = allChildren;
   }
 
   @override
@@ -57,30 +55,36 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
   Future<void> loadStudent() async {
     final provider = Provider.of<StudentProvider>(context, listen: false);
     final students = provider.students;
+
+    setState(() {
+      allChildren = students;
+      _filteredChildren = students; // default tampil semua
+    });
   }
 
   void _filterChildren(String query) {
-    // setState(() {
-    //   if (query.isEmpty) {
-    //     _filteredChildren = allChildren;
-    //   } else {
-    //     _filteredChildren = allChildren
-    //         .where((child) =>
-    //             child['name']!.toLowerCase().contains(query.toLowerCase()) ||
-    //             child['school']!.toLowerCase().contains(query.toLowerCase()) ||
-    //             child['class']!.toLowerCase().contains(query.toLowerCase()))
-    //         .toList();
-    //   }
-    // });
+    setState(() {
+      if (query.isEmpty) {
+        _filteredChildren = allChildren;
+      } else {
+        _filteredChildren = allChildren.where((child) {
+          final name = child.fullName?.toLowerCase() ?? '';
+          final school = child.schoolName?.toLowerCase() ?? '';
+          final grade = child.gradeName?.toLowerCase() ?? '';
+          final search = query.toLowerCase();
+
+          return name.contains(search) ||
+              school.contains(search) ||
+              grade.contains(search);
+        }).toList();
+      }
+    });
   }
 
   void _onSelectChild(Student childData) {
-    // StudentProvider.setSelectedStudent(childData);
     final studentProvider =
         Provider.of<StudentProvider>(context, listen: false);
     studentProvider.setSelectedStudent(childData);
-
-    print('widget, ${widget.postSelectionAction}');
 
     switch (widget.postSelectionAction) {
       case PostSelectionAction.navigateToHome:
@@ -106,11 +110,7 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final studentProvider =
-        Provider.of<StudentProvider>(context, listen: false);
-    // Estimasi tinggi AdCard untuk padding bawah
-    // Anda mungkin perlu menyesuaikannya agar pas dengan tinggi AdCard yang sebenarnya
-    final double adCardEstimatedHeight =
+    const double adCardEstimatedHeight =
         120.0; // Tinggi AdCard + padding bottom
 
     return Scaffold(
@@ -125,19 +125,16 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
               fit: BoxFit.cover,
             ),
           ),
-
-          // 2. Konten Utama: Judul, Search Bar, dan Daftar Anak (Semua dalam satu Column)
-          // SafeArea akan memastikan konten tidak tumpang tindih dengan status bar/notch
           SafeArea(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(
+                const Padding(
+                  padding: EdgeInsets.only(
                       top: 60.0,
                       left: 20.0,
                       right: 20.0), // Padding disesuaikan
-                  child: const Text(
+                  child: Text(
                     'Pilih Anak',
                     style: TextStyle(
                       fontSize: 32,
@@ -146,9 +143,7 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16.0), // Spasi setelah judul
-
-                // Search Bar (Fixed)
+                const SizedBox(height: 16.0),
                 Padding(
                   padding: const EdgeInsets.symmetric(
                       horizontal: 20.0), // Padding horizontal
@@ -174,15 +169,14 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0), // Padding horizontal untuk daftar
-                    child: studentProvider.students.isEmpty
+                    child: _filteredChildren.isEmpty
                         ? const Center(
                             child: Text('Tidak ada anak ditemukan.'),
                           )
                         : ListView.builder(
-                            itemCount: studentProvider.students.length,
+                            itemCount: _filteredChildren.length,
                             itemBuilder: (context, index) {
-                              final childData = studentProvider.students[index];
-                              print('check childData: ${childData.fullName}');
+                              final childData = _filteredChildren[index];
 
                               return Padding(
                                 padding:
@@ -201,22 +195,16 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
                           ),
                   ),
                 ),
-
-                // Tambahkan padding di bagian bawah kolom utama agar AdCard tidak menutupi item terakhir
-                SizedBox(
-                    height:
-                        adCardEstimatedHeight), // Pastikan ada ruang untuk AdCard
+                const SizedBox(height: adCardEstimatedHeight),
               ],
             ),
           ),
-
-          // 3. Fixed AdCard di bagian bawah (Paling atas secara visual dalam Stack)
-          Positioned(
-            bottom: 0, // Jepit ke bagian bawah layar
+          const Positioned(
+            bottom: 0,
             left: 0,
             right: 0,
             child: Padding(
-              padding: const EdgeInsets.all(20.0), // Padding di sekitar AdCard
+              padding: EdgeInsets.all(20.0),
               child: AdCard(
                 teks:
                     "Ads\nIn the lessons we learn new words and for vocabularities continues and article...",
