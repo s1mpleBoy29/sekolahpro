@@ -1,5 +1,32 @@
 import 'package:flutter/material.dart';
 
+class PaymentSummary {
+  final double totalKewajiban;
+  final double totalTunggakan;
+
+  PaymentSummary({
+    required this.totalKewajiban,
+    required this.totalTunggakan,
+  });
+
+  factory PaymentSummary.fromJson(Map<String, dynamic> json) {
+    return PaymentSummary(
+      totalKewajiban: (json['total_kewajiban'] as num? ?? 0.0).toDouble(),
+      totalTunggakan: (json['total_tunggakan'] as num? ?? 0.0).toDouble(),
+    );
+  }
+}
+
+class PaymentData {
+  final List<Payment> payments;
+  final PaymentSummary summary;
+
+  PaymentData({
+    required this.payments,
+    required this.summary,
+  });
+}
+
 class Payment {
   final String description;
   final double amount;
@@ -15,22 +42,14 @@ class Payment {
     required this.dueDate,
   });
 
-  // Dari JSON ke Payment.
   factory Payment.fromJson(Map<String, dynamic> json) {
     final double outstanding = (json['outstanding'] as num? ?? 0.0).toDouble();
-
-    // Jika outstanding > 0, maka dianggap Belum Lunas.
     final String status = outstanding > 0 ? 'Belum Lunas' : 'Lunas';
-
-    // Ambil dan parse tanggal jatuh tempo.
     final DateTime dueDate =
         DateTime.parse(json['due_date'] ?? DateTime.now().toIso8601String());
-
-    // Cek apakah sudah lewat tanggal jatuh tempo dan belum lunas.
     final bool isOverdue = status == 'Belum Lunas' &&
         dueDate.isBefore(DateUtils.dateOnly(DateTime.now()));
 
-    //Variabel dari API
     return Payment(
       description: json['remark'] ?? 'Tidak ada deskripsi',
       amount: (json['amount'] as num? ?? 0.0).toDouble(),
