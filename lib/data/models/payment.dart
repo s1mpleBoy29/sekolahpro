@@ -3,16 +3,27 @@ import 'package:flutter/material.dart';
 class PaymentSummary {
   final double totalKewajiban;
   final double totalTunggakan;
+  final double totalPembayaran;
 
   PaymentSummary({
     required this.totalKewajiban,
     required this.totalTunggakan,
+    required this.totalPembayaran,
   });
 
   factory PaymentSummary.fromJson(Map<String, dynamic> json) {
+    // Helper function to safely parse numbers.
+    double safeParseDouble(dynamic value) {
+      if (value is num) {
+        return value.toDouble();
+      }
+      return 0.0;
+    }
+
     return PaymentSummary(
-      totalKewajiban: (json['total_kewajiban'] as num? ?? 0.0).toDouble(),
-      totalTunggakan: (json['total_tunggakan'] as num? ?? 0.0).toDouble(),
+      totalKewajiban: safeParseDouble(json['billed_amount']),
+      totalTunggakan: safeParseDouble(json['outstanding']),
+      totalPembayaran: safeParseDouble(json['paid_amount']),
     );
   }
 }

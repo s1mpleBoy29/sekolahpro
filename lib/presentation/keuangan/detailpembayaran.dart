@@ -159,9 +159,6 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
                           _buildDetailItem(context, 'Nominal',
                               'Rp ${currencyFormatter.format(paymentDetail.amount)}'),
                           const Divider(height: 10),
-                          _buildDetailItem(
-                              context, 'Kategori', paymentDetail.category),
-                          const Divider(height: 10),
                           _buildDetailItem(context, 'Batas Waktu Pembayaran',
                               dateFormatter.format(paymentDetail.dueDate)),
                         ],
