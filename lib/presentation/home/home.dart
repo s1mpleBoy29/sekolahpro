@@ -18,6 +18,9 @@ import 'package:guardian_app/widgets/due_card.dart';
 import 'package:guardian_app/presentation/home/widgets/section_title.dart';
 import 'package:guardian_app/presentation/home/widgets/header.dart';
 import 'package:provider/provider.dart';
+import 'package:guardian_app/data/api/ad.dart';
+import 'package:guardian_app/data/models/ad.dart';
+import 'dart:async';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -31,6 +34,11 @@ class HomePageScreen extends State<HomeScreen> {
   List<dynamic> upcomings = [];
   List<dynamic> payment = [];
   List<dynamic> agendas = [];
+  //Ads
+  List<Ad> _adList = [];
+  int _currentAdIndex = 0;
+  Timer? _adTimer;
+  //end Ads
 
   dynamic user = {};
 
@@ -87,6 +95,28 @@ class HomePageScreen extends State<HomeScreen> {
 
     _fetchHome();
     fetchData();
+    _fetchAndStartAds();
+  }
+
+  void _fetchAndStartAds() async {
+    final ads = await getAds();
+    if (mounted && ads != null && ads.isNotEmpty) {
+      setState(() {
+        _adList = ads;
+      });
+      if (ads.length > 1) {
+        _startAdTimer();
+      }
+    }
+  }
+
+  void _startAdTimer() {
+    _adTimer?.cancel();
+    _adTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      setState(() {
+        _currentAdIndex = (_currentAdIndex + 1) % _adList.length;
+      });
+    });
   }
 
   Future<void> _fetchHome() async {
@@ -198,10 +228,11 @@ class HomePageScreen extends State<HomeScreen> {
                     : ListView(
                         padding: const EdgeInsets.all(16),
                         children: [
-                          const AdCard(
-                            teks:
-                                "In the lessons we new words and for vocabularities continues and article...",
-                          ),
+                          if (_adList.isNotEmpty)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 20),
+                              child: AdCard(ad: _adList[_currentAdIndex]),
+                            ),
                           const SizedBox(height: 24),
                           const SectionTitle(title: "Tunggakan Hari Ini"),
                           Padding(
