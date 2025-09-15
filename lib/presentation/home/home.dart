@@ -189,12 +189,17 @@ class HomePageScreen extends State<HomeScreen> {
                 child: _isLoading
                     ? const Center(child: CircularProgressIndicator())
                     : ListView(
-                        padding: const EdgeInsets.all(16),
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 16,
+                        ),
                         children: [
                           if (_adList.isNotEmpty)
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 20),
-                              child: AdCard(ad: _adList[_currentAdIndex]),
+                              padding: const EdgeInsets.symmetric(vertical: 2),
+                              child: AdCard(
+                                ad: _adList[_currentAdIndex],
+                              ),
                             ),
                           const SizedBox(height: 24),
                           const SectionTitle(title: "Tunggakan Hari Ini"),

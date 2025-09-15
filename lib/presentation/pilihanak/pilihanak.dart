@@ -234,8 +234,10 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
               left: 0,
               right: 0,
               child: Padding(
-                padding: EdgeInsets.all(20.0),
-                child: AdCard(ad: _adList[_currentAdIndex]),
+                padding: const EdgeInsets.all(20.0),
+                child: AdCard(
+                  ad: _adList[_currentAdIndex],
+                ),
               ),
             ),
         ],

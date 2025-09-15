@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:guardian_app/data/api/notifikasi.dart';
+// import 'package:guardian_app/data/api/notifikasi.dart';
 import 'package:guardian_app/data/models/notifikasi.dart';
 
 class NotificationDetailScreen extends StatefulWidget {
   const NotificationDetailScreen({Key? key}) : super(key: key);
 
   @override
-  State<NotificationDetailScreen> createState() => _NotificationDetailScreenState();
+  State<NotificationDetailScreen> createState() =>
+      _NotificationDetailScreenState();
 }
 
 class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
@@ -34,14 +35,16 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
         appBar: AppBar(
           title: const Text(
             'Detail Notifikasi',
-            style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold), // Teks hitam
+            style: TextStyle(
+                color: Colors.black, fontWeight: FontWeight.bold), // Teks hitam
           ),
           backgroundColor: Colors.white,
           foregroundColor: Colors.black,
           elevation: 0,
           centerTitle: false,
           leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios, color: Colors.black), // Ikon hitam
+            icon: const Icon(Icons.arrow_back_ios,
+                color: Colors.black), // Ikon hitam
             onPressed: () {
               Navigator.of(context).pop();
             },
@@ -54,21 +57,24 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
     // Gunakan data notifikasi yang sudah diterima
     final notif = notificationArgs!;
     String formattedDate = notif.creation.toLocal().toString().split(' ')[0];
-    String formattedTime = notif.creation.toLocal().toString().split(' ')[1].split('.')[0];
+    String formattedTime =
+        notif.creation.toLocal().toString().split(' ')[1].split('.')[0];
 
     return Scaffold(
       backgroundColor: Colors.white, // Latar belakang putih
       appBar: AppBar(
         title: const Text(
           'Detail Notifikasi',
-          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold), // Teks hitam
+          style: TextStyle(
+              color: Colors.black, fontWeight: FontWeight.bold), // Teks hitam
         ),
         backgroundColor: Colors.white,
         foregroundColor: Colors.black,
         elevation: 0,
         centerTitle: false,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios, color: Colors.black), // Ikon hitam
+          icon: const Icon(Icons.arrow_back_ios,
+              color: Colors.black), // Ikon hitam
           onPressed: () {
             Navigator.of(context).pop();
           },
@@ -103,12 +109,14 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
             // Tanggal dan Waktu
             Text(
               'Tanggal: $formattedDate',
-              style: const TextStyle(fontSize: 16, color: Colors.black87), // Teks hitam
+              style: const TextStyle(
+                  fontSize: 16, color: Colors.black87), // Teks hitam
             ),
             const SizedBox(height: 4),
             Text(
               'Waktu: $formattedTime',
-              style: const TextStyle(fontSize: 16, color: Colors.black87), // Teks hitam
+              style: const TextStyle(
+                  fontSize: 16, color: Colors.black87), // Teks hitam
             ),
             const SizedBox(height: 24),
 
@@ -125,7 +133,8 @@ class _NotificationDetailScreenState extends State<NotificationDetailScreen> {
             // Sesuaikan jika model NotificationDetail Anda memang memiliki properti description
             Text(
               "Notifikasi ID: ${notif.name}\nStatus: ${notif.isRead ? 'Sudah dibaca' : 'Belum dibaca'}\n\n${notif.subject}",
-              style: const TextStyle(fontSize: 16, color: Colors.black87), // Teks hitam
+              style: const TextStyle(
+                  fontSize: 16, color: Colors.black87), // Teks hitam
             ),
           ],
         ),
