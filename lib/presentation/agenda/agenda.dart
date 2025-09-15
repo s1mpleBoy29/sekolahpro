@@ -16,6 +16,10 @@ import 'package:intl/intl.dart';
 import 'package:guardian_app/widgets/agenda_card.dart'; // Mengimpor AgendaCard
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:guardian_app/widgets/ad_card.dart';
+import 'package:guardian_app/data/api/ad.dart';
+import 'package:guardian_app/data/models/ad.dart';
+import 'dart:async';
 
 class AgendaScreen extends StatefulWidget {
   const AgendaScreen({super.key});
@@ -30,11 +34,38 @@ class AgendaPageScreen extends State<AgendaScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   final String _currentStudentId = 'TLAB.0001'; // Contoh Student ID
+  //Ads
+  List<Ad> _adList = [];
+  int _currentAdIndex = 0;
+  Timer? _adTimer;
+  //end Ads
 
   @override
   void initState() {
     super.initState();
     _fetchAgendaList();
+    _fetchAndStartAds();
+  }
+
+  void _fetchAndStartAds() async {
+    final ads = await getAds();
+    if (mounted && ads != null && ads.isNotEmpty) {
+      setState(() {
+        _adList = ads;
+      });
+      if (ads.length > 1) {
+        _startAdTimer();
+      }
+    }
+  }
+
+  void _startAdTimer() {
+    _adTimer?.cancel();
+    _adTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      setState(() {
+        _currentAdIndex = (_currentAdIndex + 1) % _adList.length;
+      });
+    });
   }
 
   Future<void> _fetchAgendaList() async {
@@ -210,56 +241,13 @@ class AgendaPageScreen extends State<AgendaScreen> {
   }
 
   Widget _buildAdCard() {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-        color: theme.colorScheme.surface,
-      ),
-      child: Row(
-        children: [
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: const Icon(
-              Icons.ads_click,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  "Ads",
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: theme.colorScheme.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  "In the lessons we learn new words and for vocabularities continues and articl...",
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: theme.colorScheme.outline,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+    if (_adList.isNotEmpty) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 20),
+        child: AdCard(ad: _adList[_currentAdIndex]),
+      );
+    }
+    return const SizedBox.shrink();
   }
 
   Widget _buildAgendaList() {
