@@ -15,6 +15,8 @@ class AkunScreen extends StatefulWidget {
 }
 
 class AkunPageScreen extends State<AkunScreen> {
+  dynamic user = {};
+
   final List<Map<String, dynamic>> menuList = [
     {
       'title': 'Pribadi',
@@ -29,6 +31,16 @@ class AkunPageScreen extends State<AkunScreen> {
       'items': ['Tentang Kami', 'FAQ', 'Kontak']
     },
   ];
+
+  @override
+  void initState() {
+    super.initState();
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    user = authProvider.user;
+
+    print('check user, ${user['email']}');
+  }
 
   void _handleLogout() async {
     final shouldLogout = await showDialog<bool>(
@@ -257,7 +269,7 @@ class AkunPageScreen extends State<AkunScreen> {
           ),
           const SizedBox(height: 12),
           Text(
-            'Bapak Santoso Wijaya',
+            user['full_name'] ?? 'Guardian',
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
@@ -265,7 +277,7 @@ class AkunPageScreen extends State<AkunScreen> {
             ),
           ),
           Text(
-            'santoso.wijaya@gmail.com',
+            user['email'] ?? 'email',
             style: TextStyle(
               color: theme.colorScheme.outline,
               fontSize: 14,

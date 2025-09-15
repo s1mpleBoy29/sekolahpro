@@ -32,7 +32,7 @@ class HomePageScreen extends State<HomeScreen> {
   List<dynamic> upcomings = [];
   List<dynamic> payment = [];
   List<dynamic> agendas = [];
-  //Ads
+
   List<Ad> _adList = [];
   int _currentAdIndex = 0;
   Timer? _adTimer;
@@ -40,7 +40,7 @@ class HomePageScreen extends State<HomeScreen> {
 
   dynamic user = {};
 
-  late final child;
+  late dynamic child;
   bool _isLoading = true;
 
   @override

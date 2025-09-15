@@ -1,12 +1,49 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:guardian_app/core/app_export.dart';
+import 'package:guardian_app/core/providers/auth_provider.dart';
 import 'package:guardian_app/widgets/custom_elevated_button.dart';
 import 'package:guardian_app/widgets/custom_text_form_field.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:provider/provider.dart';
 
-class EditProfileScreen extends StatelessWidget {
+class EditProfileScreen extends StatefulWidget {
   const EditProfileScreen({super.key});
+
+  @override
+  EditProfilePageScreen createState() => EditProfilePageScreen();
+}
+
+class EditProfilePageScreen extends State<EditProfileScreen> {
+  dynamic user;
+  dynamic guardian;
+
+  @override
+  void initState() {
+    super.initState();
+
+    final authProvider = Provider.of<AuthProvider>(context, listen: false);
+    user = authProvider.user;
+    guardian = authProvider.guardian;
+
+    if (user != null || guardian != null) {
+      setForm();
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  void setForm() {
+    setState(() {
+      nikController.text = guardian['pin'] ?? '';
+      nameController.text = user['full_name'] ?? '';
+      // phoneController.text = user['phone'] ?? '';
+      emailController.text = user['email'] ?? '';
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

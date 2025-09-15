@@ -40,14 +40,9 @@ class AuthService {
         final String message = responseData["message"] ?? "No message";
         final String homePage = responseData["home_page"] ?? "/";
         final String fullName = responseData["full_name"] ?? "Anonymous";
-
-        // Log hasil parsing
-        print("Message: $message");
-        print("Home Page: $homePage");
-        print("Full Name: $fullName");
-
         final Map<String, dynamic> data = jsonDecode(response.body);
         String? cookie = response.headers['set-cookie'];
+
         if (cookie != null) {
           RegExp regex = RegExp(r'sid=([^;]+)');
           Match? match = regex.firstMatch(cookie);
@@ -66,15 +61,9 @@ class AuthService {
               headers: headers,
             );
 
-            print('check user, ${responseUser.body}');
-
             if (responseUser.statusCode == 200) {
               final Map<String, dynamic> responseData =
                   jsonDecode(responseUser.body);
-
-              print('check responseData, ${responseData['message']['user']}');
-              print(
-                  'check responseData, ${responseData['message']['guardian']}');
 
               return {
                 "message": message,

@@ -62,7 +62,7 @@ class BottomNavBar extends StatelessWidget {
               icon: Icons.account_circle,
               label: 'Akun',
               selected: currentRoute == AppRoutes.akunScreen,
-              isAvatar: true,
+              isAvatar: false,
               onTap: () {
                 Navigator.pushNamed(context, AppRoutes.akunScreen);
               },
