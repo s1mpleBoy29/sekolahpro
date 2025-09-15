@@ -5,7 +5,8 @@ import 'package:guardian_app/presentation/akun/edit_profile.dart';
 import 'package:guardian_app/presentation/keuangan/detailpembayaran.dart';
 import 'package:guardian_app/presentation/info_sekolah/info_sekolah.dart';
 import 'package:guardian_app/presentation/keuangan/keuangan.dart';
-import 'package:guardian_app/presentation/notifikasi.dart';
+import 'package:guardian_app/presentation/notifikasi/detailNotifikasi.dart';
+import 'package:guardian_app/presentation/notifikasi/notifikasi.dart';
 import 'package:guardian_app/presentation/ubah_password.dart';
 
 import '../presentation/home/home.dart';
@@ -36,15 +37,16 @@ class AppRoutes {
   static const String ubahPasswordScreen = '/ubah_password_screen';
   static const String dataAnakScreen = '/data_anak_screen';
   static const String infoSekolahScreen = '/info_sekolah_screen';
+  static const String detailNotifikasiScreen = '/detail_notifikasi_screen';
   static Map<String, WidgetBuilder> routes = {
     loginScreen: (context) => const LoginScreen(),
     homeScreen: (context) => const HomeScreen(),
     agendaScreen: (context) => const AgendaScreen(),
     DetailAgendaScreen: (context) => const DetailAgenda(),
-    NotifikasiScreen: (context) => const NotificationPage(),
+    NotifikasiScreen: (context) => const NotificationListScreen(),
     pilihAnakScreen: (context) => const PilihAnakScreen(
-          postSelectionAction: PostSelectionAction.navigateToHome,
-        ),
+      postSelectionAction: PostSelectionAction.navigateToHome,
+    ),
     bayarSatuScreen: (context) => const BayarSatuScreen(),
     bayarDuaScreen: (context) => const BayarDuaScreen(),
     bayarTigaScreen: (context) => const BayarTigaScreen(),
@@ -56,5 +58,6 @@ class AppRoutes {
     ubahPasswordScreen: (context) => const UbahPasswordScreen(),
     dataAnakScreen: (context) => const DataAnak(),
     infoSekolahScreen: (context) => const InfoSekolahScreen(),
+    detailNotifikasiScreen: (context) => const NotificationDetailScreen(),
   };
 }
