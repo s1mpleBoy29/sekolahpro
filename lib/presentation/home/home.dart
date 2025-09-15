@@ -6,12 +6,10 @@ import 'package:guardian_app/core/providers/home_provider.dart';
 import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/core/utils/datetime_ui.dart';
 import 'package:guardian_app/core/utils/number_format.dart';
-import 'package:guardian_app/data/models/student.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 import 'package:guardian_app/widgets/bottom_nav_bar.dart';
 import 'package:guardian_app/widgets/custom_fab.dart';
 import 'package:guardian_app/widgets/empty_card.dart';
-import 'package:guardian_app/widgets/topbar.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
 import 'package:guardian_app/widgets/agenda_card.dart';
 import 'package:guardian_app/widgets/due_card.dart';
@@ -37,46 +35,9 @@ class HomePageScreen extends State<HomeScreen> {
   late final child;
   bool _isLoading = true;
 
-  void setDummyData() {
-    payment = [
-      {
-        'due_date': '2025-08-10',
-        'description':
-            'Uang Sekolah Chandra Bulan Agustus\nTahun Ajaran 2025 / 2026',
-        'amount': 300000,
-        'is_overdue': true,
-      },
-      {
-        'due_date': '2025-07-07',
-        'description':
-            'Uang Sekolah Chandra Bulan Juli\nTahun Ajaran 2025 / 2026',
-        'amount': 500000,
-        'is_overdue': false,
-      },
-    ];
-
-    agendas = [
-      {
-        'date': '2025-07-07',
-        'child': 'Candra Wijaya',
-        'from': 'Wali Kelas 5A',
-        'description':
-            'Titik kumpul di lapangan utama, bawa topi dan minuman sendiri. Dimohon untuk siswa-siswi...'
-      },
-      {
-        'date': '2025-07-08',
-        'child': 'Candra Wijaya',
-        'from': 'Wali Kelas 5A',
-        'description':
-            'Titik kumpul di lapangan utama, bawa topi dan minuman sendiri. Dimohon untuk siswa-siswi...'
-      },
-    ];
-  }
-
   @override
   void initState() {
     super.initState();
-    // setDummyData();
 
     final authProvider = Provider.of<AuthProvider>(context, listen: false);
     final studentProvider =
@@ -143,6 +104,8 @@ class HomePageScreen extends State<HomeScreen> {
       agendas = homeProvider.agendas;
     });
   }
+
+  Future<void> refreshAds() async {}
 
   @override
   void dispose() {
