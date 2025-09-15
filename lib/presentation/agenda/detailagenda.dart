@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:guardian_app/data/models/Agenda.dart';
 import 'package:guardian_app/data/api/detailagenda.dart';
+// Import package flutter_html
+import 'package:flutter_html/flutter_html.dart';
 
 class DetailAgenda extends StatefulWidget {
   final String? studentId;
   final String? agendaId;
-  
+
   const DetailAgenda({
-    super.key, 
+    super.key,
     this.studentId,
     this.agendaId,
   });
@@ -26,11 +28,53 @@ class _DetailAgendaState extends State<DetailAgenda> {
   @override
   void initState() {
     super.initState();
-    // Use passed parameters or fallback to default values
+    _initializeParameters();
+    // _agendaDetailFuture diinisialisasi di _initializeParameters jika ada argumen
+  }
+
+  void _initializeParameters() {
+    // Cek apakah ada arguments dari Navigator
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+      if (args != null) {
+        setState(() {
+          currentStudentId = args['studentId'] ?? widget.studentId ?? 'TLAB.0001';
+          currentAgendaId = args['agendaId'] ?? widget.agendaId ?? 'AG-TLAB-2508-0892';
+          _agendaDetailFuture = _fetchAgendaDetail(currentStudentId, currentAgendaId);
+        });
+      } else {
+        // Gunakan parameter widget atau default values
+        currentStudentId = widget.studentId ?? 'TLAB.0001';
+        currentAgendaId = widget.agendaId ?? 'AG-TLAB-2508-0892';
+        // Fetch data if no arguments were passed and default values are used
+        _agendaDetailFuture = _fetchAgendaDetail(currentStudentId, currentAgendaId);
+      }
+    });
+
+    // Set initial values for the first build if no arguments are immediately available
     currentStudentId = widget.studentId ?? 'TLAB.0001';
     currentAgendaId = widget.agendaId ?? 'AG-TLAB-2508-0892';
-    
-    _agendaDetailFuture = _fetchAgendaDetail(currentStudentId, currentAgendaId);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // Ambil arguments dari route jika ada
+    final args = ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
+
+    if (args != null) {
+      final newStudentId = args['studentId'] ?? widget.studentId ?? 'TLAB.0001';
+      final newAgendaId = args['agendaId'] ?? widget.agendaId ?? 'AG-TLAB-2508-0892';
+
+      // Update hanya jika berbeda dari yang sekarang
+      if (newStudentId != currentStudentId || newAgendaId != currentAgendaId) {
+        currentStudentId = newStudentId;
+        currentAgendaId = newAgendaId;
+        _agendaDetailFuture = _fetchAgendaDetail(currentStudentId, currentAgendaId);
+      }
+    }
   }
 
   Future<AgendaDetail?> _fetchAgendaDetail(String studentId, String agendaId) async {
@@ -41,10 +85,10 @@ class _DetailAgendaState extends State<DetailAgenda> {
 
       // Use the validation function for better error handling
       AgendaDetail? result = await getAgendaDetailWithValidation(
-        studentId: studentId, 
+        studentId: studentId,
         agendaId: agendaId,
       );
-      
+
       return result;
     } catch (e) {
       setState(() {
@@ -176,6 +220,15 @@ class _DetailAgendaState extends State<DetailAgenda> {
                     ),
                     const SizedBox(height: 8),
                     Text(
+                      "StudentId: $currentStudentId\nAgendaId: $currentAgendaId",
+                      style: const TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
                       "Error: ${snapshot.error ?? 'Unknown error'}",
                       style: const TextStyle(
                         fontSize: 12,
@@ -206,10 +259,10 @@ class _DetailAgendaState extends State<DetailAgenda> {
             );
           } else if (snapshot.hasData && snapshot.data != null) {
             final AgendaDetail agendaDetail = snapshot.data!;
-            
+
             try {
               final String formattedDate = DateFormat('dd MMMM yyyy', 'id_ID').format(agendaDetail.date);
-              
+
               return SingleChildScrollView(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
@@ -225,7 +278,7 @@ class _DetailAgendaState extends State<DetailAgenda> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    
+
                     // From field
                     if (agendaDetail.from.isNotEmpty) ...[
                       Row(
@@ -253,7 +306,7 @@ class _DetailAgendaState extends State<DetailAgenda> {
                       ),
                       const SizedBox(height: 8),
                     ],
-                    
+
                     // To field
                     if (agendaDetail.to.isNotEmpty) ...[
                       Row(
@@ -281,18 +334,36 @@ class _DetailAgendaState extends State<DetailAgenda> {
                       ),
                       const SizedBox(height: 24),
                     ],
-                    
-                    // Detail content without container decoration
+
+                    // Detail content with flutter_html
                     if (agendaDetail.detail.isNotEmpty)
-                      Text(
-                        agendaDetail.detail,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black,
-                          height: 1.6,
-                          fontWeight: FontWeight.w400,
-                        ),
-                        textAlign: TextAlign.justify,
+                      Html(
+                        data: agendaDetail.detail,
+                        // Jika Anda ingin kustomisasi lebih lanjut pada styling HTML,
+                        // Anda bisa menggunakan properti 'style' pada widget Html.
+                        // Contoh:
+                        // style: {
+                        //   "p": Style(
+                        //     fontSize: FontSize.medium,
+                        //     color: Colors.black,
+                        //     lineHeight: const LineHeight(1.6),
+                        //   ),
+                        //   "strong": Style(
+                        //     fontWeight: FontWeight.bold,
+                        //   ),
+                        //   "span": Style(
+                        //     color: Colors.black,
+                        //   ),
+                        // },
+                        // Untuk mengatasi error 'HtmlPadding Function()', pastikan Anda
+                        // tidak secara manual memanggil atau mendefinisikan padding dengan cara yang salah.
+                        // Jika Anda tidak perlu padding khusus, Anda bisa menghapus konfigurasi padding
+                        // yang mungkin ada di kode Anda yang tidak terlihat di sini.
+                        // Jika Anda memang perlu padding, pastikan formatnya benar, contoh:
+                        // padding: HtmlPadding.symmetric(horizontal: 8.0),
+                        // Atau gunakan nilai default jika tidak ada kebutuhan khusus.
+                        // Jika error masih berlanjut, cek kembali import dan penggunaan
+                        // library flutter_html di project Anda.
                       ),
                   ],
                 ),
@@ -332,11 +403,12 @@ class _DetailAgendaState extends State<DetailAgenda> {
                   const Text("Detail agenda tidak ditemukan"),
                   const SizedBox(height: 8),
                   Text(
-                    "Periksa Student ID dan Agenda ID",
+                    "StudentId: $currentStudentId\nAgendaId: $currentAgendaId",
                     style: TextStyle(
                       color: Colors.grey.shade600,
                       fontSize: 12,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 16),
                   Row(

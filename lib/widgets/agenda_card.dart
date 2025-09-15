@@ -7,7 +7,9 @@ class AgendaCard extends StatelessWidget {
   final String dari;
   final String untuk;
   final String detail;
-  // Menambahkan parameter onTap
+  // Tambahkan parameter agendaId untuk navigasi
+  final String? agendaId;
+  // Menambahkan parameter onTap dengan agendaId
   final VoidCallback? onTap;
 
   const AgendaCard({
@@ -16,6 +18,7 @@ class AgendaCard extends StatelessWidget {
     required this.dari,
     required this.untuk,
     required this.detail,
+    this.agendaId,
     this.onTap, // Parameter onTap bersifat opsional
   });
 
@@ -87,13 +90,6 @@ class AgendaCard extends StatelessWidget {
                 ),
               },
             ),
-            // Text(
-            //   detail,
-            //   style: TextStyle(
-            //     color: theme.colorScheme.onPrimaryContainer,
-            //     fontSize: 16,
-            //   ),
-            // )
           ],
         ),
       ),

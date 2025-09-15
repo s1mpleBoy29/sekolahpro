@@ -9,11 +9,10 @@ import 'package:guardian_app/widgets/bottom_nav_bar.dart';
 import 'package:guardian_app/widgets/custom_fab.dart';
 import 'package:guardian_app/widgets/secondary_topbar.dart';
 import 'package:guardian_app/widgets/topbar.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:guardian_app/routes/app_routes.dart';
 import 'package:guardian_app/presentation/pilihanak/pilihanak.dart';
 import 'package:intl/intl.dart';
-import 'package:guardian_app/widgets/agenda_card.dart'; // Mengimpor AgendaCard
+import 'package:guardian_app/widgets/agenda_card.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:guardian_app/widgets/ad_card.dart';
@@ -34,17 +33,31 @@ class AgendaPageScreen extends State<AgendaScreen> {
   bool _isLoading = true;
   String? _errorMessage;
   final String _currentStudentId = 'TLAB.0001'; // Contoh Student ID
-  //Ads
+
+  // Pagination
+  int _currentPage = 1;
+  final int _itemsPerPage = 2;
+
+  // Ads
   List<Ad> _adList = [];
   int _currentAdIndex = 0;
   Timer? _adTimer;
-  //end Ads
+
+  // Add ScrollController
+  final ScrollController _scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     _fetchAgendaList();
     _fetchAndStartAds();
+  }
+
+  @override
+  void dispose() {
+    _adTimer?.cancel();
+    _scrollController.dispose(); // Don't forget to dispose
+    super.dispose();
   }
 
   void _fetchAndStartAds() async {
@@ -82,7 +95,10 @@ class AgendaPageScreen extends State<AgendaScreen> {
         setState(() {
           _filteredAgendaList = response.lists;
           _isLoading = false;
+          _currentPage = 1; // reset ke halaman awal
         });
+        // Scroll to top after loading data
+        _scrollToTop();
       }
     } else {
       SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -112,8 +128,6 @@ class AgendaPageScreen extends State<AgendaScreen> {
 
   void _applyAgendaFilter(Map<String, dynamic> filters) {
     setState(() {
-      // Ini adalah filter sederhana pada data yang sudah diambil dari API
-      // Jika Anda perlu filter dari sisi server, logikanya perlu diubah
       final List<AgendaDetail> filteredTemp =
           _filteredAgendaList.where((agenda) {
         final pengirimFilter = filters['pengirim'] as AgendaFilterPengirim;
@@ -137,14 +151,26 @@ class AgendaPageScreen extends State<AgendaScreen> {
                   agendaDate.isBefore(endDate.add(const Duration(days: 1)));
         } else if (startDate != null) {
           matchesDate = DateUtils.isSameDay(agendaDate, startDate);
-        } else {
-          matchesDate = true;
         }
 
         return matchesPengirim && matchesDate;
       }).toList();
       _filteredAgendaList = filteredTemp;
+      _currentPage = 1; // reset ke halaman pertama setelah filter
     });
+    // Scroll to top after applying filter
+    _scrollToTop();
+  }
+
+  // Method to scroll to top smoothly
+  void _scrollToTop() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        0,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
   }
 
   void _showFilterPopup() {
@@ -169,6 +195,53 @@ class AgendaPageScreen extends State<AgendaScreen> {
         builder: (context) => const PilihAnakScreen(
           postSelectionAction: PostSelectionAction.goBack,
         ),
+      ),
+    );
+  }
+
+  // Ambil agenda sesuai halaman
+  List<AgendaDetail> get _currentPageAgenda {
+    final startIndex = (_currentPage - 1) * _itemsPerPage;
+    final endIndex =
+        (_currentPage * _itemsPerPage).clamp(0, _filteredAgendaList.length);
+    return _filteredAgendaList.sublist(startIndex, endIndex);
+  }
+
+  Widget _buildPaginationControls() {
+    final totalPages = (_filteredAgendaList.length / _itemsPerPage).ceil();
+    if (totalPages <= 1) return const SizedBox.shrink();
+
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          IconButton(
+            icon: const Icon(Icons.chevron_left),
+            onPressed: _currentPage > 1
+                ? () {
+                    setState(() {
+                      _currentPage--;
+                    });
+                    // Scroll to top when changing page
+                    _scrollToTop();
+                  }
+                : null,
+          ),
+          Text('Page $_currentPage of $totalPages'),
+          IconButton(
+            icon: const Icon(Icons.chevron_right),
+            onPressed: _currentPage < totalPages
+                ? () {
+                    setState(() {
+                      _currentPage++;
+                    });
+                    // Scroll to top when changing page
+                    _scrollToTop();
+                  }
+                : null,
+          ),
+        ],
       ),
     );
   }
@@ -227,11 +300,10 @@ class AgendaPageScreen extends State<AgendaScreen> {
                 }
               },
             ),
-            // Gunakan Expanded agar daftar agenda mengisi sisa ruang layar
             Expanded(
               child: RefreshIndicator(
                 onRefresh: onRefresh,
-                child: _buildAgendaList(), // Pindahkan _buildAgendaList ke sini
+                child: _buildAgendaList(),
               ),
             ),
           ],
@@ -251,78 +323,80 @@ class AgendaPageScreen extends State<AgendaScreen> {
   }
 
   Widget _buildAgendaList() {
-    if (_isLoading) {
-      return const Center(
-        child: CircularProgressIndicator(),
-      );
-    }
+  if (_isLoading) {
+    return const Center(child: CircularProgressIndicator());
+  }
 
-    if (_errorMessage != null) {
-      return Center(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                _errorMessage!,
-                textAlign: TextAlign.center,
-                style: TextStyle(color: theme.colorScheme.error, fontSize: 16),
+  if (_errorMessage != null) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              _errorMessage!,
+              textAlign: TextAlign.center,
+              style: TextStyle(color: theme.colorScheme.error, fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: onRefresh,
+              child: const Text('Coba Lagi',
+                  style: TextStyle(color: Colors.white, fontSize: 16)),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: theme.colorScheme.primary,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               ),
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: onRefresh,
-                child: const Text('Coba Lagi',
-                    style: TextStyle(color: Colors.white, fontSize: 16)),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: theme.colorScheme.primary,
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                ),
-              )
-            ],
-          ),
+            )
+          ],
         ),
-      );
-    }
-
-    if (_filteredAgendaList.isEmpty) {
-      return const Center(
-        child: Text('Tidak ada agenda yang ditemukan.'),
-      );
-    }
-
-    // Gunakan ListView.builder untuk menampilkan daftar agenda
-    // dengan _buildAdCard() sebagai item pertama
-    return ListView.builder(
-      itemCount: _filteredAgendaList.length + 1, // Tambah 1 untuk AdCard
-      padding: EdgeInsets.zero, // Hapus padding default ListView
-      itemBuilder: (context, index) {
-        if (index == 0) {
-          // Item pertama adalah AdCard
-          return _buildAdCard();
-        }
-
-        // Item sisanya adalah AgendaCard
-        // Kurangi index dengan 1 untuk mengakses data dari _filteredAgendaList
-        final item = _filteredAgendaList[index - 1];
-        return Padding(
-          // Berikan padding pada setiap AgendaCard agar tidak menempel
-          padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-          child: AgendaCard(
-            tanggal: DateFormat('d MMMM yyyy', 'id_ID').format(item.date),
-            dari: item.from,
-            untuk: item.to,
-            detail: item.detail,
-            onTap: () {
-              Navigator.pushNamed(
-                context,
-                AppRoutes.DetailAgendaScreen,
-              );
-            },
-          ),
-        );
-      },
+      ),
     );
   }
+
+  if (_filteredAgendaList.isEmpty) {
+    return const Center(child: Text('Tidak ada agenda yang ditemukan.'));
+  }
+
+  return Column(
+    children: [
+      Expanded(
+        child: ListView.builder(
+          controller: _scrollController,
+          itemCount: _currentPageAgenda.length + 1, // +1 untuk AdCard
+          padding: EdgeInsets.zero,
+          itemBuilder: (context, index) {
+            if (index == 0) return _buildAdCard();
+
+            final item = _currentPageAgenda[index - 1];
+            return Padding(
+              padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+              child: AgendaCard(
+                tanggal: DateFormat('d MMMM yyyy', 'id_ID').format(item.date),
+                dari: item.from,
+                untuk: item.to,
+                detail: item.detail,
+                agendaId: item.id, // Pass agenda ID
+                onTap: () {
+                  // Navigasi dengan parameter
+                  Navigator.pushNamed(
+                    context,
+                    AppRoutes.DetailAgendaScreen,
+                    arguments: {
+                      'studentId': _currentStudentId,
+                      'agendaId': item.id,
+                    },
+                  );
+                },
+              ),
+            );
+          },
+        ),
+      ),
+      _buildPaginationControls(),
+    ],
+  );
+}
 }
