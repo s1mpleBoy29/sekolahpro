@@ -7,8 +7,10 @@ import 'package:guardian_app/widgets/ad_card.dart';
 import 'package:guardian_app/presentation/home/home.dart';
 import 'package:provider/provider.dart';
 import 'dart:ui';
-
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:guardian_app/data/api/ad.dart';
+import 'package:guardian_app/data/models/ad.dart';
+import 'dart:async';
 
 enum PostSelectionAction {
   goBack,
@@ -32,6 +34,11 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
 
   List<Student> allChildren = [];
   List<Student> _filteredChildren = [];
+  //Ads
+  List<Ad> _adList = [];
+  int _currentAdIndex = 0;
+  Timer? _adTimer;
+  // end Ads
 
   SharedPreferences? _prefs;
 
@@ -39,6 +46,28 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
   void initState() {
     super.initState();
     _initializeData();
+    _fetchAndStartAds();
+  }
+
+  void _fetchAndStartAds() async {
+    final ads = await getAds();
+    if (mounted && ads != null && ads.isNotEmpty) {
+      setState(() {
+        _adList = ads;
+      });
+      if (ads.length > 1) {
+        _startAdTimer();
+      }
+    }
+  }
+
+  void _startAdTimer() {
+    _adTimer?.cancel();
+    _adTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      setState(() {
+        _currentAdIndex = (_currentAdIndex + 1) % _adList.length;
+      });
+    });
   }
 
   @override
@@ -199,18 +228,16 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
               ],
             ),
           ),
-          const Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Padding(
-              padding: EdgeInsets.all(20.0),
-              child: AdCard(
-                teks:
-                    "Ads\nIn the lessons we learn new words and for vocabularities continues and article...",
+          if (_adList.isNotEmpty)
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Padding(
+                padding: EdgeInsets.all(20.0),
+                child: AdCard(ad: _adList[_currentAdIndex]),
               ),
             ),
-          ),
         ],
       ),
     );

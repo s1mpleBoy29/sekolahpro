@@ -1,65 +1,37 @@
 import 'package:flutter/material.dart';
-import 'package:guardian_app/core/app_export.dart';
+import 'package:guardian_app/data/models/ad.dart';
 
 class AdCard extends StatelessWidget {
-  final String teks;
-  const AdCard({super.key, required this.teks});
+  final Ad ad;
+  const AdCard({super.key, required this.ad});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12.0),
+      height: 100,
       decoration: BoxDecoration(
-        border: Border.all(color: Colors.grey.shade300),
-        borderRadius: BorderRadius.circular(8),
-        color: Colors.white,
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(0),
       ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Icon dengan background circular
-          Container(
-            width: 40,
-            height: 40,
-            decoration: BoxDecoration(
-              color: Colors.black,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: const Icon(
-              Icons.ads_click,
-              color: Colors.white,
-              size: 20,
-            ),
-          ),
-          const SizedBox(width: 12),
-          // Content area
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Title "Ads"
-                Text(
-                  'Ads',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w600,
-                    color: Colors.black,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                // Description text
-                Text(
-                  teks,
-                  style: TextStyle(
-                    fontSize: 14,
-                    color: Colors.grey.shade600,
-                    height: 1.4,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(0),
+        child: Image.network(
+          ad.imageUrl,
+          width: double.infinity,
+          fit: BoxFit.contain,
+          loadingBuilder: (context, child, loadingProgress) {
+            if (loadingProgress == null) return child; // Image.
+            return const Center(
+              child: CircularProgressIndicator(strokeWidth: 2.0),
+            );
+          },
+          errorBuilder: (context, error, stackTrace) {
+            // Ikon untuk menunjukkan jika gambar gagal dimuat.
+            return const Center(
+              child: Icon(Icons.broken_image, color: Colors.grey, size: 40),
+            );
+          },
+        ),
       ),
     );
   }

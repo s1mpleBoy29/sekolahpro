@@ -17,6 +17,9 @@ import 'package:guardian_app/data/api/payment.dart';
 import 'package:guardian_app/data/models/payment.dart';
 import 'package:provider/provider.dart';
 import 'package:guardian_app/core/providers/student_provider.dart';
+import 'package:guardian_app/data/api/ad.dart';
+import 'package:guardian_app/data/models/ad.dart';
+import 'dart:async';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
@@ -29,6 +32,11 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   late Future<PaymentData> _paymentsFuture;
   List<Payment> _allPayments = [];
   List<Payment> _filteredPayments = [];
+  //Ads
+  List<Ad> _adList = [];
+  int _currentAdIndex = 0;
+  Timer? _adTimer;
+  // end Ads
 
   final List<String> _bulanIndonesia = [
     'Januari',
@@ -49,6 +57,34 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   void initState() {
     super.initState();
     _paymentsFuture = _fetchData();
+    _fetchAndStartAds();
+  }
+
+  void _fetchAndStartAds() async {
+    final ads = await getAds();
+    if (mounted && ads != null && ads.isNotEmpty) {
+      setState(() {
+        _adList = ads;
+      });
+      if (ads.length > 1) {
+        _startAdTimer();
+      }
+    }
+  }
+
+  void _startAdTimer() {
+    _adTimer?.cancel();
+    _adTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
+      setState(() {
+        _currentAdIndex = (_currentAdIndex + 1) % _adList.length;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _adTimer?.cancel();
+    super.dispose();
   }
 
   Future<PaymentData> _fetchData() async {
@@ -61,7 +97,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     );
 
     const JsonEncoder encoder = JsonEncoder.withIndent('  ');
-    debugPrint('Raw API Response:\n${encoder.convert(responseData)}');
+    //debugPrint('Raw API Response:\n${encoder.convert(responseData)}');
 
     if (responseData != null &&
         responseData['message'] is Map &&
@@ -237,12 +273,12 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               _buildPaymentSummary(paymentData.summary),
-                              const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 20),
-                                child: AdCard(
-                                    teks:
-                                        'In the lessons we learn new words...'),
-                              ),
+                              if (_adList.isNotEmpty)
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 20),
+                                  child: AdCard(ad: _adList[_currentAdIndex]),
+                                ),
                               _buildPaymentSchedule(context),
                             ],
                           ),
