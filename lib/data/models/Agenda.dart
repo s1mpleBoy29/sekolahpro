@@ -26,12 +26,14 @@ class AgendaListResponse {
 }
 
 class AgendaDetail {
-  final DateTime date; // simpan sebagai DateTime (sama seperti model Keuangan)
+  final String? id; // Tambahkan field id
+  final DateTime date;
   final String from;
   final String to;
   final String detail;
 
   AgendaDetail({
+    this.id,
     required this.date,
     required this.from,
     required this.to,
@@ -42,14 +44,12 @@ class AgendaDetail {
     // Ambil note mentah
     final String rawNote = json['note'] ?? '';
 
-    // Bersihkan HTML (helper ada di bawah)
-    // final String cleanNote = _removeHtmlTags(rawNote).trim();
-
     // Parse tanggal — gunakan tryParse untuk aman
     final String rawDate = json['date'] ?? '';
     final DateTime parsedDate = DateTime.tryParse(rawDate) ?? DateTime.now();
 
     return AgendaDetail(
+      id: json['name'] ?? json['id'], // Ambil ID dari field 'name' atau 'id'
       date: parsedDate,
       from: json['staff_name'] ?? 'Tidak diketahui',
       to: json['party_name'] ?? 'Tidak diketahui',
@@ -59,7 +59,6 @@ class AgendaDetail {
 }
 
 // Helper untuk menghapus tag HTML dan beberapa entitas umum.
-// Pastikan helper ini berada di file yang sama jika pakai nama private (diawali underscore).
 String _removeHtmlTags(String htmlString) {
   if (htmlString.isEmpty) return '';
 

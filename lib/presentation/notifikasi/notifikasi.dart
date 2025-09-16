@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_app/data/api/notifikasi.dart';
 // import 'package:guardian_app/data/api/notifikasi.dart';
 import 'package:guardian_app/data/models/notifikasi.dart';
 import 'package:guardian_app/routes/app_routes.dart';
@@ -17,7 +18,7 @@ class _NotificationListScreenState extends State<NotificationListScreen> {
   @override
   void initState() {
     super.initState();
-    // futureNotifications = fetchNotifications();
+    futureNotifications = fetchNotifications();
   }
 
   @override
