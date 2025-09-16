@@ -1,5 +1,9 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
+import 'package:guardian_app/data/api/login.dart';
+import 'package:guardian_app/widgets/custom_elevated_button.dart';
+import 'package:guardian_app/widgets/custom_text_form_field.dart';
 
 class UbahPasswordScreen extends StatefulWidget {
   const UbahPasswordScreen({Key? key}) : super(key: key);
@@ -10,248 +14,368 @@ class UbahPasswordScreen extends StatefulWidget {
 
 class UbahPasswordPageScreen extends State<UbahPasswordScreen> {
   final _formKey = GlobalKey<FormState>();
-  final _passwordLamaController = TextEditingController();
-  final _passwordBaruController = TextEditingController();
-  final _ketikUlangPasswordController = TextEditingController();
+
+  String? passwordOld;
+  String? passwordNew;
+  String? passwordConfirm;
 
   bool _isLoading = false;
 
+  final ValueNotifier<bool> isChanged = ValueNotifier(false);
+
+  @override
+  void initState() {
+    super.initState();
+
+    passwordOldController.addListener(checkChanged);
+    passwordNewController.addListener(checkChanged);
+    passwordConfirmController.addListener(checkChanged);
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // FocusScope.of(context).unfocus();
+    });
+  }
+
   @override
   void dispose() {
-    _passwordLamaController.dispose();
-    _passwordBaruController.dispose();
-    _ketikUlangPasswordController.dispose();
+    constollerDispose();
+    isChanged.dispose();
     super.dispose();
   }
 
-  Future<void> _konfirmasiUbahPassword() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+  void checkChanged() {
+    String passwordOld = passwordOldController.text;
+    String passwordNew = passwordNewController.text;
+    String passwordConfirm = passwordConfirmController.text;
 
-      // Simulasi proses ubah password
-      await Future.delayed(const Duration(seconds: 2));
+    final hasChanged =
+        passwordOld != '' || passwordNew != '' || passwordConfirm != '';
 
-      setState(() {
-        _isLoading = false;
-      });
+    if (hasChanged != isChanged.value) {
+      isChanged.value = hasChanged;
+    }
+  }
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Password berhasil diubah',
-              style: CustomTextStyles.textSuccess,
-            ),
-            backgroundColor: appTheme.green600,
-          ),
+  void unfocusAll() {
+    passwordOldFocus.unfocus();
+    passwordNewFocus.unfocus();
+    passwordConfirmFocus.unfocus();
+  }
+
+  void constollerDispose() {
+    passwordOldController.dispose();
+    passwordNewController.dispose();
+    passwordConfirmController.dispose();
+  }
+
+  void clearAll() {
+    passwordOldController.clear();
+    passwordNewController.clear();
+    passwordConfirmController.clear();
+  }
+
+  void onChangePassword() async {
+    if (_formKey.currentState?.validate() ?? false) {
+      try {
+        final authService = AuthService();
+        final loginResponse = await authService.changePassword(
+          oldPassword: passwordOldController.text,
+          newPassword: passwordNewController.text,
         );
 
-        Navigator.pop(context);
+        if (kDebugMode) {
+          print("DEBUG: loginResponse = $loginResponse");
+        }
+
+        if (loginResponse.containsKey('message')) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(loginResponse['message']),
+              backgroundColor: appTheme.green600,
+            ),
+          );
+          clearAll();
+        }
+      } catch (e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error: $e'),
+            backgroundColor: appTheme.red,
+          ),
+        );
       }
     }
   }
 
-  String? _validatePassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Password tidak boleh kosong';
-    }
-    if (value.length < 6) {
-      return 'Password minimal 6 karakter';
-    }
-    
-    // Validasi kombinasi angka, huruf, dan karakter khusus
-    final hasUppercase = value.contains(RegExp(r'[A-Z]'));
-    final hasLowercase = value.contains(RegExp(r'[a-z]'));
-    final hasDigits = value.contains(RegExp(r'[0-9]'));
-    final hasSpecialCharacters = value.contains(RegExp(r'[!@#\$%^&*(),.?":{}|<>]'));
-    
-    if (!hasUppercase || !hasLowercase || !hasDigits || !hasSpecialCharacters) {
-      return 'Password harus mengandung huruf besar, kecil, angka, dan karakter khusus';
-    }
-    
-    return null;
-  }
-
-  String? _validateKonfirmasiPassword(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Konfirmasi password tidak boleh kosong';
-    }
-    if (value != _passwordBaruController.text) {
-      return 'Password tidak cocok';
-    }
-    return null;
-  }
-
-  Widget _buildPasswordField({
-    required TextEditingController controller,
-    required String hintText,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormField(
-      controller: controller,
-      validator: validator,
-      obscureText: true,
-      style: CustomTextStyles.titleMediumPrimaryContainer.copyWith(
-        color: Colors.black,
-      ),
-      decoration: InputDecoration(
-        hintText: hintText,
-        hintStyle: CustomTextStyles.titleMediumPrimaryContainer.copyWith(
-          color: appTheme.gray500,
-        ),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.h),
-          borderSide: BorderSide(
-            color: appTheme.blueGray100,
-            width: 1.h,
-          ),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.h),
-          borderSide: BorderSide(
-            color: appTheme.blueGray100,
-            width: 1.h,
-          ),
-        ),
-        focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.h),
-          borderSide: BorderSide(
-            color: theme.colorScheme.primary,
-            width: 1.h,
-          ),
-        ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.h),
-          borderSide: BorderSide(
-            color: theme.colorScheme.onError,
-            width: 1.h,
-          ),
-        ),
-        focusedErrorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8.h),
-          borderSide: BorderSide(
-            color: theme.colorScheme.onError,
-            width: 1.h,
-          ),
-        ),
-        contentPadding: EdgeInsets.symmetric(
-          horizontal: 16.h,
-          vertical: 16.v,
-        ),
-        errorStyle: CustomTextStyles.bodySmallOnError,
-      ),
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back_ios,
-            color: theme.colorScheme.onPrimaryContainer,
-            size: 15.h,
+    return GestureDetector(
+      onTap: () {
+        unfocusAll();
+      },
+      child: Scaffold(
+        backgroundColor: theme.colorScheme.surfaceContainer,
+        appBar: AppBar(
+          backgroundColor: theme.colorScheme.surface,
+          title: const Text(
+            'Ubah Password',
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 18,
+            ),
           ),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          'Ubah Password',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            color: theme.colorScheme.onPrimaryContainer,
-            fontSize: 18.fSize,
-            fontWeight: FontWeight.w600,
+          shape: Border(
+            bottom: BorderSide(
+              color: theme.colorScheme.outlineVariant,
+              width: 0.5,
+            ),
           ),
+          leading: IconButton(
+            icon: Icon(
+              Icons.arrow_back,
+              color: theme.colorScheme.onPrimaryContainer,
+            ),
+            onPressed: () {
+              Navigator.pushNamed(context, AppRoutes.akunScreen);
+            },
+          ),
+          centerTitle: false,
+          elevation: 0,
         ),
-        centerTitle: false,
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: EdgeInsets.all(20.h),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Kata sandi Anda harus memiliki panjang minimal 6 karakter dan harus menyertakan kombinasi angka, huruf, serta karakter khusus seperti (!@#\$%)',
-                  style: CustomTextStyles.bodySmallGray600_1.copyWith(
-                    fontSize: 14.fSize,
-                    height: 1.4,
-                  ),
-                ),
-                SizedBox(height: 30.v),
-
-                _buildPasswordField(
-                  controller: _passwordLamaController,
-                  hintText: 'Password lama',
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Password lama tidak boleh kosong';
-                    }
-                    return null;
-                  },
-                ),
-                SizedBox(height: 16.v),
-
-                _buildPasswordField(
-                  controller: _passwordBaruController,
-                  hintText: 'Password baru',
-                  validator: _validatePassword,
-                ),
-                SizedBox(height: 16.v),
-
-                _buildPasswordField(
-                  controller: _ketikUlangPasswordController,
-                  hintText: 'Ketik ulang password baru',
-                  validator: _validateKonfirmasiPassword,
-                ),
-                SizedBox(height: 30.v),
-
-                SizedBox(
-                  width: double.infinity,
-                  height: 50.v,
-                  child: ElevatedButton(
-                    onPressed: _isLoading ? null : _konfirmasiUbahPassword,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: theme.colorScheme.primary,
-                      disabledBackgroundColor: appTheme.gray300,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8.h),
-                      ),
-                      elevation: 0,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Kata sandi Anda harus memiliki panjang minimal 6 karakter dan harus menyertakan kombinasi angka, huruf, serta karakter khusus seperti (!@#\$%)',
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w400,
+                      color: theme.colorScheme.outline,
                     ),
-                    child: _isLoading
-                        ? SizedBox(
-                            width: 20.h,
-                            height: 20.h,
-                            child: CircularProgressIndicator(
-                              color: theme.colorScheme.onPrimary,
-                              strokeWidth: 2.h,
-                            ),
-                          )
-                        : Text(
-                            'Konfirmasi',
-                            style: CustomTextStyles.labelLargeLatoOnPrimary.copyWith(
-                              fontSize: 16.fSize,
-                            ),
-                          ),
                   ),
-                ),
-              ],
+                  SizedBox(height: 16.v),
+                  Text(
+                    'Password Lama',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _inputPasswordOld(context),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Password Baru',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _inputPasswordNew(context),
+                  const SizedBox(height: 16),
+                  Text(
+                    'Konfirmasi Password Baru',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: theme.colorScheme.outline,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  _inputPasswordConfirm(context),
+                  SizedBox(height: 24.v),
+                  ValueListenableBuilder<bool>(
+                    valueListenable: isChanged,
+                    builder: (context, changed, _) {
+                      return CustomElevatedButton(
+                        text: "UBAH PASSWORD",
+                        onPressed: changed
+                            ? () {
+                                onChangePassword();
+                              }
+                            : null, // disable kalau tidak ada perubahan
+                        height: 48,
+                        buttonStyle: changed
+                            ? CustomButtonStyles.primaryButton
+                            : CustomButtonStyles.disabledButton,
+                        buttonTextStyle:
+                            CustomTextStyles.labelLargeLatoOnPrimary.copyWith(
+                          fontSize: 12.fSize,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              ),
             ),
           ),
         ),
       ),
     );
   }
+}
+
+TextEditingController passwordOldController = TextEditingController();
+FocusNode passwordOldFocus = FocusNode();
+bool obscurePasswordOld = true;
+Widget _inputPasswordOld(BuildContext context) {
+  return CustomTextFormField(
+    autofocus: false,
+    controller: passwordOldController,
+    focusNode: passwordOldFocus,
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: 16,
+      vertical: 14,
+    ),
+    borderDecoration: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(
+        color: appTheme.gray300,
+        width: 0,
+      ),
+    ),
+    obscureText: obscurePasswordOld,
+    suffix: IconButton(
+      icon: Icon(
+        obscurePasswordOld ? Icons.visibility : Icons.visibility_off,
+      ),
+      onPressed: () {
+        obscurePasswordOld = !obscurePasswordOld;
+        (context as Element).markNeedsBuild();
+      },
+    ),
+    fillColor: theme.colorScheme.surface,
+    textStyle: TextStyle(
+      color: theme.colorScheme.onPrimaryContainer,
+    ),
+    hintText: "Masukin password lama",
+    // hintStyle: CustomTextStyles.bodySmallGray,
+    textInputAction: TextInputAction.done,
+    validator: (value) {
+      if (value == null || value.isEmpty) {
+        return 'password lama tidak boleh kosong';
+      }
+      return null;
+    },
+  );
+}
+
+TextEditingController passwordNewController = TextEditingController();
+FocusNode passwordNewFocus = FocusNode();
+bool obscurePasswordNew = true;
+Widget _inputPasswordNew(BuildContext context) {
+  String? validateNewPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Password baru wajib diisi';
+    }
+    if (value.length < 6) {
+      return 'Password minimal 6 karakter';
+    }
+    final regex = RegExp(r'^(?=.*[0-9!@#\$%^&*(),.?":{}|<>]).+$');
+    if (!regex.hasMatch(value)) {
+      return 'Password harus mengandung angka atau karakter khusus';
+    }
+    return null;
+  }
+
+  return CustomTextFormField(
+    autofocus: false,
+    controller: passwordNewController,
+    focusNode: passwordNewFocus,
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: 16,
+      vertical: 14,
+    ),
+    borderDecoration: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(
+        color: appTheme.gray300,
+        width: 0,
+      ),
+    ),
+    obscureText: obscurePasswordNew,
+    suffix: IconButton(
+      icon: Icon(
+        obscurePasswordNew ? Icons.visibility : Icons.visibility_off,
+      ),
+      onPressed: () {
+        obscurePasswordNew = !obscurePasswordNew;
+        (context as Element).markNeedsBuild();
+      },
+    ),
+    fillColor: theme.colorScheme.surface,
+    textStyle: TextStyle(
+      color: theme.colorScheme.onPrimaryContainer,
+    ),
+    hintText: "Masukin password baru",
+    // hintStyle: CustomTextStyles.bodySmallGray,
+    textInputAction: TextInputAction.done,
+    validator: validateNewPassword,
+    onTapOutside: (value) {
+      // inputPassword.unfocus();
+    },
+    onEditingComplete: () {},
+  );
+}
+
+TextEditingController passwordConfirmController = TextEditingController();
+FocusNode passwordConfirmFocus = FocusNode();
+bool obscurePasswordConfirm = true;
+Widget _inputPasswordConfirm(BuildContext context) {
+  String? validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Konfirmasi password wajib diisi';
+    }
+    if (value != passwordNewController.text) {
+      return 'Konfirmasi password tidak sama';
+    }
+    return null;
+  }
+
+  return CustomTextFormField(
+    autofocus: false,
+    controller: passwordConfirmController,
+    focusNode: passwordConfirmFocus,
+    contentPadding: const EdgeInsets.symmetric(
+      horizontal: 16,
+      vertical: 14,
+    ),
+    borderDecoration: OutlineInputBorder(
+      borderRadius: BorderRadius.circular(5),
+      borderSide: BorderSide(
+        color: appTheme.gray300,
+        width: 0,
+      ),
+    ),
+    obscureText: obscurePasswordConfirm,
+    suffix: IconButton(
+      icon: Icon(
+        obscurePasswordConfirm ? Icons.visibility : Icons.visibility_off,
+      ),
+      onPressed: () {
+        obscurePasswordConfirm = !obscurePasswordConfirm;
+        (context as Element).markNeedsBuild();
+      },
+    ),
+    fillColor: theme.colorScheme.surface,
+    textStyle: TextStyle(
+      color: theme.colorScheme.onPrimaryContainer,
+    ),
+    hintText: "Ketik ulang password baru",
+    // hintStyle: CustomTextStyles.bodySmallGray,
+    textInputAction: TextInputAction.done,
+    validator: validateConfirmPassword,
+    onTapOutside: (value) {
+      // inputPassword.unfocus();
+    },
+    onEditingComplete: () {},
+  );
 }

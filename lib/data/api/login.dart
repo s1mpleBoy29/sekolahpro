@@ -8,7 +8,7 @@ class AuthService {
   // Gunakan dotenv untuk membaca URL API
   final String baseUrl = "${dotenv.env['API_URL']}/api/method/login";
   final String resetPasswordUrl =
-      "${dotenv.env['API_URL']}/api/method/frappe.core.doctype.user.user.update_password";
+      "${dotenv.env['API_URL']}/api/method/gaPasswordChange";
 
   Future<Map<String, dynamic>?> login(String username, String password) async {
     try {
@@ -89,14 +89,13 @@ class AuthService {
     }
   }
 
-  Future<Map<String, dynamic>> resetPassword({
+  Future<Map<String, dynamic>> changePassword({
     required String oldPassword,
     required String newPassword,
   }) async {
     try {
       final Map<String, dynamic> data = {
-        "old_password": oldPassword,
-        "new_password": newPassword,
+        "new_pwd": newPassword,
       };
 
       final prefs = await SharedPreferences.getInstance();
@@ -110,6 +109,7 @@ class AuthService {
         "Content-Type": "application/json",
         "Accept": "application/json",
         "Cookie": "sid=$sid",
+        "sekolahproapp": "PA-1.0.0",
       };
 
       final response = await http.post(
@@ -117,6 +117,9 @@ class AuthService {
         headers: headers,
         body: jsonEncode(data),
       );
+
+      print('respon code: ${response.statusCode}');
+      print('respon body: ${response.body}');
 
       final responseData = jsonDecode(response.body);
 
