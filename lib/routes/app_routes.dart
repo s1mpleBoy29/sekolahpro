@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/presentation/agenda/agenda.dart';
+import 'package:guardian_app/presentation/akun/about.dart';
 import 'package:guardian_app/presentation/akun/akun.dart';
+import 'package:guardian_app/presentation/akun/contact.dart';
 import 'package:guardian_app/presentation/akun/edit_profile.dart';
+import 'package:guardian_app/presentation/akun/faq.dart';
 import 'package:guardian_app/presentation/keuangan/detailpembayaran.dart';
 import 'package:guardian_app/presentation/info_sekolah/info_sekolah.dart';
 import 'package:guardian_app/presentation/keuangan/keuangan.dart';
@@ -38,6 +41,10 @@ class AppRoutes {
   static const String dataAnakScreen = '/data_anak_screen';
   static const String infoSekolahScreen = '/info_sekolah_screen';
   static const String detailNotifikasiScreen = '/detail_notifikasi_screen';
+  static const String faqScreen = '/faq_screen';
+  static const String aboutScreen = '/about_screen';
+  static const String contactScreen = '/contact_screen';
+
   static Map<String, WidgetBuilder> routes = {
     loginScreen: (context) => const LoginScreen(),
     homeScreen: (context) => const HomeScreen(),
@@ -45,8 +52,8 @@ class AppRoutes {
     DetailAgendaScreen: (context) => const DetailAgenda(),
     NotifikasiScreen: (context) => const NotificationListScreen(),
     pilihAnakScreen: (context) => const PilihAnakScreen(
-      postSelectionAction: PostSelectionAction.navigateToHome,
-    ),
+          postSelectionAction: PostSelectionAction.navigateToHome,
+        ),
     bayarSatuScreen: (context) => const BayarSatuScreen(),
     bayarDuaScreen: (context) => const BayarDuaScreen(),
     bayarTigaScreen: (context) => const BayarTigaScreen(),
@@ -59,5 +66,8 @@ class AppRoutes {
     dataAnakScreen: (context) => const DataAnak(),
     infoSekolahScreen: (context) => const InfoSekolahScreen(),
     detailNotifikasiScreen: (context) => const NotificationDetailScreen(),
+    faqScreen: (context) => const FaqScreen(),
+    contactScreen: (context) => const ContactScreen(),
+    aboutScreen: (context) => const AboutScreen(),
   };
 }

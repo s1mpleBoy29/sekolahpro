@@ -183,6 +183,9 @@ class HomePageScreen extends State<HomeScreen> {
                     ? child.schoolName
                     : 'Sekolah Anak',
                 onDropdownTap: _navigateToPilihAnak,
+                onTapNotification: () {
+                  Navigator.pushNamed(context, AppRoutes.NotifikasiScreen);
+                },
               ),
               Expanded(
                 // ✅ supaya ListView bisa scroll

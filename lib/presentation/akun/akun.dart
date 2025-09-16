@@ -347,11 +347,11 @@ class AkunPageScreen extends State<AkunScreen> {
                 } else if (label == 'Sekolah Tertaut') {
                   Navigator.pushNamed(context, AppRoutes.infoSekolahScreen);
                 } else if (label == 'Tentang Kami') {
-                  // Navigator.pushNamed(context, AppRoutes.tentangKamiScreen);
+                  Navigator.pushNamed(context, AppRoutes.aboutScreen);
                 } else if (label == 'FAQ') {
-                  // Navigator.pushNamed(context, AppRoutes.faqScreen);
+                  Navigator.pushNamed(context, AppRoutes.faqScreen);
                 } else if (label == 'Kontak') {
-                  // Navigator.pushNamed(context, AppRoutes.kontakScreen);
+                  Navigator.pushNamed(context, AppRoutes.contactScreen);
                 }
                 // Handle navigation
               },
