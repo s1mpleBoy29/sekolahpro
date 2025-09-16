@@ -6,6 +6,7 @@ import 'package:guardian_app/data/api/detailpayment.dart';
 import 'package:guardian_app/data/models/detailpayment.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/transaction_history_card.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/bottom_bar.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PaymentDetailPage extends StatefulWidget {
   const PaymentDetailPage({Key? key}) : super(key: key);
@@ -21,6 +22,17 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
   void initState() {
     super.initState();
     _paymentDetailFuture = _fetchPaymentDetails();
+  }
+
+  Future<void> _launchURL(String urlString) async {
+    final Uri url = Uri.parse(urlString);
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Tidak dapat membuka tautan: $urlString')),
+        );
+      }
+    }
   }
 
   Future<PaymentDetail> _fetchPaymentDetails() async {
@@ -93,11 +105,9 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
       body: FutureBuilder<PaymentDetail>(
         future: _paymentDetailFuture,
         builder: (context, snapshot) {
-          // --- LOADING STATE ---
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          // --- ERROR STATE ---
           if (snapshot.hasError) {
             return Center(
               child: Padding(
@@ -126,7 +136,6 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
               ),
             );
           }
-          // --- SUCCESS STATE ---
           if (snapshot.hasData) {
             final paymentDetail = snapshot.data!;
             final currencyFormatter = NumberFormat.decimalPattern('id_ID');
@@ -141,7 +150,6 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Main details section
                     Container(
                       decoration: BoxDecoration(
                         color: Colors.white,
@@ -165,8 +173,6 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
                       ),
                     ),
                     const SizedBox(height: 8),
-
-                    // Payment history section
                     const Text(
                       'Riwayat Pembayaran',
                       style: TextStyle(
@@ -190,10 +196,18 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
                         itemCount: paymentDetail.history.length,
                         itemBuilder: (context, index) {
                           final item = paymentDetail.history[index];
-                          return _buildPaymentHistoryItem(
-                            item: item,
-                            currencyFormatter: currencyFormatter,
-                            theme: theme,
+                          return TransactionHistoryCard(
+                            date: item.date,
+                            amount:
+                                'Rp ${currencyFormatter.format(item.amount)}',
+                            description: item.description,
+                            buttonText: 'Unduh Bukti',
+                            buttonColor: theme.colorScheme.primary,
+                            onPressed: () {
+                              final url =
+                                  '${paymentDetail.incomingReceiptUrl}${item.name}';
+                              _launchURL(url);
+                            },
                           );
                         },
                         separatorBuilder: (context, index) =>
@@ -208,11 +222,22 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
           return const Center(child: Text('Tidak ada data ditemukan.'));
         },
       ),
-      bottomNavigationBar: BottomBar(
-        isNeeded: false,
-        totalAmount: 1,
-        onContinuePressed: () {
-          print('Unduh Faktur ditekan.');
+      bottomNavigationBar: FutureBuilder<PaymentDetail>(
+        future: _paymentDetailFuture,
+        builder: (context, snapshot) {
+          if (snapshot.hasData && snapshot.data!.outgoingInvoiceId.isNotEmpty) {
+            final paymentDetail = snapshot.data!;
+            return BottomBar(
+              isNeeded: false,
+              totalAmount: 1,
+              onContinuePressed: () {
+                final url =
+                    '${paymentDetail.outgoingInvoiceUrl}${paymentDetail.outgoingInvoiceId}';
+                _launchURL(url);
+              },
+            );
+          }
+          return const SizedBox.shrink();
         },
       ),
     );
@@ -271,23 +296,6 @@ class _PaymentDetailPageState extends State<PaymentDetailPage> {
           ),
         ],
       ),
-    );
-  }
-
-  Widget _buildPaymentHistoryItem({
-    required PaymentHistoryItem item,
-    required NumberFormat currencyFormatter,
-    required ThemeData theme,
-  }) {
-    return TransactionHistoryCard(
-      date: item.date,
-      amount: 'Rp ${currencyFormatter.format(item.amount)}',
-      description: item.description,
-      buttonText: 'Detail',
-      buttonColor: theme.colorScheme.outline,
-      onPressed: () {
-        print('Detail pressed for receipt ${item.description}');
-      },
     );
   }
 }
