@@ -39,6 +39,9 @@ class FilterPopup extends StatefulWidget {
 }
 
 class _FilterPopupState extends State<FilterPopup> {
+  // MODIFIED: Renamed controller for clarity
+  final TextEditingController _searchController = TextEditingController();
+
   String selectedTahunAjaran = '2025/2026';
   List<String> tahunAjaranList = ['2024/2025', '2025/2026', '2026/2027'];
   DateTime? _startDate;
@@ -48,28 +51,35 @@ class _FilterPopupState extends State<FilterPopup> {
   KeuanganFilterStatus _selectedKeuanganStatus = KeuanganFilterStatus.semua;
   AgendaFilterPengirim _selectedAgendaPengirim = AgendaFilterPengirim.semua;
 
-  String get _dateFilterText {
-    if (_startDate == null && _endDate == null) {
-      return 'Hari Ini';
-    }
-    final format = DateFormat('d MMM yyyy');
-    if (_startDate != null && _endDate == null) {
-      return format.format(_startDate!);
-    }
-    if (_startDate != null && _endDate != null) {
-      if (DateUtils.isSameDay(_startDate, _endDate)) {
-        return format.format(_startDate!);
-      }
-      return '${format.format(_startDate!)} - ${format.format(_endDate!)}';
-    }
-    return 'Pilih Tanggal';
+  @override
+  void dispose() {
+    _searchController.dispose(); // MODIFIED
+    super.dispose();
   }
+
+  // String get _dateFilterText {
+  //   if (_startDate == null && _endDate == null) {
+  //     return 'Hari Ini';
+  //   }
+  //   final format = DateFormat('d MMM yyyy');
+  //   if (_startDate != null && _endDate == null) {
+  //     return format.format(_startDate!);
+  //   }
+  //   if (_startDate != null && _endDate != null) {
+  //     if (DateUtils.isSameDay(_startDate, _endDate)) {
+  //       return format.format(_startDate!);
+  //     }
+  //     return '${format.format(_startDate!)} - ${format.format(_endDate!)}';
+  //   }
+  //   return 'Pilih Tanggal';
+  // }
 
   void _onApply() {
     final Map<String, dynamic> filters = {
+      'search_term': _searchController.text,
       'tahun_ajaran': selectedTahunAjaran,
-      'tanggal_mulai': _startDate,
-      'tanggal_akhir': _endDate,
+      // 'tanggal_mulai': _startDate,
+      // 'tanggal_akhir': _endDate,
     };
 
     if (widget.currentPage == FilterPage.keuangan) {
@@ -159,99 +169,70 @@ class _FilterPopupState extends State<FilterPopup> {
             ),
             const SizedBox(height: 24),
             _buildFilterSection(
-              title: 'Anak',
-              child: Container(
-                height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: const [
-                    Icon(Icons.people_alt_outlined, color: Color(0xFF7D5C86)),
-                    SizedBox(width: 8),
-                    Text(
-                      '3 Anak Dipilih',
-                      style: TextStyle(
-                        color: Color(0xFF7D5C86),
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            _buildFilterSection(
-              title: 'Tanggal',
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _showDateFilter = true;
-                  });
-                },
-                child: Container(
-                  height: 48,
-                  padding: const EdgeInsets.symmetric(horizontal: 12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
+              title: 'Cari Jadwal',
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Cari deskripsi pembayaran...',
+                  hintStyle: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF7D5C86),
+                      fontFamily: 'Roboto'),
+                  prefixIcon:
+                      const Icon(Icons.search, color: Color(0xFF7D5C86)),
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
                   ),
-                  child: Row(
-                    children: [
-                      const Icon(Icons.calendar_today_outlined,
-                          color: Color(0xFF7D5C86)),
-                      const SizedBox(width: 8),
-                      Text(
-                        _dateFilterText,
-                        style: const TextStyle(
-                          color: Color(0xFF7D5C86),
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ],
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide: BorderSide(color: Colors.grey.shade300),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    borderSide:
+                        const BorderSide(color: Color(0xFF7D5C86), width: 1.5),
                   ),
                 ),
               ),
             ),
+            // _buildFilterSection(
+            //   title: 'Tanggal',
+            //   child: GestureDetector(
+            //     onTap: () {
+            //       setState(() {
+            //         _showDateFilter = true;
+            //       });
+            //     },
+            //     child: Container(
+            //       height: 48,
+            //       padding: const EdgeInsets.symmetric(horizontal: 12),
+            //       decoration: BoxDecoration(
+            //         border: Border.all(color: Colors.grey.shade300),
+            //         borderRadius: BorderRadius.circular(8),
+            //       ),
+            //       child: Row(
+            //         children: [
+            //           const Icon(Icons.calendar_today_outlined,
+            //               color: Color(0xFF7D5C86)),
+            //           const SizedBox(width: 8),
+            //           Text(
+            //             _dateFilterText,
+            //             style: const TextStyle(
+            //               color: Color(0xFF7D5C86),
+            //               fontWeight: FontWeight.w500,
+            //             ),
+            //           ),
+            //         ],
+            //       ),
+            //     ),
+            //   ),
+            // ),
             if (widget.currentPage == FilterPage.keuangan)
               _buildKeuanganFilters(),
             if (widget.currentPage == FilterPage.agenda) _buildAgendaFilters(),
-            _buildFilterSection(
-              title: 'Tahun Ajaran',
-              child: Container(
-                height: 48,
-                padding: const EdgeInsets.symmetric(horizontal: 12),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey.shade300),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<String>(
-                    isExpanded: true,
-                    value: selectedTahunAjaran,
-                    icon: const Icon(Icons.keyboard_arrow_down,
-                        color: Color(0xFF7D5C86)),
-                    style: const TextStyle(
-                      fontSize: 14,
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w500,
-                    ),
-                    items: tahunAjaranList.map((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        selectedTahunAjaran = newValue!;
-                      });
-                    },
-                  ),
-                ),
-              ),
-            ),
           ],
         ),
         SizedBox(

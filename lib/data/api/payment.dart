@@ -4,12 +4,16 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-/// Mengambil daftar jadwal pembayaran (gaTuitionList).
+/// Mengambil daftar jadwal pembayaran (gaTuitionList) dengan dukungan pagination.
 /// Dibutuhkan [studentId] dan [academicYear].
+/// Parameter opsional [page] dan [limit] digunakan untuk pagination.
 /// Autentikasi admin menggunakan 'sid' dari SharedPreferences dan dikirim sebagai cookie.
 Future<Map<String, dynamic>?> getJadwalBayar({
   required String studentId,
   required String academicYear,
+  int? page,
+  int? limit,
+  String? search, // Add this optional parameter
 }) async {
   try {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -25,10 +29,22 @@ Future<Map<String, dynamic>?> getJadwalBayar({
 
     final String apiUrl = '${dotenv.env['API_URL']}/api/method/gaTuitionList';
 
+    // Membangun query parameter dasar
     final Map<String, String> queryParameters = {
       'student': studentId,
       'academic_year': academicYear,
     };
+
+    // Menambahkan parameter pagination hanya jika nilainya tidak null
+    if (page != null) {
+      queryParameters['page'] = page.toString();
+    }
+    if (limit != null) {
+      queryParameters['limit'] = limit.toString();
+    }
+    if (search != null && search.isNotEmpty) {
+      queryParameters['search'] = search;
+    }
 
     final Uri url = Uri.parse(apiUrl).replace(queryParameters: queryParameters);
 
@@ -42,7 +58,6 @@ Future<Map<String, dynamic>?> getJadwalBayar({
     );
 
     if (response.statusCode == 200) {
-      // print('Response body: ${response.body}');
       final Map<String, dynamic> data = jsonDecode(response.body);
       return data;
     } else {
