@@ -4,6 +4,7 @@ import 'package:guardian_app/core/app_export.dart'; // Pastikan ini mengimpor th
 class CustomSearchBar extends StatelessWidget {
   final String hintText;
   final TextEditingController? controller;
+  final FocusNode? focus;
   final ValueChanged<String>? onChanged;
   final ValueChanged<String>? onSubmitted;
   final VoidCallback? onSearchTap;
@@ -13,6 +14,7 @@ class CustomSearchBar extends StatelessWidget {
     super.key,
     this.hintText = 'Cari nama, kelas, dll',
     this.controller,
+    this.focus,
     this.onChanged,
     this.onSubmitted,
     this.onSearchTap,
@@ -24,11 +26,10 @@ class CustomSearchBar extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       decoration: BoxDecoration(
-        color: appTheme
-            .blueGray50, // <--- PERUBAHAN DI SINI: Menggunakan warna abu-abu
-        borderRadius: BorderRadius.circular(8.0), // Sudut membulat
+        color: theme.colorScheme.surface,
+        borderRadius: BorderRadius.circular(4.0), // Sudut membulat
         border: Border.all(
-          color: theme.colorScheme.outlineVariant, // Warna border tetap sama
+          color: appTheme.gray300, // Warna border tetap sama
           width: 1.0,
         ),
         boxShadow: [
@@ -45,12 +46,13 @@ class CustomSearchBar extends StatelessWidget {
           Expanded(
             child: TextField(
               controller: controller,
+              focusNode: focus,
               onChanged: onChanged,
               onSubmitted: onSubmitted,
               decoration: InputDecoration(
                 hintText: hintText,
                 hintStyle: TextStyle(
-                  color: theme.colorScheme.onSurfaceVariant,
+                  color: theme.colorScheme.outline,
                   fontSize: 16,
                 ),
                 border: InputBorder.none,
@@ -75,7 +77,7 @@ class CustomSearchBar extends StatelessWidget {
               padding: const EdgeInsets.only(left: 8.0),
               child: Icon(
                 Icons.search,
-                color: theme.colorScheme.onSurfaceVariant,
+                color: theme.colorScheme.outline,
                 size: 24,
               ),
             ),

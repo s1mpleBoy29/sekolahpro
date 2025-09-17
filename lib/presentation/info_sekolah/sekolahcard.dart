@@ -1,37 +1,43 @@
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
 
-class SekolahCard extends StatelessWidget {
-  final String namaSekolah;
-  final String telepon;
+class SchoolCard extends StatelessWidget {
+  final String schoolName;
+  final String phone;
   final String email;
-  final String alamat;
-  final VoidCallback? onKirimEmail;
-  final VoidCallback? onTelepon;
-  final VoidCallback? onLihatPeta;
+  final String address;
+  final String? city;
+  final String? province;
+  final String? map;
+  final VoidCallback? onSendEmail;
+  final VoidCallback? onPhone;
+  final VoidCallback? onMap;
 
-  const SekolahCard({
-    Key? key,
-    required this.namaSekolah,
-    required this.telepon,
+  const SchoolCard({
+    super.key,
+    required this.schoolName,
+    required this.phone,
     required this.email,
-    required this.alamat,
-    this.onKirimEmail,
-    this.onTelepon,
-    this.onLihatPeta,
-  }) : super(key: key);
+    required this.address,
+    this.city,
+    this.province,
+    this.map,
+    this.onSendEmail,
+    this.onPhone,
+    this.onMap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(bottom: 16), // Gunakan nilai numerik
+      margin: const EdgeInsets.only(bottom: 16), // Gunakan nilai numerik
       decoration: BoxDecoration(
-        color: Colors.white,
         borderRadius: BorderRadius.circular(8), // Gunakan nilai numerik
         border: Border.all(
-          color: appTheme.gray600,
+          color: appTheme.gray300,
           width: 1, // Gunakan nilai numerik
         ),
+        color: theme.colorScheme.surface,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,17 +45,18 @@ class SekolahCard extends StatelessWidget {
           // Nama Sekolah
           Container(
             width: double.infinity,
-            padding: EdgeInsets.fromLTRB(20, 20, 20, 16), // Gunakan nilai numerik
+            padding: const EdgeInsets.fromLTRB(
+                20, 20, 20, 16), // Gunakan nilai numerik
             child: Text(
-              namaSekolah,
-              style: CustomTextStyles.titleMediumPrimaryContainer.copyWith(
-                color: Colors.black,
-                fontWeight: FontWeight.w600,
-                fontSize: 18, // Gunakan nilai numerik
+              schoolName,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.onSurface,
               ),
             ),
           ),
-          
+
           // Garis pembatas setelah nama sekolah
           Divider(
             color: appTheme.gray300,
@@ -59,7 +66,8 @@ class SekolahCard extends StatelessWidget {
 
           // Telepon dan Email dengan pembatas vertikal
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16), // Tambahkan padding vertikal
+            padding: const EdgeInsets.symmetric(
+                horizontal: 20, vertical: 16), // Tambahkan padding vertikal
             child: IntrinsicHeight(
               child: Row(
                 children: [
@@ -71,32 +79,35 @@ class SekolahCard extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.phone,
-                          size: 20, // Ukuran ikon yang lebih kecil
-                          color: appTheme.gray600,
+                          size: 14, // Ukuran ikon yang lebih kecil
+                          color: appTheme.gray500,
                         ),
-                        SizedBox(width: 8), // Jarak yang lebih kecil
+                        const SizedBox(width: 8), // Jarak yang lebih kecil
                         Expanded(
                           child: Text(
-                            telepon,
-                            style: CustomTextStyles.bodySmallGray600_1.copyWith(
-                              fontSize: 14, // Gunakan nilai numerik
+                            phone != '' ? phone : '-',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: phone != ''
+                                  ? theme.colorScheme.onSurface
+                                  : appTheme.gray500,
                             ),
-                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
                     ),
                   ),
-                  
-                  // Garis pembatas vertikal
-                  if (email != '-') ...[
+
+                  if (email != '') ...[
                     Container(
                       width: 1, // Gunakan nilai numerik
                       height: double.infinity,
                       color: appTheme.gray300,
-                      margin: EdgeInsets.symmetric(horizontal: 16), // Gunakan nilai numerik
+                      margin: const EdgeInsets.symmetric(
+                          horizontal: 16), // Gunakan nilai numerik
                     ),
-                    
+
                     // Email
                     Expanded(
                       flex: 1,
@@ -105,17 +116,20 @@ class SekolahCard extends StatelessWidget {
                         children: [
                           Icon(
                             Icons.email,
-                            size: 20, // Ukuran ikon yang lebih kecil
-                            color: appTheme.gray600,
+                            size: 14, // Ukuran ikon yang lebih kecil
+                            color: appTheme.gray500,
                           ),
-                          SizedBox(width: 8), // Jarak yang lebih kecil
+                          const SizedBox(width: 8), // Jarak yang lebih kecil
                           Expanded(
                             child: Text(
                               email,
-                              style: CustomTextStyles.bodySmallGray600_1.copyWith(
-                                fontSize: 14, // Gunakan nilai numerik
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                                color: email != ''
+                                    ? theme.colorScheme.onSurface
+                                    : appTheme.gray500,
                               ),
-                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                         ],
@@ -129,7 +143,7 @@ class SekolahCard extends StatelessWidget {
 
           // Garis pembatas setelah telepon/email
           Divider(
-            color: appTheme.gray300,
+            color: appTheme.gray200,
             height: 1, // Gunakan nilai numerik
             thickness: 1, // Gunakan nilai numerik
           ),
@@ -137,31 +151,52 @@ class SekolahCard extends StatelessWidget {
           // Alamat
           Container(
             width: double.infinity,
-            padding: EdgeInsets.fromLTRB(20, 16, 20, 20), // Gunakan nilai numerik
-            child: Text(
-              alamat,
-              style: CustomTextStyles.bodySmallGray600_1.copyWith(
-                fontSize: 14, // Gunakan nilai numerik
-                height: 1.5,
-              ),
+            padding: const EdgeInsets.fromLTRB(
+                20, 16, 20, 20), // Gunakan nilai numerik
+            child: Row(
+              children: [
+                Text(
+                  address != '' ? address : '-',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w500,
+                    color: address != ''
+                        ? theme.colorScheme.onSurface
+                        : appTheme.gray500,
+                  ),
+                ),
+                if (city != null)
+                  Text(
+                    ', ${city!}',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onSurface),
+                  ),
+                if (province != null)
+                  Text(
+                    ', ${province!}',
+                    style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w500,
+                        color: theme.colorScheme.onSurface),
+                  ),
+              ],
             ),
           ),
-
-          // Garis pembatas sebelum action buttons
           Divider(
             color: appTheme.gray300,
             height: 1, // Gunakan nilai numerik
             thickness: 1, // Gunakan nilai numerik
           ),
 
-          // Action Buttons berdempetan
-          Container(
-            height: 48, // Gunakan nilai numerik
+          SizedBox(
+            height: 48,
             child: Row(
               children: [
                 Expanded(
                   child: InkWell(
-                    onTap: onKirimEmail,
+                    onTap: onSendEmail,
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border(
@@ -175,9 +210,11 @@ class SekolahCard extends StatelessWidget {
                         child: Text(
                           'Kirim Email',
                           style: TextStyle(
-                            color: theme.colorScheme.primary,
+                            color: email != ''
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.outline,
                             fontSize: 14, // Gunakan nilai numerik
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -186,7 +223,7 @@ class SekolahCard extends StatelessWidget {
                 ),
                 Expanded(
                   child: InkWell(
-                    onTap: onTelepon,
+                    onTap: onPhone,
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border(
@@ -200,9 +237,11 @@ class SekolahCard extends StatelessWidget {
                         child: Text(
                           'Telepon',
                           style: TextStyle(
-                            color: theme.colorScheme.primary,
+                            color: phone != ''
+                                ? theme.colorScheme.primary
+                                : theme.colorScheme.outline,
                             fontSize: 14, // Gunakan nilai numerik
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.bold,
                           ),
                         ),
                       ),
@@ -211,14 +250,16 @@ class SekolahCard extends StatelessWidget {
                 ),
                 Expanded(
                   child: InkWell(
-                    onTap: onLihatPeta,
+                    onTap: onMap,
                     child: Center(
                       child: Text(
                         'Lihat Peta',
                         style: TextStyle(
-                          color: theme.colorScheme.primary,
+                          color: map != ''
+                              ? theme.colorScheme.primary
+                              : theme.colorScheme.outline,
                           fontSize: 14, // Gunakan nilai numerik
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),

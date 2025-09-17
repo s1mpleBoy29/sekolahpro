@@ -200,6 +200,7 @@ class LoginPageScreen extends State<LoginScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    const SizedBox(height: 40),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -211,7 +212,7 @@ class LoginPageScreen extends State<LoginScreen> {
                       ],
                     ),
                     Text(
-                      'Sign in to your\nAccount',
+                      'Masuk ke Akun Anda',
                       style: TextStyle(
                         fontSize: 28,
                         fontWeight: FontWeight.bold,
@@ -219,7 +220,7 @@ class LoginPageScreen extends State<LoginScreen> {
                       ),
                     ),
                     Text(
-                      'Enter your email and password to log in',
+                      'Masukkan email dan kata sandi untuk login',
                       style: TextStyle(
                         fontSize: 14,
                         color: theme.colorScheme.outline,
@@ -239,7 +240,7 @@ class LoginPageScreen extends State<LoginScreen> {
                       child: GestureDetector(
                         onTap: () {},
                         child: Text(
-                          "Lupa Password?",
+                          "Lupa Kata Sandi?",
                           style: CustomTextStyles.labelMediumPrimary,
                         ),
                       ),
@@ -247,58 +248,58 @@ class LoginPageScreen extends State<LoginScreen> {
                     const SizedBox(height: 16),
                     // Log In Button
                     CustomElevatedButton(
-                      text: "Log In",
+                      text: "Masuk",
                       onPressed: () => _handleLogin(),
                       height: 48,
                     ),
                     const SizedBox(height: 24),
                     // Divider
-                    Row(
-                      children: [
-                        const Expanded(child: Divider()),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(
-                            "Or",
-                            style: TextStyle(
-                              color: theme.colorScheme.outline,
-                            ),
-                          ),
-                        ),
-                        const Expanded(child: Divider()),
-                      ],
-                    ),
+                    // Row(
+                    //   children: [
+                    //     const Expanded(child: Divider()),
+                    //     Padding(
+                    //       padding: const EdgeInsets.symmetric(horizontal: 8),
+                    //       child: Text(
+                    //         "Or",
+                    //         style: TextStyle(
+                    //           color: theme.colorScheme.outline,
+                    //         ),
+                    //       ),
+                    //     ),
+                    //     const Expanded(child: Divider()),
+                    //   ],
+                    // ),
                     const SizedBox(height: 24),
                     // Continue with Google
-                    CustomOutlinedButton(
-                      text: " Continue with Google",
-                      height: 48,
-                      buttonTextStyle: TextStyle(
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
-                      leftIcon: Image.asset(
-                        'assets/images/google_logo.svg.webp',
-                        height: 20,
-                      ),
-                      onPressed: () {
-                        // onTapBelumPunyaAkun(context);
-                      },
-                    ),
-                    const SizedBox(height: 12),
-                    CustomOutlinedButton(
-                      text: " Continue with Facebook",
-                      height: 48,
-                      buttonTextStyle: TextStyle(
-                        color: theme.colorScheme.onPrimaryContainer,
-                      ),
-                      leftIcon: Image.asset(
-                        'assets/images/facebook_logo.png',
-                        height: 20,
-                      ),
-                      onPressed: () {
-                        // onTapBelumPunyaAkun(context);
-                      },
-                    ),
+                    // CustomOutlinedButton(
+                    //   text: " Continue with Google",
+                    //   height: 48,
+                    //   buttonTextStyle: TextStyle(
+                    //     color: theme.colorScheme.onPrimaryContainer,
+                    //   ),
+                    //   leftIcon: Image.asset(
+                    //     'assets/images/google_logo.svg.webp',
+                    //     height: 20,
+                    //   ),
+                    //   onPressed: () {
+                    //     // onTapBelumPunyaAkun(context);
+                    //   },
+                    // ),
+                    // const SizedBox(height: 12),
+                    // CustomOutlinedButton(
+                    //   text: " Continue with Facebook",
+                    //   height: 48,
+                    //   buttonTextStyle: TextStyle(
+                    //     color: theme.colorScheme.onPrimaryContainer,
+                    //   ),
+                    //   leftIcon: Image.asset(
+                    //     'assets/images/facebook_logo.png',
+                    //     height: 20,
+                    //   ),
+                    //   onPressed: () {
+                    //     // onTapBelumPunyaAkun(context);
+                    //   },
+                    // ),
                   ],
                 ),
               ),
@@ -343,7 +344,7 @@ class LoginPageScreen extends State<LoginScreen> {
           ),
           controller: enterPhoneController,
           focusNode: inputPhone,
-          hintText: "Masukin email mu",
+          hintText: "Masukkan email Anda",
           validator: (value) {
             if (value == null || value.isEmpty) {
               return 'Email tidak boleh kosong';
@@ -399,11 +400,11 @@ class LoginPageScreen extends State<LoginScreen> {
             onPressed: _togglePasswordView,
           ),
           focusNode: inputPassword,
-          hintText: "Masukin password mu",
+          hintText: "Masukkan kata sandi Anda",
           textInputAction: TextInputAction.done,
           validator: (value) {
             if (value == null || value.isEmpty) {
-              return 'Password tidak boleh kosong';
+              return 'Kata sandi tidak boleh kosong';
             }
             return null;
           },
