@@ -18,6 +18,8 @@ import 'package:guardian_app/data/models/payment.dart';
 import 'package:guardian_app/data/api/ad.dart';
 import 'package:guardian_app/data/models/ad.dart';
 import 'dart:async';
+import 'package:guardian_app/core/providers/student_provider.dart';
+import 'package:provider/provider.dart';
 
 import 'package:provider/provider.dart';
 
@@ -29,7 +31,6 @@ class KeuanganScreen extends StatefulWidget {
 }
 
 class KeuanganPageScreen extends State<KeuanganScreen> {
-  // State variables for pagination and filtering
   bool _isInitialLoading = true;
   bool _isPageLoading = false;
   bool _hasMore = true;
@@ -37,7 +38,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   String? _error;
   Map<String, dynamic> _activeFilters = {};
 
-  // Data holding variables
   List<Payment> _allPayments = [];
   List<Payment> _filteredPayments = [];
   PaymentSummary? _summary;
@@ -46,6 +46,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   List<Ad> _adList = [];
   int _currentAdIndex = 0;
   Timer? _adTimer;
+  // ends Ads
 
   final List<String> _bulanIndonesia = [
     'Januari',
@@ -100,7 +101,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     if (_hasMore && !_isPageLoading) {
       setState(() {
         _currentPage++;
-        _activeFilters = {}; // Clear filters when changing page
+        _activeFilters = {};
       });
       _fetchAndSetPage(_currentPage);
     }
@@ -110,13 +111,12 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     if (_currentPage > 1 && !_isPageLoading) {
       setState(() {
         _currentPage--;
-        _activeFilters = {}; // Clear filters when changing page
+        _activeFilters = {};
       });
       _fetchAndSetPage(_currentPage);
     }
   }
 
-  // MODIFIED: This function no longer sends search terms to the server
   Future<void> _fetchAndSetPage(int page) async {
     setState(() {
       if (page == 1) _isInitialLoading = true;
@@ -145,7 +145,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
 
         setState(() {
           _allPayments = newPayments;
-          // Apply any existing client-side filters to the new data
           _applyClientSideFilters();
           _hasMore = newPayments.length == limit;
 
@@ -176,7 +175,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     await _fetchAndSetPage(1);
   }
 
-  // MODIFIED: This function now only applies filters on the client-side
   void _applyPaymentFilter(Map<String, dynamic> filters) {
     setState(() {
       _activeFilters = filters;
@@ -184,7 +182,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     });
   }
 
-  // MODIFIED: This function now handles BOTH search and status filtering
   void _applyClientSideFilters() {
     final statusFilter =
         _activeFilters['status_pembayaran'] as KeuanganFilterStatus? ??
@@ -359,9 +356,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                 if (paymentIndex < _filteredPayments.length) {
                   final payment = _filteredPayments[paymentIndex];
                   return GestureDetector(
-                    // Add this widget
-                    onTap: () => _navigateToPaymentDetail(
-                        context), // Add this line to handle the tap
+                    onTap: () => _navigateToPaymentDetail(context),
                     child: PaymentScheduleCard(
                       dueDate: _formatDateManual(payment.dueDate),
                       amount: _formatCurrency(payment.amount),
@@ -400,7 +395,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   }
 
   Widget _buildPaginationControls() {
-    // MODIFIED: Pagination is hidden if ANY filter is active.
     final statusFilter =
         _activeFilters['status_pembayaran'] as KeuanganFilterStatus? ??
             KeuanganFilterStatus.semua;
@@ -413,7 +407,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 16.0),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           IconButton(
             icon: const Icon(Icons.arrow_back_ios),
@@ -421,8 +415,11 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
             color: theme.colorScheme.primary,
           ),
           Text(
-            'Halaman $_currentPage',
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+            '$_currentPage',
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.primary),
           ),
           IconButton(
             icon: const Icon(Icons.arrow_forward_ios),
