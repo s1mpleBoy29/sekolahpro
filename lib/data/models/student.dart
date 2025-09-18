@@ -11,7 +11,7 @@ class Student {
   // final String city;
   // final String province;
   // final String status;
-  // final String organization;
+  final String organization;
   final String school;
   final String schoolName;
   final String grade; // kelas
@@ -30,7 +30,7 @@ class Student {
     // required this.city,
     // required this.province,
     // required this.status,
-    // required this.organization,
+    required this.organization,
     required this.school,
     required this.schoolName,
     required this.grade,
@@ -51,7 +51,7 @@ class Student {
       // city: json["city"] ?? "",
       // province: json["province"] ?? "",
       // status: json["status"] ?? "",
-      // organization: json["organization"] ?? "",
+      organization: json["organization"] ?? "",
       school: json["school"] ?? "",
       schoolName: json["school_name"] ?? "",
       grade: json["grade"] ?? "",
@@ -73,7 +73,7 @@ class Student {
       // "city": city,
       // "province": province,
       // "status": status,
-      // "organization": organization,
+      "organization": organization,
       "school": school,
       "school_name": schoolName,
       "grade": grade,

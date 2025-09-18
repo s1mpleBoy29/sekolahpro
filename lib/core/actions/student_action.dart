@@ -37,6 +37,12 @@ class StudentAction {
     }
   }
 
+  static List<Student> getStudentNoAcademicYear(List<Student> student) {
+    List<Student> filteredStudents =
+        student.where((s) => s.academicYear != '').toList();
+    return filteredStudents;
+  }
+
   void setStudentSelected(String student) {
     // selectedStudent = student;
     // notifyListeners();

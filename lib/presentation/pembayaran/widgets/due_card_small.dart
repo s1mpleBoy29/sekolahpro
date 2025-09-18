@@ -23,8 +23,9 @@ class DueCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.all(8.0),
-        margin: const EdgeInsets.only(top: 6),
+        margin: const EdgeInsets.only(top: 4, bottom: 4),
         decoration: BoxDecoration(
+          color: theme.colorScheme.surface,
           border: Border.all(
               color: isSelected
                   ? theme.colorScheme.primary

@@ -24,13 +24,11 @@ class AboutPageScreen extends State<AboutScreen> {
         NavigationDelegate(
           onProgress: (progress) {},
           onPageStarted: (url) {
-            debugPrint("Start loading: $url");
+            setState(() {
+              isLoading = true;
+            });
           },
           onPageFinished: (url) async {
-            setState(() {
-              isLoading = false;
-            });
-            // Inject JavaScript untuk menghilangkan header & footer
             await _controller.runJavaScript("""
               var header = document.querySelector('header');
               if (header) header.style.display = 'none';
@@ -38,6 +36,9 @@ class AboutPageScreen extends State<AboutScreen> {
               var footer = document.querySelector('footer');
               if (footer) footer.style.display = 'none';
             """);
+            setState(() {
+              isLoading = false;
+            });
           },
           onWebResourceError: (error) {
             debugPrint("Error: ${error.description}");
@@ -45,6 +46,10 @@ class AboutPageScreen extends State<AboutScreen> {
         ),
       )
       ..loadRequest(Uri.parse('https://manage.sekolahpro.id/about'));
+  }
+
+  Future<void> _onRefresh() async {
+    await _controller.reload();
   }
 
   @override
@@ -69,7 +74,16 @@ class AboutPageScreen extends State<AboutScreen> {
       ),
       body: Stack(
         children: [
-          WebViewWidget(controller: _controller),
+          RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: WebViewWidget(controller: _controller),
+              ),
+            ),
+          ),
           if (isLoading) const Center(child: CircularProgressIndicator()),
         ],
       ),

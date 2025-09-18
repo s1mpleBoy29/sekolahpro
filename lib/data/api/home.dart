@@ -29,7 +29,6 @@ Future<Map<String, dynamic>?> getHome(
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = jsonDecode(response.body);
-      print('response home: $data');
       return data;
     } else {
       if (kDebugMode) {

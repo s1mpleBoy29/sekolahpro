@@ -24,7 +24,9 @@ class ContactPageScreen extends State<ContactScreen> {
         NavigationDelegate(
           onProgress: (progress) {},
           onPageStarted: (url) {
-            debugPrint("Start loading: $url");
+            setState(() {
+              isLoading = true;
+            });
           },
           onPageFinished: (url) async {
             setState(() {
@@ -45,6 +47,10 @@ class ContactPageScreen extends State<ContactScreen> {
         ),
       )
       ..loadRequest(Uri.parse('https://manage.sekolahpro.id/contact'));
+  }
+
+  Future<void> _onRefresh() async {
+    await _controller.reload();
   }
 
   @override
@@ -69,7 +75,16 @@ class ContactPageScreen extends State<ContactScreen> {
       ),
       body: Stack(
         children: [
-          WebViewWidget(controller: _controller),
+          RefreshIndicator(
+            onRefresh: _onRefresh,
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height,
+                child: WebViewWidget(controller: _controller),
+              ),
+            ),
+          ),
           if (isLoading) const Center(child: CircularProgressIndicator()),
         ],
       ),

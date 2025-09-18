@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/paymentschedule_card.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/summarycard.dart';
 import 'package:guardian_app/presentation/keuangan/widgets/totalpayment.dart';
@@ -17,6 +18,8 @@ import 'package:guardian_app/data/models/payment.dart';
 import 'package:guardian_app/data/api/ad.dart';
 import 'package:guardian_app/data/models/ad.dart';
 import 'dart:async';
+
+import 'package:provider/provider.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
@@ -125,8 +128,10 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
     const academicYear = '2025 / 2026';
     const limit = 10;
 
+    final payment = PaymentService();
+
     try {
-      final responseData = await getJadwalBayar(
+      final responseData = await payment.getJadwalBayar(
         studentId: studentId,
         academicYear: academicYear,
         page: page,
@@ -243,14 +248,23 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
       body: SafeArea(
         child: Column(
           children: [
-            StickyTopBar(
-              backgroundColor: theme.colorScheme.onPrimary,
-              lineColor: appTheme.gray300,
-              textColor: appTheme.gray600,
-              titleFontSize: 22.0,
-              titleText: 'Candra Wijaya',
-              subtitleText: 'SDN 13 Malang | Kelas 5',
-              onTitleTap: _navigateToAnakScreen,
+            Consumer<StudentProvider>(
+              builder: (context, studentProvider, _) {
+                return StickyTopBar(
+                  backgroundColor: theme.colorScheme.onPrimary,
+                  lineColor: appTheme.gray300,
+                  textColor: appTheme.gray600,
+                  titleFontSize: 22.0,
+                  titleFontFamily: 'Urbanist',
+                  subtitleFontSize: 12.0,
+                  subtitleFontFamily: 'Lato',
+                  titleText:
+                      studentProvider.selectedStudent?.fullName ?? 'Pilih Anak',
+                  subtitleText:
+                      '${studentProvider.selectedStudent?.schoolName ?? '-'} | ${studentProvider.selectedStudent?.gradeName ?? '-'}',
+                  onTitleTap: _navigateToAnakScreen,
+                );
+              },
             ),
             SecondaryTopbar(
               backgroundColor: theme.colorScheme.secondary,

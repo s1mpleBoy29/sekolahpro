@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:guardian_app/core/app_export.dart';
+import 'package:guardian_app/core/providers/bill_provider.dart';
+import 'package:guardian_app/data/models/mode_of_payment.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/payment_steps.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/rekening_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/rincian_tagihan.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/bottom_bar.dart';
+import 'package:provider/provider.dart';
 
 class BayarDuaScreen extends StatefulWidget {
   const BayarDuaScreen({super.key});
@@ -15,27 +18,23 @@ class BayarDuaScreen extends StatefulWidget {
 }
 
 class _BayarDuaScreenState extends State<BayarDuaScreen> {
-  final List<Map<String, String>> _rekeningList = [
-    {
-      "bankName": "BANK BCA",
-      "accountName": "Yayasan ABC",
-      "accountNumber": "1234567890",
-    },
-    {
-      "bankName": "BANK MANDIRI",
-      "accountName": "Yayasan ABC",
-      "accountNumber": "0987654321",
-    },
-    {
-      "bankName": "BANK BNI",
-      "accountName": "Yayasan ABC",
-      "accountNumber": "1122334455",
-    },
-  ];
+  List<ModeOfPayment> modeOfPayments = [];
+  ModeOfPayment? selectedModeOfPayment;
 
   int _selectedIndex = 0;
 
-  //Memakai SnackBar, bisa juga Toast (Toast belum diinstall depndensi-nya)
+  @override
+  void initState() {
+    super.initState();
+    fetchModePayment();
+  }
+
+  @override
+  void dispose() {
+    // _searchController.dispose();
+    super.dispose();
+  }
+
   void _copyToClipboard(String text) {
     Clipboard.setData(ClipboardData(text: text)).then((_) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -48,6 +47,25 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
     });
   }
 
+  void fetchModePayment() {
+    final billProvider = Provider.of<BillProvider>(context, listen: false);
+    setState(() {
+      modeOfPayments = billProvider.modeOfPayments;
+      if (modeOfPayments.isNotEmpty) {
+        selectedModeOfPayment = modeOfPayments[0];
+      }
+    });
+  }
+
+  void selectModeOfPayment(ModeOfPayment modePayment) {
+    final billProvider = Provider.of<BillProvider>(context, listen: false);
+
+    setState(() {
+      selectedModeOfPayment = modePayment;
+      billProvider.setSelectedModeOfPayment(modePayment);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     // Retrieve the arguments passed from the previous screen.
@@ -55,7 +73,7 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
         as List<Map<String, dynamic>>;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surfaceContainer,
       appBar: AppBar(
         title: const Text("Pembayaran"),
         shape: Border(
@@ -91,13 +109,13 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
               ListView.builder(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                itemCount: _rekeningList.length,
+                itemCount: modeOfPayments.length,
                 itemBuilder: (context, index) {
-                  final rekening = _rekeningList[index];
+                  final modeOfPayment = modeOfPayments[index];
                   return RekeningCard(
-                    bankName: rekening['bankName']!,
-                    accountName: rekening['accountName']!,
-                    accountNumber: rekening['accountNumber']!,
+                    bankName: modeOfPayment.method,
+                    accountName: modeOfPayment.transferName,
+                    accountNumber: modeOfPayment.transferAccount,
                     isSelected: _selectedIndex == index,
                     onTap: () {
                       setState(() {
@@ -105,7 +123,7 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
                       });
                     },
                     onCopy: () {
-                      _copyToClipboard(rekening['accountNumber']!);
+                      _copyToClipboard(modeOfPayment.transferAccount);
                     },
                   );
                 },

@@ -34,6 +34,7 @@ class RekeningCard extends StatelessWidget {
                   ? theme.colorScheme.primary
                   : theme.colorScheme.outlineVariant),
           borderRadius: BorderRadius.circular(4),
+          color: theme.colorScheme.surface,
         ),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -50,6 +51,7 @@ class RekeningCard extends StatelessWidget {
                       : theme.colorScheme.onSurface.withOpacity(0.6),
                   width: 2,
                 ),
+                color: theme.colorScheme.surface,
               ),
               child: isSelected
                   ? Center(

@@ -249,42 +249,47 @@ class InfoSekolahPageScreen extends State<InfoSekolahScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(
                   horizontal: 20.0), // Padding horizontal untuk daftar
-              child: _filteredSchool.isEmpty
-                  ? Center(
-                      child: Text(
-                        'Tidak ada anak ditemukan.',
-                        style: TextStyle(
-                          color: theme.colorScheme.outline,
-                          fontSize: 16,
-                        ),
-                      ),
-                    )
-                  : ListView.builder(
-                      itemCount: _filteredSchool.length,
-                      itemBuilder: (context, index) {
-                        final childData = _filteredSchool[index];
-
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 4.0),
-                          child: SchoolCard(
-                            schoolName: childData.schoolName,
-                            phone: childData.phone,
-                            email: childData.email,
-                            address: childData.address,
-                            city: childData.city,
-                            onSendEmail: () => sendEmail(
-                              childData.email,
-                            ),
-                            onPhone: () => openPhone(
-                              childData.phone,
-                            ),
-                            onMap: () => openMap(
-                              childData.map,
-                            ),
+              child: RefreshIndicator(
+                onRefresh: () async {
+                  await loadSchool(); // panggil fungsi reload data sekolah
+                },
+                child: _filteredSchool.isEmpty
+                    ? Center(
+                        child: Text(
+                          'Tidak ada anak ditemukan.',
+                          style: TextStyle(
+                            color: theme.colorScheme.outline,
+                            fontSize: 16,
                           ),
-                        );
-                      },
-                    ),
+                        ),
+                      )
+                    : ListView.builder(
+                        itemCount: _filteredSchool.length,
+                        itemBuilder: (context, index) {
+                          final childData = _filteredSchool[index];
+
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: SchoolCard(
+                              schoolName: childData.schoolName,
+                              phone: childData.phone,
+                              email: childData.email,
+                              address: childData.address,
+                              city: childData.city,
+                              onSendEmail: () => sendEmail(
+                                childData.email,
+                              ),
+                              onPhone: () => openPhone(
+                                childData.phone,
+                              ),
+                              onMap: () => openMap(
+                                childData.map,
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+              ),
             ),
           ),
           // ..._filteredSchool.map((school) {

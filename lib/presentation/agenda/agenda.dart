@@ -248,8 +248,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final studentProvider =
-        Provider.of<StudentProvider>(context, listen: false);
+    // Provider.of<StudentProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       bottomNavigationBar: BottomNavBar(
@@ -323,80 +322,80 @@ class AgendaPageScreen extends State<AgendaScreen> {
   }
 
   Widget _buildAgendaList() {
-  if (_isLoading) {
-    return const Center(child: CircularProgressIndicator());
-  }
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-  if (_errorMessage != null) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              _errorMessage!,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: theme.colorScheme.error, fontSize: 16),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: onRefresh,
-              child: const Text('Coba Lagi',
-                  style: TextStyle(color: Colors.white, fontSize: 16)),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: theme.colorScheme.primary,
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    if (_errorMessage != null) {
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                _errorMessage!,
+                textAlign: TextAlign.center,
+                style: TextStyle(color: theme.colorScheme.error, fontSize: 16),
               ),
-            )
-          ],
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: onRefresh,
+                child: const Text('Coba Lagi',
+                    style: TextStyle(color: Colors.white, fontSize: 16)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+              )
+            ],
+          ),
         ),
-      ),
+      );
+    }
+
+    if (_filteredAgendaList.isEmpty) {
+      return const Center(child: Text('Tidak ada agenda yang ditemukan.'));
+    }
+
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            controller: _scrollController,
+            itemCount: _currentPageAgenda.length + 1, // +1 untuk AdCard
+            padding: EdgeInsets.zero,
+            itemBuilder: (context, index) {
+              if (index == 0) return _buildAdCard();
+
+              final item = _currentPageAgenda[index - 1];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
+                child: AgendaCard(
+                  tanggal: DateFormat('d MMMM yyyy', 'id_ID').format(item.date),
+                  dari: item.from,
+                  untuk: item.to,
+                  detail: item.detail,
+                  agendaId: item.id, // Pass agenda ID
+                  onTap: () {
+                    // Navigasi dengan parameter
+                    Navigator.pushNamed(
+                      context,
+                      AppRoutes.DetailAgendaScreen,
+                      arguments: {
+                        'studentId': _currentStudentId,
+                        'agendaId': item.id,
+                      },
+                    );
+                  },
+                ),
+              );
+            },
+          ),
+        ),
+        _buildPaginationControls(),
+      ],
     );
   }
-
-  if (_filteredAgendaList.isEmpty) {
-    return const Center(child: Text('Tidak ada agenda yang ditemukan.'));
-  }
-
-  return Column(
-    children: [
-      Expanded(
-        child: ListView.builder(
-          controller: _scrollController,
-          itemCount: _currentPageAgenda.length + 1, // +1 untuk AdCard
-          padding: EdgeInsets.zero,
-          itemBuilder: (context, index) {
-            if (index == 0) return _buildAdCard();
-
-            final item = _currentPageAgenda[index - 1];
-            return Padding(
-              padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-              child: AgendaCard(
-                tanggal: DateFormat('d MMMM yyyy', 'id_ID').format(item.date),
-                dari: item.from,
-                untuk: item.to,
-                detail: item.detail,
-                agendaId: item.id, // Pass agenda ID
-                onTap: () {
-                  // Navigasi dengan parameter
-                  Navigator.pushNamed(
-                    context,
-                    AppRoutes.DetailAgendaScreen,
-                    arguments: {
-                      'studentId': _currentStudentId,
-                      'agendaId': item.id,
-                    },
-                  );
-                },
-              ),
-            );
-          },
-        ),
-      ),
-      _buildPaginationControls(),
-    ],
-  );
-}
 }

@@ -7,11 +7,13 @@ class BottomBar extends StatelessWidget {
   final int totalAmount;
   final VoidCallback onContinuePressed;
   final bool isNeeded;
+  final String? title;
 
   const BottomBar({
     required this.totalAmount,
     required this.onContinuePressed,
     required this.isNeeded,
+    this.title,
     super.key,
   });
 
@@ -43,7 +45,7 @@ class BottomBar extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "Total Tagihan",
+                  title ?? "Total Tagihan",
                   style: TextStyle(
                     fontSize: 16,
                     color: theme.colorScheme.onSurface,

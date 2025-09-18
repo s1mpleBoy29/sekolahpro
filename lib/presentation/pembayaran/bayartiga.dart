@@ -1,10 +1,18 @@
+import 'dart:io';
+
+import 'package:file_picker/file_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:guardian_app/core/app_export.dart';
+import 'package:guardian_app/core/providers/bill_provider.dart';
+import 'package:guardian_app/core/providers/student_provider.dart';
+import 'package:guardian_app/data/api/payment.dart';
+import 'package:guardian_app/data/models/student.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/payment_steps.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/bottom_bar.dart';
-import 'package:guardian_app/presentation/pembayaran/widgets/upload_file.dart';
-import 'package:guardian_app/presentation/pembayaran/widgets/deskripsi_opsional.dart';
+import 'package:guardian_app/widgets/custom_text_form_field.dart';
+import 'package:provider/provider.dart';
 
 class BayarTigaScreen extends StatefulWidget {
   const BayarTigaScreen({super.key});
@@ -15,6 +23,12 @@ class BayarTigaScreen extends StatefulWidget {
 
 class _BayarTigaScreenState extends State<BayarTigaScreen> {
   late TextEditingController _descriptionController;
+  // File? _selectedFile;
+  String? _fileName;
+
+  Student? selectedChild;
+
+  PlatformFile? _selectedFile;
 
   @override
   void initState() {
@@ -28,23 +42,153 @@ class _BayarTigaScreenState extends State<BayarTigaScreen> {
     super.dispose();
   }
 
-  // Bisa ditambahkan depedensi seperti file_picker
-  void _pickFile() {
-    print("Upload file, buka file_picker");
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: const Text("Membuka..."),
-        backgroundColor: theme.colorScheme.primary,
-        duration: const Duration(seconds: 1),
-      ),
+  void _pickFile() async {
+    final result = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
     );
+
+    if (result != null && result.files.isNotEmpty) {
+      setState(() {
+        _selectedFile = result.files.first;
+      });
+    }
+  }
+
+  void makePayment() async {
+    try {
+      final studentProvider =
+          Provider.of<StudentProvider>(context, listen: false);
+      final billProvider = Provider.of<BillProvider>(context, listen: false);
+
+      List<dynamic> bill =
+          billProvider.selectedBills.map((e) => e.toJson()).toList();
+
+      selectedChild = studentProvider.selectedStudent;
+
+      final payment = PaymentService();
+
+      // print('File Name: ${_selectedFile?.name}');
+      final makePayment = await payment.makePayment(
+        student: selectedChild!.name,
+        tuitionPlans: bill,
+        methodOfPayment: billProvider.selectedModeOfPayment!.name,
+        filePath: _selectedFile?.path,
+      );
+
+      if (kDebugMode) {
+        print("DEBUG: loginResponse = $makePayment");
+      }
+    } catch (e) {
+      print('Error during payment: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: appTheme.red,
+        ),
+      );
+    }
+  }
+
+  void onNextStage() async {
+    makePayment();
+    // Navigator.pushNamed(context, AppRoutes.agendaScreen);
+  }
+
+  bool _isImage(String path) {
+    final ext = path.toLowerCase();
+    return ext.endsWith(".png") ||
+        ext.endsWith(".jpg") ||
+        ext.endsWith(".jpeg") ||
+        ext.endsWith(".gif") ||
+        ext.endsWith(".webp");
+  }
+
+  Widget buildFilePreview() {
+    if (_selectedFile == null) {
+      return GestureDetector(
+        onTap: _pickFile,
+        child: Container(
+          height: 120,
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: theme.colorScheme.outlineVariant,
+            ),
+            borderRadius: BorderRadius.circular(4),
+            color: theme.colorScheme.surface,
+          ),
+          child: Center(
+            child: Text(
+              "Pilih Bukti Pembayaran",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: theme.colorScheme.outline,
+              ),
+            ),
+          ),
+        ),
+      );
+    }
+
+    if (_selectedFile!.extension == 'jpg' ||
+        _selectedFile!.extension == 'jpeg' ||
+        _selectedFile!.extension == 'png') {
+      return GestureDetector(
+        onTap: _pickFile,
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(4),
+          child: Image.file(
+            File(_selectedFile!.path!),
+            height: 150,
+            width: double.infinity,
+            fit: BoxFit.cover,
+          ),
+        ),
+      );
+    }
+
+    if (_selectedFile!.extension == 'pdf') {
+      return GestureDetector(
+        onTap: _pickFile,
+        child: Container(
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            border: Border.all(
+              color: theme.colorScheme.outlineVariant,
+            ),
+            borderRadius: BorderRadius.circular(4),
+            color: theme.colorScheme.surface,
+          ),
+          child: Row(
+            children: [
+              const Icon(Icons.picture_as_pdf, size: 32, color: Colors.red),
+              const SizedBox(width: 8),
+              Expanded(
+                child: Text(
+                  _selectedFile!.name,
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                    color: theme.colorScheme.onPrimaryContainer,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              const Icon(Icons.edit, color: Colors.blue),
+            ],
+          ),
+        ),
+      );
+    }
+
+    return const SizedBox.shrink();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: theme.colorScheme.surfaceContainer,
       appBar: AppBar(
         title: const Text("Pembayaran"),
         shape: Border(
@@ -77,26 +221,74 @@ class _BayarTigaScreenState extends State<BayarTigaScreen> {
                       color: theme.colorScheme.onPrimaryContainer,
                     )),
               ),
-              UploadFileCard(
-                onTap: _pickFile,
-              ),
+              // UploadFileCard(
+              //   onTap: _pickFile,
+              // ),
+              // const SizedBox(height: 18),
+              buildFilePreview(),
               const SizedBox(height: 18),
-              DeskripsiOpsional(
-                controller: _descriptionController,
+
+              Padding(
+                padding: const EdgeInsets.only(bottom: 8.0),
+                child: Row(
+                  children: [
+                    Text(
+                      "Keterangan Tambahan",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.onPrimaryContainer,
+                      ),
+                    ),
+                    Text(
+                      " (Opsional)",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: theme.colorScheme.outline,
+                      ),
+                    ),
+                  ],
+                ),
               ),
+              _inputDescription(context),
             ],
           ),
         ),
       ),
       bottomNavigationBar: BottomBar(
-          isNeeded: false,
-          totalAmount:
-              1, // TotalAmount tidak digunakan di sini, nilai 1 hanya example
-          onContinuePressed: () {
-            print('Lanjutkan ditekan, lanjut ke Keuangan');
-            Navigator.pushNamed(context,
-                AppRoutes.agendaScreen); //Ganti dengan rute yang sesuai
-          }),
+        isNeeded: false,
+        totalAmount:
+            1, // TotalAmount tidak digunakan di sini, nilai 1 hanya example
+        onContinuePressed: onNextStage,
+      ),
+    );
+  }
+
+  TextEditingController descriptionController = TextEditingController();
+  FocusNode descriptionFocus = FocusNode();
+  Widget _inputDescription(BuildContext context) {
+    return CustomTextFormField(
+      autofocus: false,
+      focusNode: descriptionFocus,
+      maxLines: 4,
+      contentPadding: const EdgeInsets.symmetric(
+        horizontal: 16,
+        vertical: 14,
+      ),
+      borderDecoration: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(5),
+        borderSide: BorderSide(
+          color: appTheme.gray300,
+          width: 0,
+        ),
+      ),
+      fillColor: theme.colorScheme.surface,
+      textStyle: TextStyle(
+        color: theme.colorScheme.onPrimaryContainer,
+      ),
+      controller: descriptionController,
+      hintText: "Keterangan",
     );
   }
 }

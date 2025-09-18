@@ -198,30 +198,35 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                         horizontal: 20.0), // Padding horizontal untuk daftar
-                    child: _filteredChildren.isEmpty
-                        ? const Center(
-                            child: Text('Tidak ada anak ditemukan.'),
-                          )
-                        : ListView.builder(
-                            itemCount: _filteredChildren.length,
-                            itemBuilder: (context, index) {
-                              final childData = _filteredChildren[index];
+                    child: RefreshIndicator(
+                      onRefresh: () async {
+                        await loadStudent(); // panggil fungsi reload data sekolah
+                      },
+                      child: _filteredChildren.isEmpty
+                          ? const Center(
+                              child: Text('Tidak ada anak ditemukan.'),
+                            )
+                          : ListView.builder(
+                              itemCount: _filteredChildren.length,
+                              itemBuilder: (context, index) {
+                                final childData = _filteredChildren[index];
 
-                              return Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
-                                child: StudentCard(
-                                  studentName: childData.fullName,
-                                  schoolName: childData.schoolName,
-                                  className: childData.gradeName,
-                                  avatarImagePath: null,
-                                  onSelectPressed: () {
-                                    _onSelectChild(childData);
-                                  },
-                                ),
-                              );
-                            },
-                          ),
+                                return Padding(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 4.0),
+                                  child: StudentCard(
+                                    studentName: childData.fullName,
+                                    schoolName: childData.schoolName,
+                                    className: childData.gradeName,
+                                    avatarImagePath: null,
+                                    onSelectPressed: () {
+                                      _onSelectChild(childData);
+                                    },
+                                  ),
+                                );
+                              },
+                            ),
+                    ),
                   ),
                 ),
                 const SizedBox(height: adCardEstimatedHeight),

@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:guardian_app/core/providers/bill_provider.dart';
 import 'package:guardian_app/core/providers/config_provider.dart';
 import 'package:guardian_app/core/providers/home_provider.dart';
 import 'package:guardian_app/core/providers/school_provider.dart';
@@ -75,6 +76,7 @@ void main() async {
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => ConfigProvider()),
+        ChangeNotifierProvider(create: (_) => BillProvider()),
         ChangeNotifierProvider(create: (_) => StudentProvider()),
         ChangeNotifierProvider(create: (_) => SchoolProvider()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
