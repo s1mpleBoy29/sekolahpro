@@ -4,9 +4,9 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
-String apiURLALL = '${dotenv.env['API_URL']}/api/method/gaStudentList';
+String apiURLALL = '${dotenv.env['API_URL']}/api/method/gaSchoolList';
 
-Future<Map<String, dynamic>?> getAllStudents() async {
+Future<Map<String, dynamic>?> getAllSchool() async {
   try {
     // Ambil SID dari Hive
     SharedPreferences prefs = await SharedPreferences.getInstance();

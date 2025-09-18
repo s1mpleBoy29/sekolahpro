@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:guardian_app/core/providers/config_provider.dart';
 import 'package:guardian_app/core/providers/home_provider.dart';
+import 'package:guardian_app/core/providers/school_provider.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -75,6 +76,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (_) => ConfigProvider()),
         ChangeNotifierProvider(create: (_) => StudentProvider()),
+        ChangeNotifierProvider(create: (_) => SchoolProvider()),
         ChangeNotifierProvider(create: (_) => HomeProvider()),
         ChangeNotifierProvider(create: (_) => authProvider),
         ChangeNotifierProvider(create: (_) => AppState()),
