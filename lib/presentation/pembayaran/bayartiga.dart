@@ -11,6 +11,7 @@ import 'package:guardian_app/data/models/student.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/payment_steps.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/instruction_card.dart';
 import 'package:guardian_app/presentation/pembayaran/widgets/bottom_bar.dart';
+import 'package:guardian_app/widgets/custom_dialog.dart';
 import 'package:guardian_app/widgets/custom_text_form_field.dart';
 import 'package:provider/provider.dart';
 
@@ -55,20 +56,35 @@ class _BayarTigaScreenState extends State<BayarTigaScreen> {
     }
   }
 
-  void makePayment() async {
+  makePayment() async {
     try {
       final studentProvider =
           Provider.of<StudentProvider>(context, listen: false);
       final billProvider = Provider.of<BillProvider>(context, listen: false);
 
-      List<dynamic> bill =
-          billProvider.selectedBills.map((e) => e.toJson()).toList();
+      List<dynamic> bill = billProvider.selectedBills.map((e) {
+        return {
+          "name": e.plan,
+          "remark": e.remark,
+          "amount": e.amount,
+        };
+      }).toList();
 
       selectedChild = studentProvider.selectedStudent;
-
       final payment = PaymentService();
 
-      // print('File Name: ${_selectedFile?.name}');
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => CustomDialog(
+          title: "Memproses",
+          message: "Mohon tunggu, pembayaran sedang diproses...",
+          icon: Icons.hourglass_bottom,
+          iconColor: theme.colorScheme.primary,
+          isLoading: true,
+        ),
+      );
+
       final makePayment = await payment.makePayment(
         student: selectedChild!.name,
         tuitionPlans: bill,
@@ -79,29 +95,102 @@ class _BayarTigaScreenState extends State<BayarTigaScreen> {
       if (kDebugMode) {
         print("DEBUG: loginResponse = $makePayment");
       }
-    } catch (e) {
-      print('Error during payment: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('Error: $e'),
-          backgroundColor: appTheme.red,
+
+      if (makePayment.isEmpty || makePayment['message'] == null) {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (context) => CustomDialog(
+            title: "Pembayaran Gagal",
+            message:
+                "Silahkan coba lagi. ${makePayment['exception'] ?? 'Unknown error'}",
+            icon: Icons.check_circle_rounded,
+            iconColor: theme.colorScheme.error,
+            actions: [
+              DialogAction(
+                label: "OK",
+                onPressed: () => Navigator.pop(context),
+                backgroundColor: theme.colorScheme.primary,
+                textColor: theme.colorScheme.surface,
+              ),
+            ],
+          ),
+        );
+        // Gagal
+        // ScaffoldMessenger.of(context).showSnackBar(
+        //   SnackBar(
+        //     content: Text(
+        //       'Payment failed: ${makePayment['exception'] ?? 'Unknown error'}',
+        //     ),
+        //     backgroundColor: appTheme.red,
+        //   ),
+        // );
+        return;
+      }
+
+      Navigator.pop(context);
+      showDialog(
+        context: context,
+        builder: (context) => CustomDialog(
+          title: "Pembayaran Berhasil",
+          message: "Terima kasih, pembayaran Anda sudah kami terima.",
+          icon: Icons.check_circle_rounded,
+          iconColor: appTheme.green600,
+          actions: [
+            DialogAction(
+              label: "OK",
+              onPressed: () => onSuccess(),
+              backgroundColor: theme.colorScheme.primary,
+              textColor: theme.colorScheme.surface,
+            ),
+          ],
         ),
       );
+
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text(
+      //       'Payment success!\nNo: $receiptNo\nMethod: $method\nAmount: Rp $amount',
+      //     ),
+      //     backgroundColor: appTheme.green600,
+      //   ),
+      // );
+    } catch (e) {
+      Navigator.pop(context);
+      showDialog(
+        context: context,
+        builder: (context) => CustomDialog(
+          title: "Pembayaran Gagal",
+          message: "Error occurred: $e",
+          icon: Icons.check_circle_rounded,
+          iconColor: appTheme.green600,
+          actions: [
+            DialogAction(
+              label: "OK",
+              onPressed: () => Navigator.pop(context),
+              backgroundColor: theme.colorScheme.primary,
+              textColor: theme.colorScheme.surface,
+            ),
+          ],
+        ),
+      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+      //   SnackBar(
+      //     content: Text('Error: $e'),
+      //     backgroundColor: appTheme.red,
+      //   ),
+      // );
     }
   }
 
   void onNextStage() async {
-    makePayment();
-    // Navigator.pushNamed(context, AppRoutes.agendaScreen);
+    await makePayment();
   }
 
-  bool _isImage(String path) {
-    final ext = path.toLowerCase();
-    return ext.endsWith(".png") ||
-        ext.endsWith(".jpg") ||
-        ext.endsWith(".jpeg") ||
-        ext.endsWith(".gif") ||
-        ext.endsWith(".webp");
+  void onSuccess() {
+    Navigator.pop(context);
+    Navigator.of(context, rootNavigator: true)
+        .pushReplacementNamed(AppRoutes.homeScreen);
   }
 
   Widget buildFilePreview() {

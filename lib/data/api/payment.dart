@@ -85,7 +85,7 @@ class PaymentService {
     try {
       final Map<String, dynamic> data = {
         "student": student,
-        "tuition_plans": tuitionPlans,
+        "tuition_plans": jsonEncode(tuitionPlans),
         "method": methodOfPayment,
         "proof": filePath,
       };
@@ -97,20 +97,50 @@ class PaymentService {
         throw Exception('User not logged in');
       }
 
-      final Map<String, String> headers = {
-        "Content-Type": "application/json",
-        "Accept": "application/json",
+      final uri = Uri.parse(makePaymentURL);
+      final request = http.MultipartRequest('POST', uri);
+
+      // final Map<String, String> headers = {
+      //   "Content-Type": "application/json",
+      //   "Accept": "application/json",
+      //   "Cookie": "sid=$sid",
+      //   "sekolahproapp": "PA-1.0.0",
+      // };
+
+      request.headers.addAll({
         "Cookie": "sid=$sid",
         "sekolahproapp": "PA-1.0.0",
-      };
+      });
 
-      final response = await http.post(
-        Uri.parse(makePaymentURL),
-        headers: headers,
-        body: jsonEncode(data),
-      );
+      request.fields['student'] = student;
+      request.fields['tuition_plans'] = jsonEncode(tuitionPlans);
+      request.fields['method'] = methodOfPayment;
+
+      if (filePath != null) {
+        request.files.add(await http.MultipartFile.fromPath('proof', filePath));
+      }
+
+      final streamedResponse = await request.send();
+      final response = await http.Response.fromStream(streamedResponse);
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = jsonDecode(response.body);
+        return data;
+      }
+
+      print('sid, $sid');
 
       print('Response status: ${response.statusCode}');
+      print('Response body: ${response.body}');
+
+      // final response = await http.post(
+      //   Uri.parse(makePaymentURL),
+      //   headers: headers,
+      //   body: jsonEncode(data),
+      // );
+
+      print('Response status: ${response.statusCode}');
+      print('Response status: ${jsonDecode(response.body)}');
 
       final responseData = jsonDecode(response.body);
     } catch (e) {

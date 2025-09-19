@@ -60,9 +60,9 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
   void selectModeOfPayment(ModeOfPayment modePayment) {
     final billProvider = Provider.of<BillProvider>(context, listen: false);
 
+    billProvider.setSelectedModeOfPayment(modePayment);
     setState(() {
       selectedModeOfPayment = modePayment;
-      billProvider.setSelectedModeOfPayment(modePayment);
     });
   }
 
@@ -121,6 +121,7 @@ class _BayarDuaScreenState extends State<BayarDuaScreen> {
                       setState(() {
                         _selectedIndex = index;
                       });
+                      selectModeOfPayment(modeOfPayment);
                     },
                     onCopy: () {
                       _copyToClipboard(modeOfPayment.transferAccount);

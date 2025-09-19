@@ -109,12 +109,6 @@ class _BayarSatuState extends State<BayarSatuScreen> {
     setState(() {
       filteredBills = bills;
     });
-
-    // if (results.isNotEmpty) {
-    //   bills = results[0] as List<Bill>;
-    //   filteredBills = results[0] as List<Bill>;
-    //   await billProvider.saveBill(bills);
-    // }
   }
 
   void filterBills(String query) {
