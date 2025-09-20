@@ -18,10 +18,8 @@ import 'package:guardian_app/data/models/payment.dart';
 import 'package:guardian_app/data/api/ad.dart';
 import 'package:guardian_app/data/models/ad.dart';
 import 'dart:async';
-import 'package:guardian_app/core/providers/student_provider.dart';
 import 'package:provider/provider.dart';
-
-import 'package:provider/provider.dart';
+import 'package:guardian_app/data/models/student.dart';
 
 class KeuanganScreen extends StatefulWidget {
   const KeuanganScreen({Key? key}) : super(key: key);
@@ -41,6 +39,7 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   List<Payment> _allPayments = [];
   List<Payment> _filteredPayments = [];
   PaymentSummary? _summary;
+  Student? _lastProcessedStudent;
 
   // Ads
   List<Ad> _adList = [];
@@ -66,8 +65,44 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchAndSetPage(1);
     _fetchAndStartAds();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    final studentProvider = Provider.of<StudentProvider>(context);
+    final selectedStudent = studentProvider.selectedStudent;
+
+    if (_lastProcessedStudent != selectedStudent) {
+      _lastProcessedStudent = selectedStudent;
+      print('Selected student changed: ${selectedStudent?.name}');
+      print('Academic Year: ${selectedStudent?.academicYearName}');
+
+      setState(() {
+        _allPayments.clear();
+        _filteredPayments.clear();
+        _summary = null;
+        _currentPage = 1;
+        _activeFilters = {};
+        _isInitialLoading = true;
+        _error = null;
+      });
+
+      if (selectedStudent != null) {
+        _fetchAndSetPage(
+          1,
+          studentId: selectedStudent.name,
+          academicYear: selectedStudent.academicYear,
+        );
+      } else {
+        setState(() {
+          _isInitialLoading = false;
+          _error =
+              'Silakan pilih anak terlebih dahulu untuk melihat data keuangan.';
+        });
+      }
+    }
   }
 
   void _fetchAndStartAds() async {
@@ -85,9 +120,11 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   void _startAdTimer() {
     _adTimer?.cancel();
     _adTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      setState(() {
-        _currentAdIndex = (_currentAdIndex + 1) % _adList.length;
-      });
+      if (mounted) {
+        setState(() {
+          _currentAdIndex = (_currentAdIndex + 1) % _adList.length;
+        });
+      }
     });
   }
 
@@ -98,36 +135,46 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
   }
 
   void _nextPage() {
-    if (_hasMore && !_isPageLoading) {
+    final student =
+        Provider.of<StudentProvider>(context, listen: false).selectedStudent;
+    if (student != null && _hasMore && !_isPageLoading) {
       setState(() {
         _currentPage++;
         _activeFilters = {};
       });
-      _fetchAndSetPage(_currentPage);
+      _fetchAndSetPage(
+        _currentPage,
+        studentId: student.name,
+        academicYear: student.academicYear,
+      );
     }
   }
 
   void _previousPage() {
-    if (_currentPage > 1 && !_isPageLoading) {
+    final student =
+        Provider.of<StudentProvider>(context, listen: false).selectedStudent;
+    if (student != null && _currentPage > 1 && !_isPageLoading) {
       setState(() {
         _currentPage--;
         _activeFilters = {};
       });
-      _fetchAndSetPage(_currentPage);
+      _fetchAndSetPage(
+        _currentPage,
+        studentId: student.name,
+        academicYear: student.academicYear,
+      );
     }
   }
 
-  Future<void> _fetchAndSetPage(int page) async {
+  Future<void> _fetchAndSetPage(int page,
+      {required String studentId, required String academicYear}) async {
     setState(() {
       if (page == 1) _isInitialLoading = true;
       _isPageLoading = true;
       _error = null;
     });
 
-    const studentId = 'TLAB.0001';
-    const academicYear = '2025 / 2026';
     const limit = 10;
-
     final payment = PaymentService();
 
     try {
@@ -156,14 +203,16 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
         throw Exception('Gagal memuat jadwal pembayaran.');
       }
     } catch (e) {
-      if (mounted)
+      if (mounted) {
         setState(() => _error = e.toString().replaceFirst('Exception: ', ''));
+      }
     } finally {
-      if (mounted)
+      if (mounted) {
         setState(() {
           _isInitialLoading = false;
           _isPageLoading = false;
         });
+      }
     }
   }
 
@@ -172,7 +221,16 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
       _currentPage = 1;
       _activeFilters = {};
     });
-    await _fetchAndSetPage(1);
+
+    final student =
+        Provider.of<StudentProvider>(context, listen: false).selectedStudent;
+    if (student != null) {
+      await _fetchAndSetPage(
+        1,
+        studentId: student.name,
+        academicYear: student.academicYear,
+      );
+    }
   }
 
   void _applyPaymentFilter(Map<String, dynamic> filters) {
@@ -196,10 +254,8 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
           (statusFilter == KeuanganFilterStatus.belumLunas &&
               payment.status == 'Belum Lunas') ||
           (statusFilter == KeuanganFilterStatus.tenggat && payment.isOverdue);
-
       final bool searchMatch = searchTerm.isEmpty ||
           payment.description.toLowerCase().contains(searchTerm);
-
       return statusMatch && searchMatch;
     }).toList();
   }
@@ -312,7 +368,28 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
       );
     }
     if (_summary == null) {
-      return const Center(child: Text('Tidak ada data pembayaran ditemukan.'));
+      return Center(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Tidak ada data pembayaran ditemukan.'),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: onRefresh,
+                child: const Text('Muat Ulang',
+                    style: TextStyle(color: Colors.white, fontSize: 16)),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                ),
+              )
+            ],
+          ),
+        ),
+      );
     }
 
     final bool hasAd = _adList.isNotEmpty;
@@ -327,7 +404,11 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
             color: const Color(0xFFF0F2F5),
             child: ListView.builder(
               padding: const EdgeInsets.all(16.0),
-              itemCount: headerCount + _filteredPayments.length + 1,
+              itemCount: headerCount +
+                  (_filteredPayments.isNotEmpty
+                      ? _filteredPayments.length
+                      : 1) +
+                  1,
               itemBuilder: (context, index) {
                 if (index == 0) {
                   return _buildPaymentSummary(_summary!);
@@ -353,7 +434,20 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                 }
 
                 final paymentIndex = index - headerCount;
-                if (paymentIndex < _filteredPayments.length) {
+
+                if (!hasPayments) {
+                  if (paymentIndex == 0) {
+                    return const Center(
+                      child: Padding(
+                        padding: EdgeInsets.all(20.0),
+                        child: Text(
+                          'Tidak ada jadwal pembayaran yang cocok dengan filter.',
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    );
+                  }
+                } else if (paymentIndex < _filteredPayments.length) {
                   final payment = _filteredPayments[paymentIndex];
                   return GestureDetector(
                     onTap: () => _navigateToPaymentDetail(context),
@@ -364,18 +458,6 @@ class KeuanganPageScreen extends State<KeuanganScreen> {
                       status: payment.status,
                       isOverdue: payment.isOverdue,
                       onPayPressed: () => _navigateToPayScreen(),
-                    ),
-                  );
-                }
-
-                if (!hasPayments) {
-                  return const Center(
-                    child: Padding(
-                      padding: EdgeInsets.all(20.0),
-                      child: Text(
-                        'Tidak ada jadwal pembayaran yang cocok dengan filter.',
-                        textAlign: TextAlign.center,
-                      ),
                     ),
                   );
                 }

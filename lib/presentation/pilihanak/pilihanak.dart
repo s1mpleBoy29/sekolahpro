@@ -64,14 +64,17 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
   void _startAdTimer() {
     _adTimer?.cancel();
     _adTimer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      setState(() {
-        _currentAdIndex = (_currentAdIndex + 1) % _adList.length;
-      });
+      if (mounted) {
+        setState(() {
+          _currentAdIndex = (_currentAdIndex + 1) % _adList.length;
+        });
+      }
     });
   }
 
   @override
   void dispose() {
+    _adTimer?.cancel();
     _searchController.dispose();
     super.dispose();
   }
@@ -84,11 +87,12 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
   Future<void> loadStudent() async {
     final provider = Provider.of<StudentProvider>(context, listen: false);
     final students = provider.students;
-
-    setState(() {
-      allChildren = students;
-      _filteredChildren = students; // default tampil semua
-    });
+    if (mounted) {
+      setState(() {
+        allChildren = students;
+        _filteredChildren = students; // default tampil semua
+      });
+    }
   }
 
   void _filterChildren(String query) {
@@ -97,9 +101,9 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
         _filteredChildren = allChildren;
       } else {
         _filteredChildren = allChildren.where((child) {
-          final name = child.fullName?.toLowerCase() ?? '';
-          final school = child.schoolName?.toLowerCase() ?? '';
-          final grade = child.gradeName?.toLowerCase() ?? '';
+          final name = child.fullName.toLowerCase();
+          final school = child.schoolName.toLowerCase();
+          final grade = child.gradeName.toLowerCase();
           final search = query.toLowerCase();
 
           return name.contains(search) ||
@@ -128,11 +132,9 @@ class PilihAnakPageScreen extends State<PilihAnakScreen> {
 
       case PostSelectionAction.goBack:
         // Default
-        Future.delayed(Duration.zero, () {
-          if (mounted) {
-            Navigator.pop(context, childData);
-          }
-        });
+        if (mounted) {
+          Navigator.pop(context, childData);
+        }
         break;
     }
   }
