@@ -29,14 +29,20 @@ class AgendaScreen extends StatefulWidget {
 
 class AgendaPageScreen extends State<AgendaScreen> {
   late String filterArea = 'smpn_13_malang';
-  List<AgendaDetail> _filteredAgendaList = [];
+  List<AgendaDetail> _allAgendaList = []; // Semua agenda dari API
+  List<AgendaDetail> _originalAgendaList = []; // Backup data asli dari API
+  List<AgendaDetail> _displayedAgendaList = []; // Agenda yang ditampilkan
   bool _isLoading = true;
+  bool _isLoadingMore = false; // Loading state untuk load more
   String? _errorMessage;
   final String _currentStudentId = 'TLAB.0001'; // Contoh Student ID
 
-  // Pagination
-  int _currentPage = 1;
-  final int _itemsPerPage = 2;
+  // Current active filters
+  Map<String, dynamic> _currentFilters = {};
+
+  // Load More
+  final int _itemsPerLoad = 2; // Jumlah item yang dimuat per load
+  int _currentLoadedCount = 0; // Jumlah item yang sudah dimuat
 
   // Ads
   List<Ad> _adList = [];
@@ -56,7 +62,7 @@ class AgendaPageScreen extends State<AgendaScreen> {
   @override
   void dispose() {
     _adTimer?.cancel();
-    _scrollController.dispose(); // Don't forget to dispose
+    _scrollController.dispose();
     super.dispose();
   }
 
@@ -81,86 +87,147 @@ class AgendaPageScreen extends State<AgendaScreen> {
     });
   }
 
-  Future<void> _fetchAgendaList() async {
-    setState(() {
-      _isLoading = true;
-      _errorMessage = null;
-    });
+Future<void> _fetchAgendaList({Map<String, dynamic>? filters}) async {
+  setState(() {
+    _isLoading = true;
+    _errorMessage = null;
+  });
 
-    final AgendaListResponse? response =
-        await getAgendaList(studentId: _currentStudentId);
+  // Use filters if provided, otherwise use current filters
+  final Map<String, dynamic> activeFilters = filters ?? _currentFilters;
 
-    if (response != null) {
+  final AgendaListResponse? response = await getAgendaList(
+    studentId: _currentStudentId,
+    tahunAjaran: activeFilters['tahun_ajaran'] as String?,
+    tanggalMulai: activeFilters['tanggal_mulai'] as String?,
+    tanggalAkhir: activeFilters['tanggal_akhir'] as String?,
+    pengirim: activeFilters['pengirim'] as String?,
+  );
+
+  if (response != null) {
+    if (mounted) {
+      setState(() {
+        _originalAgendaList = List.from(response.lists); // Backup data asli
+        _allAgendaList = List.from(response.lists); // Data yang akan difilter
+        _currentLoadedCount = 0;
+        _displayedAgendaList = [];
+        _isLoading = false;
+      });
+      // Load initial items
+      _loadMoreItems();
+      // Scroll to top after loading data
+      _scrollToTop();
+    }
+  } else {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? sid = prefs.getString('sid');
+
+    if (sid == null) {
       if (mounted) {
         setState(() {
-          _filteredAgendaList = response.lists;
+          _errorMessage = 'Sesi Anda telah berakhir. Silakan login kembali.';
           _isLoading = false;
-          _currentPage = 1; // reset ke halaman awal
         });
-        // Scroll to top after loading data
-        _scrollToTop();
       }
     } else {
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      String? sid = prefs.getString('sid');
-
-      if (sid == null) {
-        if (mounted) {
-          setState(() {
-            _errorMessage = 'Sesi Anda telah berakhir. Silakan login kembali.';
-            _isLoading = false;
-          });
-        }
-      } else {
-        if (mounted) {
-          setState(() {
-            _errorMessage = 'Gagal memuat agenda. Silakan coba refresh.';
-            _isLoading = false;
-          });
-        }
+      if (mounted) {
+        setState(() {
+          _errorMessage = 'Gagal memuat agenda. Silakan coba refresh.';
+          _isLoading = false;
+        });
       }
     }
   }
+}
 
-  Future<void> onRefresh() async {
-    await _fetchAgendaList();
-  }
+Future<void> onRefresh() async {
+  // Keep current filters when refreshing
+  await _fetchAgendaList(filters: _currentFilters);
+}
 
-  void _applyAgendaFilter(Map<String, dynamic> filters) {
-    setState(() {
-      final List<AgendaDetail> filteredTemp =
-          _filteredAgendaList.where((agenda) {
-        final pengirimFilter = filters['pengirim'] as AgendaFilterPengirim;
-        final bool matchesPengirim =
-            pengirimFilter == AgendaFilterPengirim.semua ||
-                (pengirimFilter == AgendaFilterPengirim.waliKelas5A &&
-                    agenda.from == 'Wali Kelas 5A') ||
-                (pengirimFilter == AgendaFilterPengirim.guruOlahraga &&
-                    agenda.from == 'Guru Seni Budaya 5A') ||
-                (pengirimFilter == AgendaFilterPengirim.adminSekolah &&
-                    agenda.from == 'Admin Sekolah');
 
-        final DateTime? startDate = filters['tanggal_mulai'];
-        final DateTime? endDate = filters['tanggal_akhir'];
+void _applyAgendaFilter(Map<String, dynamic> filters) {
+  setState(() {
+    // Update current filters
+    _currentFilters = Map.from(filters);
+    
+    // Apply filter to original data
+    final List<AgendaDetail> filteredTemp =
+        _originalAgendaList.where((agenda) {
+      // Filter by sender - parse the string value from filters
+      bool matchesPengirim = true;
+      final String? pengirimFilter = filters['pengirim'] as String?;
+      
+      if (pengirimFilter != null && pengirimFilter.isNotEmpty) {
+        matchesPengirim = agenda.from == pengirimFilter;
+      }
+
+      // Filter by date - parse string dates to DateTime objects
+      bool matchesDate = true;
+      final String? startDateStr = filters['tanggal_mulai'] as String?;
+      final String? endDateStr = filters['tanggal_akhir'] as String?;
+      
+      if (startDateStr != null || endDateStr != null) {
+        final DateTime? startDate = startDateStr != null 
+            ? DateTime.tryParse(startDateStr) 
+            : null;
+        final DateTime? endDate = endDateStr != null 
+            ? DateTime.tryParse(endDateStr) 
+            : null;
+        
         final DateTime agendaDate = agenda.date;
 
-        bool matchesDate = true;
         if (startDate != null && endDate != null) {
-          matchesDate =
-              agendaDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
-                  agendaDate.isBefore(endDate.add(const Duration(days: 1)));
+          // Date range filter
+          matchesDate = agendaDate.isAfter(startDate.subtract(const Duration(days: 1))) &&
+              agendaDate.isBefore(endDate.add(const Duration(days: 1)));
         } else if (startDate != null) {
+          // Single date filter
           matchesDate = DateUtils.isSameDay(agendaDate, startDate);
         }
+      }
 
-        return matchesPengirim && matchesDate;
-      }).toList();
-      _filteredAgendaList = filteredTemp;
-      _currentPage = 1; // reset ke halaman pertama setelah filter
+      return matchesPengirim && matchesDate;
+    }).toList();
+    
+    _allAgendaList = filteredTemp;
+    _currentLoadedCount = 0;
+    _displayedAgendaList = [];
+  });
+  
+  // Load initial items after filter
+  _loadMoreItems();
+  // Scroll to top after applying filter
+  _scrollToTop();
+}
+
+  // Method to load more items
+  void _loadMoreItems() {
+    if (_isLoadingMore || _currentLoadedCount >= _allAgendaList.length) return;
+    
+    setState(() {
+      _isLoadingMore = true;
     });
-    // Scroll to top after applying filter
-    _scrollToTop();
+
+    // Simulate loading delay (optional)
+    Future.delayed(const Duration(milliseconds: 500), () {
+      if (mounted) {
+        final int endIndex = (_currentLoadedCount + _itemsPerLoad)
+            .clamp(0, _allAgendaList.length);
+        
+        setState(() {
+          _displayedAgendaList.addAll(
+            _allAgendaList.sublist(_currentLoadedCount, endIndex)
+          );
+          _currentLoadedCount = endIndex;
+          _isLoadingMore = false;
+        });
+      }
+    });
   }
+
+  // Check if there are more items to load
+  bool get _hasMoreItems => _currentLoadedCount < _allAgendaList.length;
 
   // Method to scroll to top smoothly
   void _scrollToTop() {
@@ -182,7 +249,8 @@ class AgendaPageScreen extends State<AgendaScreen> {
       builder: (BuildContext context) {
         return FilterPopup(
           currentPage: FilterPage.agenda,
-          onApplyFilter: _applyAgendaFilter,
+          currentFilters: _currentFilters, // Kirim filter yang sudah ada
+          onApplyFilter: _applyAgendaFilter, // Fixed: proper method reference
         );
       },
     );
@@ -199,56 +267,42 @@ class AgendaPageScreen extends State<AgendaScreen> {
     );
   }
 
-  // Ambil agenda sesuai halaman
-  List<AgendaDetail> get _currentPageAgenda {
-    final startIndex = (_currentPage - 1) * _itemsPerPage;
-    final endIndex =
-        (_currentPage * _itemsPerPage).clamp(0, _filteredAgendaList.length);
-    return _filteredAgendaList.sublist(startIndex, endIndex);
-  }
-
-  Widget _buildPaginationControls() {
-    final totalPages = (_filteredAgendaList.length / _itemsPerPage).ceil();
-    if (totalPages <= 1) return const SizedBox.shrink();
+  Widget _buildLoadMoreButton() {
+    if (!_hasMoreItems) return const SizedBox.shrink();
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          IconButton(
-            icon: const Icon(Icons.chevron_left),
-            onPressed: _currentPage > 1
-                ? () {
-                    setState(() {
-                      _currentPage--;
-                    });
-                    // Scroll to top when changing page
-                    _scrollToTop();
-                  }
-                : null,
-          ),
-          Text('Page $_currentPage of $totalPages'),
-          IconButton(
-            icon: const Icon(Icons.chevron_right),
-            onPressed: _currentPage < totalPages
-                ? () {
-                    setState(() {
-                      _currentPage++;
-                    });
-                    // Scroll to top when changing page
-                    _scrollToTop();
-                  }
-                : null,
-          ),
-        ],
+      padding: const EdgeInsets.only(top: 0.0, bottom: 24.0, left: 16.0, right: 16.0),
+      child: Center(
+        child: _isLoadingMore
+            ? const CircularProgressIndicator()
+            : ElevatedButton(
+                onPressed: _loadMoreItems,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: theme.colorScheme.primary,
+                  minimumSize: const Size(200, 48), // Ukuran minimum button
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  'Muat Lebih Banyak',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    // Provider.of<StudentProvider>(context, listen: false);
     return Scaffold(
       backgroundColor: theme.colorScheme.surface,
       bottomNavigationBar: BottomNavBar(
@@ -355,47 +409,44 @@ class AgendaPageScreen extends State<AgendaScreen> {
       );
     }
 
-    if (_filteredAgendaList.isEmpty) {
+    if (_allAgendaList.isEmpty) {
       return const Center(child: Text('Tidak ada agenda yang ditemukan.'));
     }
 
-    return Column(
-      children: [
-        Expanded(
-          child: ListView.builder(
-            controller: _scrollController,
-            itemCount: _currentPageAgenda.length + 1, // +1 untuk AdCard
-            padding: EdgeInsets.zero,
-            itemBuilder: (context, index) {
-              if (index == 0) return _buildAdCard();
+    return ListView.builder(
+      controller: _scrollController,
+      itemCount: _displayedAgendaList.length + 2, // +1 untuk AdCard, +1 untuk LoadMore button
+      padding: EdgeInsets.zero,
+      itemBuilder: (context, index) {
+        if (index == 0) return _buildAdCard();
 
-              final item = _currentPageAgenda[index - 1];
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16, left: 16, right: 16),
-                child: AgendaCard(
-                  tanggal: DateFormat('d MMMM yyyy', 'id_ID').format(item.date),
-                  dari: item.from,
-                  untuk: item.to,
-                  detail: item.detail,
-                  agendaId: item.id, // Pass agenda ID
-                  onTap: () {
-                    // Navigasi dengan parameter
-                    Navigator.pushNamed(
-                      context,
-                      AppRoutes.DetailAgendaScreen,
-                      arguments: {
-                        'studentId': _currentStudentId,
-                        'agendaId': item.id,
-                      },
-                    );
-                  },
-                ),
+        // Jika ini adalah item terakhir, tampilkan load more button
+        if (index == _displayedAgendaList.length + 1) {
+          return _buildLoadMoreButton();
+        }
+
+        final item = _displayedAgendaList[index - 1];
+        return Padding(
+          padding: const EdgeInsets.only(bottom: 4, left: 16, right: 16),
+          child: AgendaCard(
+            tanggal: DateFormat('d MMMM yyyy', 'id_ID').format(item.date),
+            dari: item.from,
+            untuk: item.to,
+            detail: item.detail,
+            agendaId: item.id,
+            onTap: () {
+              Navigator.pushNamed(
+                context,
+                AppRoutes.DetailAgendaScreen,
+                arguments: {
+                  'studentId': _currentStudentId,
+                  'agendaId': item.id,
+                },
               );
             },
           ),
-        ),
-        _buildPaginationControls(),
-      ],
+        );
+      },
     );
   }
 }

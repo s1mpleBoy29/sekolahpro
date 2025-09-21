@@ -30,7 +30,7 @@ class NotificationDetail {
   final String subject; // Judul/subjek notifikasi
   final String type; // Tipe notifikasi (misalnya 'Alert')
   final DateTime creation; // Waktu pembuatan notifikasi
-  final bool isRead; // Status baca
+  bool isRead; // Status baca
 
   NotificationDetail({
     required this.name,

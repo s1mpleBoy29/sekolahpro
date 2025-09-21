@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:guardian_app/widgets/date_filter.dart';
+import 'package:flutter/foundation.dart';
 
 // Enum untuk menentukan halaman pemanggil
 enum FilterPage {
@@ -27,11 +28,14 @@ enum AgendaFilterPengirim {
 class FilterPopup extends StatefulWidget {
   final FilterPage currentPage;
   final Function(Map<String, dynamic>) onApplyFilter;
+  // Tambahan parameter untuk menerima filter yang sudah dipilih sebelumnya
+  final Map<String, dynamic>? currentFilters;
 
   const FilterPopup({
     Key? key,
     required this.currentPage,
     required this.onApplyFilter,
+    this.currentFilters, // Parameter opsional untuk filter saat ini
   }) : super(key: key);
 
   @override
@@ -47,6 +51,68 @@ class _FilterPopupState extends State<FilterPopup> {
 
   KeuanganFilterStatus _selectedKeuanganStatus = KeuanganFilterStatus.semua;
   AgendaFilterPengirim _selectedAgendaPengirim = AgendaFilterPengirim.semua;
+
+  @override
+  void initState() {
+    super.initState();
+    // Inisialisasi nilai filter dari currentFilters jika tersedia
+    if (widget.currentFilters != null) {
+      final filters = widget.currentFilters!;
+
+      // Set tahun ajaran
+      if (filters['tahun_ajaran'] != null) {
+        selectedTahunAjaran = filters['tahun_ajaran'];
+      }
+
+      // Set tanggal
+      if (filters['tanggal_mulai'] != null) {
+        // Karena tanggal_mulai dari Map<String, dynamic> mungkin berupa String,
+        // kita perlu mengonversinya kembali ke DateTime jika diperlukan
+        if (filters['tanggal_mulai'] is String) {
+          _startDate = DateTime.tryParse(filters['tanggal_mulai']);
+        } else if (filters['tanggal_mulai'] is DateTime) {
+          _startDate = filters['tanggal_mulai'];
+        }
+      }
+      if (filters['tanggal_akhir'] != null) {
+        if (filters['tanggal_akhir'] is String) {
+          _endDate = DateTime.tryParse(filters['tanggal_akhir']);
+        } else if (filters['tanggal_akhir'] is DateTime) {
+          _endDate = filters['tanggal_akhir'];
+        }
+      }
+
+      // Set filter khusus berdasarkan halaman
+      if (widget.currentPage == FilterPage.keuangan) {
+        if (filters['status_pembayaran'] != null) {
+          // Anda perlu mengonversi string dari filter kembali ke enum
+          String status = filters['status_pembayaran'];
+          if (status == 'Paid') {
+            _selectedKeuanganStatus = KeuanganFilterStatus.lunas;
+          } else if (status == 'Unpaid') {
+            _selectedKeuanganStatus = KeuanganFilterStatus.belumLunas;
+          } else if (status == 'Overdue') {
+            _selectedKeuanganStatus = KeuanganFilterStatus.tenggat;
+          } else {
+            _selectedKeuanganStatus = KeuanganFilterStatus.semua;
+          }
+        }
+      } else if (widget.currentPage == FilterPage.agenda) {
+        if (filters['pengirim'] != null) {
+          String pengirim = filters['pengirim'];
+          if (pengirim == 'Wali Kelas 5A') {
+            _selectedAgendaPengirim = AgendaFilterPengirim.waliKelas5A;
+          } else if (pengirim == 'Guru Olahraga') {
+            _selectedAgendaPengirim = AgendaFilterPengirim.guruOlahraga;
+          } else if (pengirim == 'Admin Sekolah') {
+            _selectedAgendaPengirim = AgendaFilterPengirim.adminSekolah;
+          } else {
+            _selectedAgendaPengirim = AgendaFilterPengirim.semua;
+          }
+        }
+      }
+    }
+  }
 
   String get _dateFilterText {
     if (_startDate == null && _endDate == null) {
@@ -68,20 +134,54 @@ class _FilterPopupState extends State<FilterPopup> {
   void _onApply() {
     final Map<String, dynamic> filters = {
       'tahun_ajaran': selectedTahunAjaran,
-      'tanggal_mulai': _startDate,
-      'tanggal_akhir': _endDate,
+      // Format tanggal ke string 'yyyy-MM-dd' sebelum dikirim ke API
+      'tanggal_mulai': _startDate != null ? DateFormat('yyyy-MM-dd').format(_startDate!) : null,
+      'tanggal_akhir': _endDate != null ? DateFormat('yyyy-MM-dd').format(_endDate!) : null,
     };
 
     if (widget.currentPage == FilterPage.keuangan) {
-      filters['status_pembayaran'] = _selectedKeuanganStatus;
+      String status = '';
+      switch (_selectedKeuanganStatus) {
+        case KeuanganFilterStatus.lunas:
+          status = 'Paid'; // Contoh, sesuaikan dengan API Anda
+          break;
+        case KeuanganFilterStatus.belumLunas:
+          status = 'Unpaid'; // Contoh, sesuaikan dengan API Anda
+          break;
+        case KeuanganFilterStatus.tenggat:
+          status = 'Overdue'; // Contoh, sesuaikan dengan API Anda
+          break;
+        default:
+          status = '';
+      }
+      if (status.isNotEmpty) {
+        filters['status_pembayaran'] = status;
+      }
     } else if (widget.currentPage == FilterPage.agenda) {
-      filters['pengirim'] = _selectedAgendaPengirim;
+      String pengirim = '';
+      switch (_selectedAgendaPengirim) {
+        case AgendaFilterPengirim.waliKelas5A:
+          pengirim = 'Wali Kelas 5A'; // Contoh, sesuaikan dengan API Anda
+          break;
+        case AgendaFilterPengirim.guruOlahraga:
+          pengirim = 'Guru Olahraga'; // Contoh, sesuaikan dengan API Anda
+          break;
+        case AgendaFilterPengirim.adminSekolah:
+          pengirim = 'Admin Sekolah'; // Contoh, sesuaikan dengan API Anda
+          break;
+        default:
+          pengirim = '';
+      }
+      if (pengirim.isNotEmpty) {
+        filters['pengirim'] = pengirim;
+      }
     }
 
     widget.onApplyFilter(filters);
     Navigator.of(context).pop();
   }
-
+  
+  // 👇 Metode build() yang hilang telah ditambahkan kembali di sini
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -377,8 +477,21 @@ class _FilterPopupState extends State<FilterPopup> {
           fontWeight: FontWeight.w500,
         ),
         items: AgendaFilterPengirim.values.map((pengirim) {
-          String pengirimText =
-              pengirim.name.replaceAll('_', ' ').toUpperCase();
+          String pengirimText = '';
+          switch (pengirim) {
+            case AgendaFilterPengirim.waliKelas5A:
+              pengirimText = 'Wali Kelas 5A';
+              break;
+            case AgendaFilterPengirim.guruOlahraga:
+              pengirimText = 'Guru Olahraga';
+              break;
+            case AgendaFilterPengirim.adminSekolah:
+              pengirimText = 'Admin Sekolah';
+              break;
+            case AgendaFilterPengirim.semua:
+              pengirimText = 'Semua';
+              break;
+          }
           return DropdownMenuItem<AgendaFilterPengirim>(
             value: pengirim,
             child: Text(pengirimText),

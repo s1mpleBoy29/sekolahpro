@@ -31,7 +31,7 @@ class AgendaDetail {
   final String from;
   final String to;
   final String detail;
-
+  
   AgendaDetail({
     this.id,
     required this.date,

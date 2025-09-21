@@ -38,7 +38,7 @@ class AppRoutes {
   static const String akunScreen = '/akun_screen';
   static const String editProfieScreen = '/edit_profile_screen';
   static const String ubahPasswordScreen = '/ubah_password_screen';
-  static const String dataAnakScreen = '/data_anak_screen';
+  static const String DataAnakScreen = '/data_anak_screen';
   static const String infoSekolahScreen = '/info_sekolah_screen';
   static const String detailNotifikasiScreen = '/detail_notifikasi_screen';
   static const String faqScreen = '/faq_screen';
@@ -63,7 +63,7 @@ class AppRoutes {
     akunScreen: (context) => const AkunScreen(),
     editProfieScreen: (context) => const EditProfileScreen(),
     ubahPasswordScreen: (context) => const UbahPasswordScreen(),
-    dataAnakScreen: (context) => const DataAnak(),
+    DataAnakScreen: (context) => const dataAnakScreen(),
     infoSekolahScreen: (context) => const InfoSekolahScreen(),
     detailNotifikasiScreen: (context) => const NotificationDetailScreen(),
     faqScreen: (context) => const FaqScreen(),
